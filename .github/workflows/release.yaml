@@ -1,0 +1,88 @@
+# Release — release-please on main.
+#
+# Flow:
+#   1. Conventional commits land on main (squash merge, PR title = commit subject).
+#   2. This workflow opens/updates a Release PR (version bump in pubspec.yaml +
+#      CHANGELOG.md).
+#   3. Merging that PR runs this workflow again; release-please sees its own PR
+#      merged and cuts the tag + GitHub Release.
+#   4. Artifacts are built and attached to that release.
+#
+# No prerelease/RC channels: trunk-based, one line of releases off main.
+# Not here yet: Play Store / TestFlight upload, iOS build — all need signing
+# material that does not exist yet.
+name: Release
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+    steps:
+      - uses: googleapis/release-please-action@v5
+        id: release
+        with:
+          # GITHUB_TOKEN cannot trigger other workflows, so the Release PR it
+          # opens gets no CI run. Fine while nothing is a required check; set a
+          # RELEASE_PLEASE_TOKEN (PAT or GitHub App token) once checks are
+          # required on main.
+          token: ${{ secrets.RELEASE_PLEASE_TOKEN || secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  artifacts:
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          cache: true
+
+      - run: flutter pub get
+
+      # Signed with the Android debug keys (see android/app/build.gradle.kts) —
+      # installable for testing, not publishable. Real signing lands with the
+      # first store release.
+      - name: Build APK
+        run: flutter build apk --release
+
+      - name: Build web
+        run: |
+          flutter build web --release
+          (cd build/web && zip -qr "../../folo-web.zip" .)
+
+      - name: Attach artifacts to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.release-please.outputs.tag_name }}
+        run: |
+          gh release upload "$TAG" \
+            build/app/outputs/flutter-apk/app-release.apk \
+            folo-web.zip \
+            --clobber

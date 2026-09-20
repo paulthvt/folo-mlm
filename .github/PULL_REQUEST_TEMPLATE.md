@@ -1,0 +1,20 @@
+<!--
+PR title must be a Conventional Commit — it becomes the squash commit subject
+and drives the changelog. e.g. feat(contacts): add follow-up reminder
+Types: feat fix docs style refactor perf test build ci chore revert
+-->
+
+## What & why
+
+<!-- What changed, and the reason. Link issues with "Fixes #123". -->
+
+## Screenshots
+
+<!-- Any visual change: before/after. Mobile + desktop layout if both are affected. -->
+
+## Checklist
+
+- [ ] `dart format .`, `flutter analyze`, `flutter test` all pass locally
+- [ ] Theme values come from `colorScheme` / `AppSpacing` / `AppRadii` — nothing hard-coded
+- [ ] No new dependency, or the reason is in the `pubspec.yaml` comment next to it
+- [ ] Goldens regenerated on Linux if they changed (see `.github/workflows/ci.yaml`)
