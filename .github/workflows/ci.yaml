@@ -1,0 +1,117 @@
+# CI — the only gate on main.
+#
+# Trunk-based: every change lands on main through a PR. This workflow is what
+# "green" means. It also runs on push to main so a bad merge is visible even
+# though nothing else can block it.
+#
+# Not here yet, deliberately:
+#   - iOS build: needs a macOS runner (10x the minutes). Added when signing exists.
+#   - Coverage upload: nothing consumes it yet.
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+permissions:
+  contents: read
+
+jobs:
+  # release-please builds the changelog from commit subjects on main. With squash
+  # merges the subject is the PR title, so the PR title is the thing to validate —
+  # individual commits inside the branch are free-form.
+  pr-title:
+    name: Conventional PR title
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    steps:
+      - uses: amannn/action-semantic-pull-request@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            style
+            refactor
+            perf
+            test
+            build
+            ci
+            chore
+            revert
+
+  verify:
+    name: Format, analyze, test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          cache: true
+
+      - run: flutter pub get
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze
+        run: flutter analyze
+
+      # Golden tests are pixel comparisons — the committed PNGs must be produced
+      # on the same platform that renders them here (Linux). Regenerate locally with:
+      #   docker run --rm -v "$PWD":/app -w /app ghcr.io/cirruslabs/flutter:3.47.0 \
+      #     flutter test --update-goldens
+      - name: Test
+        run: flutter test
+
+      - name: Upload golden failures
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: golden-failures
+          path: test/**/failures/**
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # Compiling catches what analyze cannot: Gradle config, plugin mismatches,
+  # tree-shaking failures. Artifacts are not kept — release.yaml publishes those.
+  build:
+    name: Build ${{ matrix.target }}
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [web, apk]
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-java@v6
+        if: matrix.target == 'apk'
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version-file: .fvmrc
+          cache: true
+
+      - run: flutter pub get
+
+      - run: flutter build ${{ matrix.target }} --release
