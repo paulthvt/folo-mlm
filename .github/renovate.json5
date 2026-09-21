@@ -11,8 +11,8 @@
     // and annotates each with its tag.
     'helpers:pinGitHubActionDigests',
   ],
-  // One batch a week, Monday morning. Dependency churn is not the work.
-  schedule: ['before 06:00 on monday'],
+  // No schedule: Renovate runs at its own cadence. The grouping below is what
+  // keeps the noise down, not a time window.
   prConcurrentLimit: 3,
   // Anything not opened as a PR is listed in a tracking issue instead of silently
   // skipped.
@@ -31,9 +31,8 @@
       groupName: 'dart dependencies (non-major)',
     },
   ],
-  // Security fixes bypass the weekly schedule and the concurrency limit.
+  // Security fixes bypass the concurrency limit.
   vulnerabilityAlerts: {
     enabled: true,
-    schedule: ['at any time'],
   },
 }
