@@ -1,0 +1,39 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
+    // Dependency PRs land as `chore(deps): …` so they show up under
+    // "🔧 Miscellaneous" in the release-please changelog instead of inflating
+    // Features or Bug Fixes.
+    ':semanticCommitTypeAll(chore)',
+    // Workflows reference actions by tag (@v6), which is a mutable ref. Pinning
+    // to the commit digest removes that; Renovate then keeps the digests current
+    // and annotates each with its tag.
+    'helpers:pinGitHubActionDigests',
+  ],
+  // One batch a week, Monday morning. Dependency churn is not the work.
+  schedule: ['before 06:00 on monday'],
+  prConcurrentLimit: 3,
+  // Anything not opened as a PR is listed in a tracking issue instead of silently
+  // skipped.
+  dependencyDashboard: true,
+  lockFileMaintenance: {
+    enabled: true,
+  },
+  packageRules: [
+    {
+      matchManagers: ['github-actions'],
+      groupName: 'github actions',
+    },
+    {
+      matchManagers: ['pub'],
+      matchUpdateTypes: ['minor', 'patch'],
+      groupName: 'dart dependencies (non-major)',
+    },
+  ],
+  // Security fixes bypass the weekly schedule and the concurrency limit.
+  vulnerabilityAlerts: {
+    enabled: true,
+    schedule: ['at any time'],
+  },
+}
