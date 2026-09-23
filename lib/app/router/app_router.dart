@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/routes.dart';
+import 'package:folo/features/auth/presentation/check_inbox_page.dart';
+import 'package:folo/features/auth/presentation/forgot_password_page.dart';
 import 'package:folo/features/auth/presentation/login_page.dart';
 import 'package:folo/features/auth/presentation/register_page.dart';
 import 'package:folo/features/auth/presentation/welcome_page.dart';
@@ -38,6 +40,21 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.register,
         name: Routes.registerName,
         builder: (context, state) => const RegisterPage(),
+      ),
+      GoRoute(
+        path: Routes.forgotPassword,
+        name: Routes.forgotPasswordName,
+        builder: (context, state) => const ForgotPasswordPage(),
+      ),
+      GoRoute(
+        path: Routes.checkInbox,
+        name: Routes.checkInboxName,
+        builder: (context, state) => CheckInboxPage(
+          reason:
+              state.uri.queryParameters['reason'] ??
+              CheckInboxPage.confirmReason,
+          email: state.uri.queryParameters['email'] ?? '',
+        ),
       ),
     ],
   );
