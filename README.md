@@ -27,6 +27,20 @@ flutter run                 # current device
 flutter run -d chrome       # web
 ```
 
+### Auth and Supabase
+
+The Supabase project URL and publishable key are committed in
+`lib/core/supabase/supabase_config.dart` — the publishable key is public by
+design and Row Level Security is the boundary. Nothing to configure locally.
+
+Email confirmation and password recovery return to
+`io.supabase.folo://login-callback/`. On web, add the origin you develop on
+(`http://localhost:<port>`) to the project's allowed redirect URLs.
+
+These project settings are managed in the Supabase dashboard, not in this repo:
+email confirmations on, minimum password length 8, Google and Apple providers,
+allowed redirect URLs.
+
 ## Checks
 
 ```bash
