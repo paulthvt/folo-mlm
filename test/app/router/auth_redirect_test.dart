@@ -16,7 +16,7 @@ void main() {
     );
 
     test('is sent to welcome from a protected route', () {
-      expect(redirect(Routes.dashboard), Routes.welcome);
+      expect(redirect(Routes.today), Routes.welcome);
     });
 
     test('is left alone on every auth route', () {
@@ -41,12 +41,12 @@ void main() {
     );
 
     test('is left alone on a protected route', () {
-      expect(redirect(Routes.dashboard), isNull);
+      expect(redirect(Routes.today), isNull);
     });
 
-    test('is sent to the dashboard from an auth route', () {
+    test('is sent to Today from an auth route', () {
       for (final path in Routes.authPaths) {
-        expect(redirect(path), Routes.dashboard, reason: path);
+        expect(redirect(path), Routes.today, reason: path);
       }
     });
 
@@ -63,14 +63,14 @@ void main() {
     );
 
     test('goes to reset-password from anywhere', () {
-      expect(redirect(Routes.dashboard), Routes.resetPassword);
+      expect(redirect(Routes.today), Routes.resetPassword);
       expect(redirect(Routes.welcome), Routes.resetPassword);
     });
 
     test('recovery wins even when a session is already open', () {
       // Someone opens a recovery link while signed in as another account: the
       // link has replaced the session, so it must not be treated as "already
-      // signed in, go to the dashboard".
+      // signed in, go to Today".
       expect(redirect(Routes.resetPassword), isNull);
       expect(redirect(Routes.login), Routes.resetPassword);
     });

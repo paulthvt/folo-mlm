@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/app.dart';
 import 'package:folo/core/layout/breakpoints.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
+import 'package:folo/features/today/domain/today_snapshot.dart';
 
 import 'features/auth/fake_auth_repository.dart';
 
@@ -23,7 +24,7 @@ void main() {
     expect(find.text('Continue with email'), findsOneWidget);
   });
 
-  testWidgets('a restored session lands on the dashboard', (tester) async {
+  testWidgets('a restored session lands on Today', (tester) async {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -36,7 +37,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Folo'), findsOneWidget);
+    expect(find.text(sampleToday.greeting), findsOneWidget);
   });
 
   test('breakpoints map widths to layout classes', () {

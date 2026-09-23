@@ -1,7 +1,7 @@
 /// Every route path and name in the app. Widgets never write a path literal.
 abstract final class Routes {
-  static const String dashboard = '/';
-  static const String dashboardName = 'dashboard';
+  static const String today = '/';
+  static const String todayName = 'today';
 
   static const String welcome = '/welcome';
   static const String welcomeName = 'welcome';

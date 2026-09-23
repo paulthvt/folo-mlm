@@ -1,8 +1,13 @@
 # Component library — v1
 
 24 components, built in Figma on page `Components`, every fill / stroke / padding
-/ radius bound to a `Folo/color` or `Folo/scale` variable. Nothing here is
-implemented in Flutter yet.
+/ radius bound to a `Folo/color` or `Folo/scale` variable.
+
+Implemented in Flutter so far, in `lib/core/ui/` — Avatar (+ AvatarGroup), Chip,
+ProgressBar, SectionHeader, EmptyState, ActivityItem, StatTile, GoalCard,
+ActionItem (+ DateChip), TopBar. They are visible in `flutter widget-preview
+start`, group **Components**. The rest still exist in Figma only; navigation
+chrome waits for a second destination.
 
 Conventions used below: **variants** are Figma variant axes; **props** are text /
 boolean / swap properties; **states** describe behaviour that the implementation

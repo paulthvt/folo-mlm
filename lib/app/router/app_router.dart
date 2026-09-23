@@ -7,7 +7,7 @@ import 'package:folo/features/auth/presentation/login_page.dart';
 import 'package:folo/features/auth/presentation/register_page.dart';
 import 'package:folo/features/auth/presentation/reset_password_page.dart';
 import 'package:folo/features/auth/presentation/welcome_page.dart';
-import 'package:folo/features/dashboard/presentation/dashboard_page.dart';
+import 'package:folo/features/today/presentation/today_page.dart';
 import 'package:go_router/go_router.dart';
 
 /// The app router lives in a provider so that it can watch session state and
@@ -20,7 +20,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   final status = ref.watch(authStatusProvider);
 
   final router = GoRouter(
-    initialLocation: Routes.dashboard,
+    initialLocation: Routes.today,
     // `Supabase.initialize` has already restored any stored session, so the
     // first redirect knows the answer and no auth screen flashes on launch.
     refreshListenable: status,
@@ -31,9 +31,9 @@ final routerProvider = Provider<GoRouter>((ref) {
     ),
     routes: [
       GoRoute(
-        path: Routes.dashboard,
-        name: Routes.dashboardName,
-        builder: (context, state) => const DashboardPage(),
+        path: Routes.today,
+        name: Routes.todayName,
+        builder: (context, state) => const TodayPage(),
       ),
       GoRoute(
         path: Routes.welcome,

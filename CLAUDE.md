@@ -78,7 +78,11 @@ already-installed packages first.
 - **Tests**: `test/` mirrors `lib/`. Widget test for screens, plain Dart unit
   test for domain logic.
 - **Commits**: Conventional Commits (`feat`/`fix`/`docs`/`style`/`refactor`/
-  `perf`/`test`/`chore`). Branch off `main`: `feature/*`, `fix/*`, `chore/*`.
+  `perf`/`test`/`chore`). Branch off `main`, issue number first:
+  `feature/<issue>-<slug>`, `fix/<issue>-<slug>`, `chore/<issue>-<slug>`.
+- **Tracking**: every change has an issue on the
+  [project board](https://github.com/users/paulthvt/projects/2). PRs must fill
+  the **Ticket** section with `Closes #<issue>`.
 - **Never commit**: `google-services.json`, `GoogleService-Info.plist`,
   `lib/firebase_options.dart`, Supabase service-role keys, `.env`, `build/`.
 

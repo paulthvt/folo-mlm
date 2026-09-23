@@ -14,7 +14,7 @@ String? authRedirect({
   required String location,
 }) {
   // Recovery outranks everything: the link signs the user in before they choose
-  // the new password, so "has a session" must not send them to the dashboard.
+  // the new password, so "has a session" must not send them to Today.
   if (recoveringPassword) {
     return location == Routes.resetPassword ? null : Routes.resetPassword;
   }
@@ -23,7 +23,7 @@ String? authRedirect({
   }
   final isAuthRoute = Routes.authPaths.contains(location);
   if (!hasSession) return isAuthRoute ? null : Routes.welcome;
-  return isAuthRoute ? Routes.dashboard : null;
+  return isAuthRoute ? Routes.today : null;
 }
 
 /// The two pieces of session state the router needs, as a `Listenable` so

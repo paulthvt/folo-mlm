@@ -19,8 +19,8 @@ GoRouter _router() => GoRouter(
       builder: (context, state) => const ResetPasswordPage(),
     ),
     GoRoute(
-      path: Routes.dashboard,
-      builder: (context, state) => const Text('Dashboard'),
+      path: Routes.today,
+      builder: (context, state) => const Text('Today'),
     ),
   ],
 );
@@ -77,7 +77,7 @@ void main() {
     expect(fake.calls, isEmpty);
   });
 
-  testWidgets('saving the password lands on the dashboard', (tester) async {
+  testWidgets('saving the password lands on Today', (tester) async {
     final fake = FakeAuthRepository();
     final router = _router();
     await tester.pumpWidget(_host(router, fake));
@@ -87,7 +87,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(fake.calls, ['updatePassword(hunter22)']);
-    expect(_location(router), Routes.dashboard);
+    expect(_location(router), Routes.today);
   });
 
   testWidgets('an expired link shows a form error and stays put', (

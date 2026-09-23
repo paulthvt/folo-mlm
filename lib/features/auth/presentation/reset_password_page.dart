@@ -48,7 +48,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
     try {
       await ref.read(authRepositoryProvider).updatePassword(_password.text);
       if (!mounted) return;
-      context.go(Routes.dashboard);
+      context.go(Routes.today);
     } on AuthFailure catch (failure) {
       if (!mounted) return;
       setState(() => _failure = failure);
