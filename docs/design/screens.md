@@ -1,9 +1,9 @@
 # Screens — v1
 
-Five screens, built in Figma from component instances only. Light on page
-`04 — Screens (Light)`, the same seven frames in dark on `05 — Screens (Dark)`
-(clones bound to the `Dark` mode of `Folo/color`, so they are not a second design
-to maintain).
+Five product screens plus the six auth screens, built in Figma from component
+instances only. Light on page `04 — Screens (Light)`, the same frames in dark on
+`05 — Screens (Dark)` (clones bound to the `Dark` mode of `Folo/color`, so they
+are not a second design to maintain).
 
 | Frame | Size | Page |
 | --- | --- | --- |
@@ -14,6 +14,14 @@ to maintain).
 | Goals — mobile | 390 × 844 | 04 / 05 |
 | Today — desktop | 1440 × 900 | 04 / 05 |
 | Contacts — desktop | 1440 × 900 | 04 / 05 |
+| Welcome — mobile | 390 × 844 | 04 / 05 |
+| Sign in — mobile | 390 × 844 | 04 / 05 |
+| Create account — mobile | 390 × 844 | 04 / 05 |
+| Forgot password — mobile | 390 × 844 | 04 / 05 |
+| Check inbox — mobile | 390 × 844 | 04 / 05 |
+| Choose a new password — mobile | 390 × 844 | 04 / 05 |
+| Welcome — desktop | 1440 × 900 | 04 / 05 |
+| Sign in — desktop | 1440 × 900 | 04 / 05 |
 
 Content is the same fictional book of ~420 contacts across every screen, so the
 screens read as one product and not as seven mockups.
@@ -107,6 +115,33 @@ Pace is stated, never judged. Nothing is red, nothing is compared to another
 person, and the largest numeral on the screen is smaller than the screen title
 (guardrail #4).
 
+## 6. Auth — welcome, sign in, register, reset
+
+Added 2026-09-23 for [#21](https://github.com/paulthvt/folo-mlm/issues/21). Full
+design in
+[docs/superpowers/specs/2026-09-23-auth-login-design.md](../superpowers/specs/2026-09-23-auth-login-design.md).
+
+Six mobile frames and two desktop frames, all on the same shape: no navigation,
+a single column capped at 400, centred, flat on `surface/canvas`. No card — a
+card around a form is chrome (principle #6). This is the only part of the product
+whose layout does **not** restructure across size classes; a form has one column
+at every width, so only the horizontal centring and the vertical rhythm change.
+
+`Welcome` carries the promise (`Know what to do next.`) and the three identity
+paths. The social buttons live here and nowhere else, so a user who signed up
+with Google is never shown a competing email form beside their real path.
+`Sign in — mobile` is drawn in its **error state** to specify the form-level
+failure: the clean state is trivially readable, the error state is the one with
+decisions in it.
+
+Three components were added to the library for these frames: `FormError`
+(form-level errors, as opposed to TextField's field-level `State=Error`) and
+`Brand/Google` / `Brand/Apple`. Both brand marks are placeholder artwork —
+Google and Apple each mandate their own asset files.
+
+`Choose a new password` has no back button: it is reached by a deep link, so
+there is no previous screen to return to.
+
 ---
 
 ## Dark mode
@@ -127,7 +162,7 @@ set of values to keep in sync. Three things are worth looking at specifically:
 
 ## What these screens deliberately do not have
 
-No onboarding, no settings, no auth, no add/edit forms, no notification centre, no
+No onboarding, no settings, no add/edit forms, no notification centre, no
 analytics view, no team performance comparison, no gamification of any kind. Each
 would need either a product decision or a feature that does not exist yet
 (CLAUDE.md: don't scaffold for later).
