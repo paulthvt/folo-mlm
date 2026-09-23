@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/routes.dart';
-import 'package:folo/features/dashboard/presentation/dashboard_page.dart';
+import 'package:folo/features/today/presentation/today_page.dart';
 import 'package:go_router/go_router.dart';
 
 /// The app router lives in a provider so that, once authentication exists, it
@@ -14,12 +14,12 @@ import 'package:go_router/go_router.dart';
 ///     (see `ScreenSize.usesSideNavigation`).
 final routerProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: Routes.dashboard,
+    initialLocation: Routes.today,
     routes: [
       GoRoute(
-        path: Routes.dashboard,
-        name: Routes.dashboardName,
-        builder: (context, state) => const DashboardPage(),
+        path: Routes.today,
+        name: Routes.todayName,
+        builder: (context, state) => const TodayPage(),
       ),
     ],
   );
