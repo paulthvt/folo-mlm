@@ -6,6 +6,7 @@ import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/auth_failure.dart';
 import 'package:folo/features/auth/domain/auth_validation.dart';
 import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
+import 'package:folo/features/auth/presentation/check_inbox_page.dart';
 import 'package:folo/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:folo/features/auth/presentation/widgets/form_error.dart';
 import 'package:folo/features/auth/presentation/widgets/password_field.dart';
@@ -39,6 +40,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   Future<void> _submit() async {
+    // Two taps in the same frame reach here before `busy` disables the button.
+    if (_busy) return;
     if (!_form.currentState!.validate()) return;
 
     final email = normalizeEmail(_email.text);
@@ -54,6 +57,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       // The request can outlive the screen: the user may go back while it is in
       // flight.
       if (!mounted) return;
+      if (failure == AuthFailure.emailNotConfirmed) {
+        // Telling them the link can be re-sent is only useful next to the
+        // button that re-sends it.
+        setState(() => _busy = false);
+        context.go(
+          Routes.checkInboxLocation(
+            reason: CheckInboxPage.confirmReason,
+            email: email,
+          ),
+        );
+        return;
+      }
       setState(() => _failure = failure);
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -65,6 +80,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final text = Theme.of(context).textTheme;
 
     return AuthScaffold(
+      back: Routes.welcome,
       children: [
         Text('Welcome back', style: text.headlineSmall),
         if (_failure != null) FormError(authFailureCopy(_failure!)),
@@ -101,8 +117,11 @@ class _LoginPageState extends ConsumerState<LoginPage> {
             ],
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        // Wrap, not Row: the label plus the button is wider than the 400-wide
+        // column at larger text scales.
+        Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text('New here?', style: text.bodySmall),
             TextButton(

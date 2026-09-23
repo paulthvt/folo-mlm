@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -95,5 +97,19 @@ void main() {
       findsOneWidget,
     );
     expect(find.textContaining('went wrong'), findsNothing);
+  });
+
+  testWidgets('two taps in the same frame send one email', (tester) async {
+    final fake = FakeAuthRepository()..gate = Completer<void>();
+    await tester.pumpWidget(_host(fake));
+
+    await tester.tap(find.text('Resend email'));
+    await tester.tap(find.text('Resend email'));
+    await tester.pump();
+
+    fake.gate!.complete();
+    await tester.pumpAndSettle();
+
+    expect(fake.calls, ['resendConfirmation(pauline@example.com)']);
   });
 }

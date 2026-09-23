@@ -104,4 +104,46 @@ void main() {
     expect(find.text('Something went wrong. Try again.'), findsOneWidget);
     expect(_location(router), Routes.resetPassword);
   });
+
+  testWidgets('reusing the current password says what to change', (
+    tester,
+  ) async {
+    final fake = FakeAuthRepository()..failWith = AuthFailure.samePassword;
+    await tester.pumpWidget(_host(_router(), fake));
+
+    await _fill(tester, password: 'hunter22', confirmation: 'hunter22');
+    await tester.tap(find.text('Save and sign in'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('That is already your password. Choose a different one.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('a rejected weak password says what to change', (tester) async {
+    final fake = FakeAuthRepository()..failWith = AuthFailure.weakPassword;
+    await tester.pumpWidget(_host(_router(), fake));
+
+    await _fill(tester, password: 'password', confirmation: 'password');
+    await tester.tap(find.text('Save and sign in'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('That password is too easy to guess. Choose another one.'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('the user is never trapped: leaving signs the session out', (
+    tester,
+  ) async {
+    final fake = FakeAuthRepository();
+    await tester.pumpWidget(_host(_router(), fake));
+
+    await tester.tap(find.text('Back to sign in'));
+    await tester.pumpAndSettle();
+
+    expect(fake.calls, ['signOut()']);
+  });
 }

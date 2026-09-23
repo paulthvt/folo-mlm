@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/layout/breakpoints.dart';
+import 'package:go_router/go_router.dart';
 
 /// The shape every auth screen shares: no navigation, one column capped at 400
 /// and centred, flat on the canvas.
@@ -9,12 +10,16 @@ import 'package:folo/core/layout/breakpoints.dart';
 /// across size classes — a form has one column at every width. Only the
 /// vertical rhythm steps up on a larger screen.
 class AuthScaffold extends StatelessWidget {
-  const AuthScaffold({required this.children, this.showBack = true, super.key});
+  const AuthScaffold({required this.children, this.back, super.key});
 
   static const double _columnWidth = 400;
 
   final List<Widget> children;
-  final bool showBack;
+
+  /// Where the back control goes, or null for no app bar. Every auth
+  /// transition uses `context.go`, so there is no stack to pop and the
+  /// destination has to be named.
+  final String? back;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +28,9 @@ class AuthScaffold extends StatelessWidget {
         : AppSpacing.xl;
 
     return Scaffold(
-      appBar: showBack ? AppBar() : null,
+      appBar: back == null
+          ? null
+          : AppBar(leading: BackButton(onPressed: () => context.go(back!))),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

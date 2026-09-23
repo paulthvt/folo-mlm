@@ -10,15 +10,23 @@ import 'package:folo/features/auth/presentation/login_page.dart';
 
 import '../fake_auth_repository.dart';
 
-Widget _host(FakeAuthRepository fake, {GlobalKey<NavigatorState>? navigator}) =>
-    ProviderScope(
-      overrides: [authRepositoryProvider.overrideWithValue(fake)],
-      child: MaterialApp(
-        theme: AppTheme.light,
-        navigatorKey: navigator,
-        home: const LoginPage(),
-      ),
-    );
+Widget _host(
+  FakeAuthRepository fake, {
+  GlobalKey<NavigatorState>? navigator,
+  double textScale = 1,
+}) => ProviderScope(
+  overrides: [authRepositoryProvider.overrideWithValue(fake)],
+  child: MaterialApp(
+    theme: AppTheme.light,
+    navigatorKey: navigator,
+    builder: (context, child) => MediaQuery.withClampedTextScaling(
+      minScaleFactor: textScale,
+      maxScaleFactor: textScale,
+      child: child!,
+    ),
+    home: const LoginPage(),
+  ),
+);
 
 Future<void> _fill(
   WidgetTester tester, {
@@ -95,6 +103,28 @@ void main() {
     await tester.pumpAndSettle();
 
     fake.gate!.complete();
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('two taps in the same frame send one request', (tester) async {
+    final fake = FakeAuthRepository()..gate = Completer<void>();
+    await tester.pumpWidget(_host(fake));
+
+    await _fill(tester, email: 'pauline@example.com', password: 'hunter22');
+    await tester.tap(find.text('Sign in'));
+    await tester.tap(find.text('Sign in'));
+    await tester.pump();
+
+    fake.gate!.complete();
+    await tester.pumpAndSettle();
+
+    expect(fake.calls, ['signIn(pauline@example.com, hunter22)']);
+  });
+
+  testWidgets('the footer fits the column at large text sizes', (tester) async {
+    await tester.pumpWidget(_host(FakeAuthRepository(), textScale: 2));
     await tester.pumpAndSettle();
 
     expect(tester.takeException(), isNull);

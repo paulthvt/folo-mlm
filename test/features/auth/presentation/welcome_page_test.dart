@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,9 +10,17 @@ import 'package:folo/features/auth/presentation/welcome_page.dart';
 
 import '../fake_auth_repository.dart';
 
-Widget _host(FakeAuthRepository fake) => ProviderScope(
+Widget _host(FakeAuthRepository fake, {double textScale = 1}) => ProviderScope(
   overrides: [authRepositoryProvider.overrideWithValue(fake)],
-  child: MaterialApp(theme: AppTheme.light, home: const WelcomePage()),
+  child: MaterialApp(
+    theme: AppTheme.light,
+    builder: (context, child) => MediaQuery.withClampedTextScaling(
+      minScaleFactor: textScale,
+      maxScaleFactor: textScale,
+      child: child!,
+    ),
+    home: const WelcomePage(),
+  ),
 );
 
 void main() {
@@ -47,5 +57,28 @@ void main() {
       find.text('We could not reach Folo. Check your connection.'),
       findsOneWidget,
     );
+  });
+
+  testWidgets('the footer fits the column at large text sizes', (tester) async {
+    await tester.pumpWidget(_host(FakeAuthRepository(), textScale: 2));
+    await tester.pumpAndSettle();
+
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('two taps in the same frame start one OAuth flow', (
+    tester,
+  ) async {
+    final fake = FakeAuthRepository()..gate = Completer<void>();
+    await tester.pumpWidget(_host(fake));
+
+    await tester.tap(find.text('Continue with Google'));
+    await tester.tap(find.text('Continue with Google'));
+    await tester.pump();
+
+    fake.gate!.complete();
+    await tester.pumpAndSettle();
+
+    expect(fake.calls, ['signInWithGoogle()']);
   });
 }

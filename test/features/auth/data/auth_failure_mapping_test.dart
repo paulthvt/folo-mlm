@@ -24,6 +24,24 @@ void main() {
     expect(authFailureFrom(error), AuthFailure.emailNotConfirmed);
   });
 
+  test('a new password equal to the old one maps to samePassword', () {
+    const error = AuthApiException(
+      'New password should be different from the old password.',
+      code: 'same_password',
+      statusCode: '422',
+    );
+    expect(authFailureFrom(error), AuthFailure.samePassword);
+  });
+
+  test('a rejected password maps to weakPassword', () {
+    const error = AuthApiException(
+      'Password is known to be weak and easy to guess',
+      code: 'weak_password',
+      statusCode: '422',
+    );
+    expect(authFailureFrom(error), AuthFailure.weakPassword);
+  });
+
   test('email send limit maps to rateLimited', () {
     const error = AuthApiException(
       'rate limit',

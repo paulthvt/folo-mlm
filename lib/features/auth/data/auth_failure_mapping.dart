@@ -19,6 +19,10 @@ AuthFailure authFailureFrom(Object error) {
         return AuthFailure.invalidCredentials;
       case 'email_not_confirmed':
         return AuthFailure.emailNotConfirmed;
+      case 'same_password':
+        return AuthFailure.samePassword;
+      case 'weak_password':
+        return AuthFailure.weakPassword;
       case 'over_email_send_rate_limit':
       case 'over_request_rate_limit':
         return AuthFailure.rateLimited;

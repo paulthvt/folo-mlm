@@ -6,6 +6,12 @@
 enum AuthFailure {
   invalidCredentials,
   emailNotConfirmed,
+
+  /// The new password is the one already on the account.
+  samePassword,
+
+  /// The server rejected the password itself — breached or too easy.
+  weakPassword,
   rateLimited,
   network,
   unknown,

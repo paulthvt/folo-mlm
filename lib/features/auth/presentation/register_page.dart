@@ -39,6 +39,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   }
 
   Future<void> _submit() async {
+    // Two taps in the same frame reach here before `_busy` disables the button;
+    // a second signup would be sent.
+    if (_busy) return;
     if (!_form.currentState!.validate()) return;
 
     final email = normalizeEmail(_email.text);
@@ -71,6 +74,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
     final text = Theme.of(context).textTheme;
 
     return AuthScaffold(
+      back: Routes.welcome,
       children: [
         Text('Create your account', style: text.headlineSmall),
         if (_failure != null) FormError(authFailureCopy(_failure!)),

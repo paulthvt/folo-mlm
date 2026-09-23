@@ -35,6 +35,9 @@ class _CheckInboxPageState extends ConsumerState<CheckInboxPage> {
   bool get _isReset => widget.reason == CheckInboxPage.resetReason;
 
   Future<void> _resend() async {
+    // Two taps in the same frame reach here before `_busy` disables the button;
+    // a second email would be sent, which can self-trip the rate limit.
+    if (_busy) return;
     final repository = ref.read(authRepositoryProvider);
     setState(() {
       _busy = true;

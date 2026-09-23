@@ -37,6 +37,8 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
   }
 
   Future<void> _submit() async {
+    // Two taps in the same frame reach here before `_busy` disables the button.
+    if (_busy) return;
     if (!_form.currentState!.validate()) return;
 
     setState(() {
@@ -55,12 +57,22 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
     }
   }
 
+  Future<void> _leave() async {
+    try {
+      await ref.read(authRepositoryProvider).signOut();
+    } on AuthFailure catch (failure) {
+      // Still signed in and still recovering, so the guard keeps them here —
+      // which is the safe outcome. Say why nothing happened.
+      if (!mounted) return;
+      setState(() => _failure = failure);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
 
     return AuthScaffold(
-      showBack: false,
       children: [
         Text('Choose a new password', style: text.headlineSmall),
         if (_failure != null) FormError(authFailureCopy(_failure!)),
@@ -91,6 +103,15 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
                 onPressed: _submit,
               ),
             ],
+          ),
+        ),
+        // The recovery link created a session and the guard pins the user to
+        // this screen, so leaving has to end that session. The router sends
+        // them on as soon as it does.
+        Center(
+          child: TextButton(
+            onPressed: _busy ? null : _leave,
+            child: const Text('Back to sign in'),
           ),
         ),
       ],

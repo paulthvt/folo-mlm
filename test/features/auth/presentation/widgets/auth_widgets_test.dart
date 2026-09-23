@@ -90,10 +90,11 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         theme: AppTheme.light,
-        home: const AuthScaffold(showBack: false, children: [Text('Welcome')]),
+        home: const AuthScaffold(children: [Text('Welcome')]),
       ),
     );
     expect(find.byType(BackButton), findsNothing);
+    expect(find.byType(AppBar), findsNothing);
     expect(find.text('Welcome'), findsOneWidget);
   });
 }

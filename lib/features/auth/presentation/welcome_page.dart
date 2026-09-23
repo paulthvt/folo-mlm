@@ -25,6 +25,8 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
   AuthFailure? _failure;
 
   Future<void> _continueWith(Future<void> Function() start) async {
+    // Two taps in the same frame reach here before `_busy` disables the button.
+    if (_busy) return;
     setState(() {
       _busy = true;
       _failure = null;
@@ -41,11 +43,9 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final repository = ref.read(authRepositoryProvider);
     final text = Theme.of(context).textTheme;
 
     return AuthScaffold(
-      showBack: false,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -71,13 +71,17 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
             OutlinedButton(
               onPressed: _busy
                   ? null
-                  : () => _continueWith(repository.signInWithGoogle),
+                  : () => _continueWith(
+                      ref.read(authRepositoryProvider).signInWithGoogle,
+                    ),
               child: const Text('Continue with Google'),
             ),
             OutlinedButton(
               onPressed: _busy
                   ? null
-                  : () => _continueWith(repository.signInWithApple),
+                  : () => _continueWith(
+                      ref.read(authRepositoryProvider).signInWithApple,
+                    ),
               child: const Text('Continue with Apple'),
             ),
             FilledButton(
@@ -86,8 +90,11 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
             ),
           ],
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        // Wrap, not Row: the label plus the button is wider than the 400-wide
+        // column at larger text scales.
+        Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             Text('New here?', style: text.bodySmall),
             TextButton(
