@@ -35,6 +35,18 @@ flutter analyze
 flutter test
 ```
 
+## Tracking work
+
+Work is tracked on the
+[Folo project board](https://github.com/users/paulthvt/projects/2). Every change
+starts as an issue there.
+
+1. Pick (or create) an issue on the board — that number is the ticket.
+2. Branch off `main`: `feature/<issue>-<slug>`, `fix/<issue>-<slug>`,
+   `chore/<issue>-<slug>` — e.g. `feature/21-today-screen`.
+3. Open the PR with a Conventional Commit title and fill the **Ticket** section
+   with `Closes #<issue>` so merging moves the card to Done.
+
 ## Architecture (short version)
 
 ```

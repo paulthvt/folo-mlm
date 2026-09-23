@@ -4,9 +4,19 @@ and drives the changelog. e.g. feat(contacts): add follow-up reminder
 Types: feat fix docs style refactor perf test build ci chore revert
 -->
 
+## Ticket
+
+<!--
+Required. The issue tracked on the board:
+https://github.com/users/paulthvt/projects/2
+Use "Closes #123" so merging moves the card to Done. Several: one per line.
+-->
+
+Closes #
+
 ## What & why
 
-<!-- What changed, and the reason. Link issues with "Fixes #123". -->
+<!-- What changed, and the reason. -->
 
 ## Screenshots
 
@@ -18,3 +28,4 @@ Types: feat fix docs style refactor perf test build ci chore revert
 - [ ] Theme values come from `colorScheme` / `AppSpacing` / `AppRadii` — nothing hard-coded
 - [ ] No new dependency, or the reason is in the `pubspec.yaml` comment next to it
 - [ ] Goldens regenerated on Linux if they changed (see `.github/workflows/ci.yaml`)
+- [ ] Linked issue exists on the board and the branch is named `<type>/<issue>-<slug>`
