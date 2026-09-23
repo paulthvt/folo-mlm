@@ -43,6 +43,13 @@ Out, and why:
 /reset-password     reached by deep link only
 ```
 
+`/check-inbox` takes its copy from query parameters
+(`?reason=confirm|reset&email=…`) rather than a router `extra` object, so a
+reload on web does not land on a screen with no content.
+
+The signed-in destination is `/` (`Routes.dashboard`), which is where the
+dashboard already lives. It becomes `/today` when that screen is built.
+
 | Route | Content |
 | --- | --- |
 | `/welcome` | Wordmark, `Know what to do next.`, the promise sentence, three buttons (Google, Apple, `Continue with email` → `/login`), footer `New here? Create an account`. |
@@ -146,7 +153,12 @@ lib/core/supabase/
   supabase_provider.dart        the client, as a Provider
 
 lib/features/auth/
-  data/auth_repository.dart     the only file that imports supabase_flutter
+  domain/
+    auth_failure.dart           enum: the failures the UI can react to
+    auth_validation.dart        pure field validators
+  data/
+    auth_repository.dart        the only file that imports supabase_flutter
+    auth_failure_mapping.dart   AuthException → AuthFailure
   presentation/
     welcome_page.dart
     login_page.dart
@@ -154,20 +166,29 @@ lib/features/auth/
     forgot_password_page.dart
     check_inbox_page.dart
     reset_password_page.dart
-    auth_scaffold.dart          centred capped column + optional back button
-    auth_controller.dart        AsyncNotifier wrapping the repository
-    auth_form_validation.dart   pure functions
-    auth_error_copy.dart        AuthException → user-facing copy
+    auth_failure_copy.dart      AuthFailure → user-facing copy
+    widgets/auth_scaffold.dart  centred capped column + optional back button
+    widgets/form_error.dart
+    widgets/submit_button.dart  holds the loading state
+    widgets/password_field.dart reveal toggle
 ```
 
-`Supabase.initialize` runs in `main()` before `runApp`. `domain/` stays absent:
-validation and error copy are pure functions with one consumer, and CLAUDE.md
-forbids an interface with a single implementation.
+`Supabase.initialize` runs in `main()` before `runApp`.
+
+`domain/` exists for exactly two things: `AuthFailure`, which both `data` and
+`presentation` must name, and the validators. Without it, `presentation` would
+import from `data` and the layering rule would be broken on the first feature.
+There is no interface and no single-implementation abstraction.
+
+No controller. Each screen owns its own submit state (`busy`, `failure`) in
+`setState` — it is local widget state by CLAUDE.md's rule, and a Notifier per
+form would be indirection with one consumer. Session state, which *is* shared,
+lives in the repository's stream and is watched by the router.
 
 `AuthRepository` exposes `signIn`, `signUp`, `signInWithGoogle`,
-`signInWithApple`, `sendPasswordReset`, `updatePassword`, `signOut`, and the
-`onAuthStateChange` stream. It returns plain values and throws a small set of
-app-level failures; no `supabase_flutter` type crosses into `presentation`.
+`signInWithApple`, `sendPasswordReset`, `updatePassword`, `signOut`,
+`hasSession`, `isRecoveringPassword` and an auth-change `Stream`. Every method
+throws `AuthFailure`; no `supabase_flutter` type crosses into `presentation`.
 
 ## 7. Guard and session
 
@@ -177,8 +198,8 @@ every change.
 | State | Redirect |
 | --- | --- |
 | No session, route is not an auth route | `/welcome` |
-| Session, route is an auth route | `/today` |
-| `passwordRecovery` event | `/reset-password` |
+| Session, route is an auth route | `/` |
+| Recovering a password | `/reset-password`, and `/reset-password` is never redirected away from even with a session — the recovery link signs the user in before they choose the new password |
 
 `Supabase.initialize` restores a stored session before `runApp`, so the first
 redirect already knows the answer and no auth screen flashes on launch.
