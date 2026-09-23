@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/features/auth/presentation/login_page.dart';
+import 'package:folo/features/auth/presentation/register_page.dart';
 import 'package:folo/features/auth/presentation/welcome_page.dart';
 import 'package:folo/features/dashboard/presentation/dashboard_page.dart';
 import 'package:go_router/go_router.dart';
@@ -32,6 +33,11 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: Routes.login,
         name: Routes.loginName,
         builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: Routes.register,
+        name: Routes.registerName,
+        builder: (context, state) => const RegisterPage(),
       ),
     ],
   );
