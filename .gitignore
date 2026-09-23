@@ -123,3 +123,8 @@ app.*.symbols
 # IDE
 .idea/
 *.iml
+# Widget Preview related
+.widget_preview/
+
+# Claude Code: shared config is committed, per-machine settings are not
+.claude/settings.local.json
