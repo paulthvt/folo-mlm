@@ -9,9 +9,9 @@ and `Folo/scale` (single mode). Every fill, stroke, padding and radius in every
 component and screen is **bound to a variable** — no literal colour exists
 outside the two exploration pages.
 
-Nothing here is implemented in `lib/` yet. The placeholder seed theme in
-`lib/app/theme/` stays until the first feature needs the real one; the mapping to
-Flutter is specified at the end of this document.
+The tokens live in `lib/app/theme/` (see §8 for the file-by-file mapping) and are
+visible in `flutter widget-preview start` — group **Tokens**. Components and
+screens are not implemented yet.
 
 ---
 
@@ -231,22 +231,33 @@ check plus a 240ms row collapse (no confetti, no counter, no streak — principl
 
 ## 8. Mapping to Flutter
 
-When implementation starts, this is where each part lands. One file per concern,
-no new dependency, no codegen.
+Implemented. One file per concern, no new dependency, no codegen.
 
-- `lib/app/theme/app_colors.dart` — two `ColorScheme`s built from the table
-  above plus a `ThemeExtension` for the tokens `ColorScheme` has no slot for
-  (`surface/sunken`, `border/subtle|strong`, `text/muted`, `accent/*`,
-  `secondary/track`, `state/focus`). A palette change is then one file.
-- `lib/app/theme/app_spacing.dart` — `AppSpacing` gains `ms = 12`, `lg` becomes
-  16, `xl = 20`, `xxxl = 64`; `AppRadii` gains `xl = 20`. Current placeholder
-  values (`md16/lg24/xl32`) shift, so the file is rewritten, not extended.
-- `lib/app/theme/app_typography.dart` — `fontFamily = 'PlusJakartaSans'`, the 13
-  styles above mapped onto `TextTheme` (display/headline/title/body/label) with
-  the extra `numeric*` styles exposed via the same theme extension.
-- `lib/app/theme/app_theme.dart` — component themes (button shapes, input
-  border, card border + zero elevation, nav bar) so no widget hard-codes a
-  colour, radius or size.
+- `lib/app/theme/app_colors.dart` — `AppColors.light` / `AppColors.dark`
+  (`ColorScheme`) plus `FoloColors`, a `ThemeExtension` holding the tokens
+  `ColorScheme` has no slot for (`surface/default|sunken|raised|disabled`,
+  `border/subtle|strong`, `text/muted|disabled`, `primary/hover|text|muted`,
+  `secondary/text|track`, `accent/*`, success / warning / info, `state/focus`).
+  Read it with `FoloColors.of(context)`. A palette change is then one file.
+- `lib/app/theme/app_spacing.dart` — `AppSpacing` (`xs` 4 → `xxxl` 64) and
+  `AppRadii` (`sm` 8 → `pill`).
+- `lib/app/theme/app_typography.dart` — `fontFamily = 'PlusJakartaSans'`, all 13
+  styles as statics; the ones Material has a slot for are also wired into
+  `TextTheme` (`displaySmall`, `headlineSmall`, `titleLarge`, `titleMedium`,
+  `body*`, `label*`). `overline`, `numericLarge` and `numeric` have no Material
+  slot and are used directly. The font is one bundled variable file, so each
+  style sets the `wght` axis as well as `fontWeight`.
+- `lib/app/theme/app_theme.dart` — the two `ThemeData`s and every component
+  theme (buttons, input, card, chip, progress, dialog, sheet, menu, nav bar,
+  list tile, tooltip), plus `AppElevation` (the two shadow sets and the scrim)
+  and `AppMotion` (durations and easing).
+- `lib/app/theme/theme_preview.dart` — `@Preview` token sheets (colour, type,
+  spacing/shape/elevation, components) in both modes. `flutter widget-preview
+  start`, group **Tokens**. Nothing in the app imports it.
+
+Accent, success, warning and info deliberately do **not** occupy
+`ColorScheme.tertiary`: one home per token, and Material widgets should not
+reach a date-only colour by accident.
 
 Widgets read `Theme.of(context)` and the extension only. The Figma variable name
 `primary/container` maps to `FoloColors.primaryContainer`; the code syntax for
