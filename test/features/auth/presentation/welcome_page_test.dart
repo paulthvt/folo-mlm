@@ -24,13 +24,14 @@ Widget _host(FakeAuthRepository fake, {double textScale = 1}) => ProviderScope(
 );
 
 void main() {
-  testWidgets('offers the three identity paths and the register link', (
+  testWidgets('offers the identity paths and the register link', (
     tester,
   ) async {
     await tester.pumpWidget(_host(FakeAuthRepository()));
 
     expect(find.text('Continue with Google'), findsOneWidget);
-    expect(find.text('Continue with Apple'), findsOneWidget);
+    // Apple needs a paid developer account: issue #22.
+    expect(find.text('Continue with Apple'), findsNothing);
     expect(find.text('Continue with email'), findsOneWidget);
     expect(find.text('Create an account'), findsOneWidget);
     expect(find.text('Know what to do next.'), findsOneWidget);
@@ -50,7 +51,7 @@ void main() {
     final fake = FakeAuthRepository()..failWith = AuthFailure.network;
     await tester.pumpWidget(_host(fake));
 
-    await tester.tap(find.text('Continue with Apple'));
+    await tester.tap(find.text('Continue with Google'));
     await tester.pumpAndSettle();
 
     expect(

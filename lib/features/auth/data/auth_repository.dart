@@ -68,12 +68,11 @@ class AuthRepository {
     ),
   );
 
-  Future<void> signInWithGoogle() => _signInWith(OAuthProvider.google);
-
-  Future<void> signInWithApple() => _signInWith(OAuthProvider.apple);
-
-  Future<void> _signInWith(OAuthProvider provider) =>
-      _guard(() => _auth.signInWithOAuth(provider, redirectTo: _redirect));
+  /// Apple is the other provider the product wants; it needs a paid Apple
+  /// Developer account, so it is not wired up yet (issue #22).
+  Future<void> signInWithGoogle() => _guard(
+    () => _auth.signInWithOAuth(OAuthProvider.google, redirectTo: _redirect),
+  );
 
   Future<void> sendPasswordReset(String email) =>
       _guard(() => _auth.resetPasswordForEmail(email, redirectTo: _redirect));

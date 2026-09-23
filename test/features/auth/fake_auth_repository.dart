@@ -50,9 +50,6 @@ class FakeAuthRepository implements AuthRepository {
   Future<void> signInWithGoogle() => _record('signInWithGoogle()');
 
   @override
-  Future<void> signInWithApple() => _record('signInWithApple()');
-
-  @override
   Future<void> sendPasswordReset(String email) =>
       _record('sendPasswordReset($email)');
 

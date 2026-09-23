@@ -66,8 +66,9 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: AppSpacing.ms,
           children: [
-            // Google and Apple each mandate their own sign-in mark; until those
-            // assets are added the buttons are label-only.
+            // Google mandates its own sign-in mark; until that asset is added
+            // the button is label-only. Sign in with Apple needs a paid Apple
+            // Developer account, so it is absent rather than broken: issue #22.
             OutlinedButton(
               onPressed: _busy
                   ? null
@@ -75,14 +76,6 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
                       ref.read(authRepositoryProvider).signInWithGoogle,
                     ),
               child: const Text('Continue with Google'),
-            ),
-            OutlinedButton(
-              onPressed: _busy
-                  ? null
-                  : () => _continueWith(
-                      ref.read(authRepositoryProvider).signInWithApple,
-                    ),
-              child: const Text('Continue with Apple'),
             ),
             FilledButton(
               onPressed: _busy ? null : () => context.push(Routes.login),

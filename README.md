@@ -33,13 +33,17 @@ The Supabase project URL and publishable key are committed in
 `lib/core/supabase/supabase_config.dart` — the publishable key is public by
 design and Row Level Security is the boundary. Nothing to configure locally.
 
-Email confirmation and password recovery return to
-`io.supabase.folo://login-callback/`. On web, add the origin you develop on
-(`http://localhost:<port>`) to the project's allowed redirect URLs.
+Email confirmation, password recovery and Google sign-in return to
+`io.supabase.folo://login-callback/`. On web there is no custom scheme, so the
+project's **Site URL** is where those links land: set it to the origin you
+develop on and run web on a fixed port (`flutter run -d chrome --web-port 5000`).
+Both that origin and the custom scheme must be listed under allowed redirect
+URLs, or Supabase silently falls back to the Site URL.
 
 These project settings are managed in the Supabase dashboard, not in this repo:
-email confirmations on, minimum password length 8, Google and Apple providers,
-allowed redirect URLs.
+email confirmations on, minimum password length 8, the Google provider, Site URL
+and allowed redirect URLs. Sign in with Apple is not wired up — it needs a paid
+Apple Developer account (issue #22).
 
 ## Checks
 
