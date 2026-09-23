@@ -66,16 +66,18 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: AppSpacing.ms,
           children: [
-            // Google mandates its own sign-in mark; until that asset is added
-            // the button is label-only. Sign in with Apple needs a paid Apple
-            // Developer account, so it is absent rather than broken: issue #22.
-            OutlinedButton(
+            // Sign in with Apple needs a paid Apple Developer account, so it is
+            // absent rather than broken: issue #22.
+            OutlinedButton.icon(
               onPressed: _busy
                   ? null
                   : () => _continueWith(
                       ref.read(authRepositoryProvider).signInWithGoogle,
                     ),
-              child: const Text('Continue with Google'),
+              // Not an AppSpacing value: 18 is the minimum mark height Google's
+              // branding guidelines set, so it is theirs to change, not ours.
+              icon: Image.asset('assets/images/google_g.png', height: 18),
+              label: const Text('Continue with Google'),
             ),
             FilledButton(
               onPressed: _busy ? null : () => context.push(Routes.login),

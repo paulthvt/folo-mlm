@@ -30,6 +30,11 @@ void main() {
     await tester.pumpWidget(_host(FakeAuthRepository()));
 
     expect(find.text('Continue with Google'), findsOneWidget);
+    // Google requires its own mark beside the label.
+    expect(
+      find.image(const AssetImage('assets/images/google_g.png')),
+      findsOneWidget,
+    );
     // Apple needs a paid developer account: issue #22.
     expect(find.text('Continue with Apple'), findsNothing);
     expect(find.text('Continue with email'), findsOneWidget);

@@ -136,8 +136,9 @@ decisions in it.
 
 Three components were added to the library for these frames: `FormError`
 (form-level errors, as opposed to TextField's field-level `State=Error`) and
-`Brand/Google` / `Brand/Apple`. Both brand marks are placeholder artwork —
-Google and Apple each mandate their own asset files.
+`Brand/Google` / `Brand/Apple`, both placeholder artwork in Figma. The app ships
+the official flat `G` from developers.google.com/identity instead
+(`assets/images/google_g.png`); the Apple path is not built yet (issue #22).
 
 `Choose a new password` has no back button: it is reached by a deep link, so
 there is no previous screen to return to.
