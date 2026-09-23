@@ -55,7 +55,10 @@ Desktop is designed, not enlarged:
   pinned to the bottom.
 - **Two-column content** on Today: 624px left (hero + priority) and 400px right
   (goal, stat pair, team nudge, recent). Both columns are real content, not a
-  stretched mobile column with margins.
+  stretched mobile column with margins. In Flutter the right column is fixed at
+  400px and the left takes the remaining width, so a narrowed window shrinks the
+  actions instead of overflowing; at the 1400px max content width the left lands
+  on 624px.
 - **List + detail** on Contacts: 440px list column with a right hairline, then a
   752px detail pane that itself splits into 384 + 272. Selecting a row updates the
   pane; no navigation happens.

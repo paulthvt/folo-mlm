@@ -4,11 +4,12 @@ import 'package:folo/app/app.dart';
 import 'package:folo/core/layout/breakpoints.dart';
 
 void main() {
-  testWidgets('app boots to the initial route', (tester) async {
+  testWidgets('app boots to Today', (tester) async {
     await tester.pumpWidget(const ProviderScope(child: FoloApp()));
     await tester.pumpAndSettle();
 
-    expect(find.text('Folo'), findsOneWidget);
+    // No repository yet, so Today is legitimately empty.
+    expect(find.text('You are up to date'), findsOneWidget);
   });
 
   test('breakpoints map widths to layout classes', () {
