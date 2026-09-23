@@ -4,6 +4,7 @@ import 'package:folo/features/auth/presentation/check_inbox_page.dart';
 import 'package:folo/features/auth/presentation/forgot_password_page.dart';
 import 'package:folo/features/auth/presentation/login_page.dart';
 import 'package:folo/features/auth/presentation/register_page.dart';
+import 'package:folo/features/auth/presentation/reset_password_page.dart';
 import 'package:folo/features/auth/presentation/welcome_page.dart';
 import 'package:folo/features/dashboard/presentation/dashboard_page.dart';
 import 'package:go_router/go_router.dart';
@@ -55,6 +56,11 @@ final routerProvider = Provider<GoRouter>((ref) {
               CheckInboxPage.confirmReason,
           email: state.uri.queryParameters['email'] ?? '',
         ),
+      ),
+      GoRoute(
+        path: Routes.resetPassword,
+        name: Routes.resetPasswordName,
+        builder: (context, state) => const ResetPasswordPage(),
       ),
     ],
   );
