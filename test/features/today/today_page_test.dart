@@ -7,7 +7,6 @@ import 'package:folo/core/ui/activity_item.dart';
 import 'package:folo/core/ui/goal_card.dart';
 import 'package:folo/features/today/domain/today_snapshot.dart';
 import 'package:folo/features/today/presentation/today_page.dart';
-import 'package:folo/features/today/presentation/today_preview.dart';
 
 const _mobile = Size(390, 844);
 const _desktop = Size(1440, 900);
@@ -83,10 +82,10 @@ void main() {
     expect(find.byType(GoalCard), findsNothing);
   });
 
-  test('the shipped app has no sample data until a repository exists', () {
+  test('the provider serves the sample snapshot until a repository exists', () {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
-    expect(container.read(todaySnapshotProvider), isNull);
+    expect(container.read(todaySnapshotProvider), sampleToday);
   });
 }

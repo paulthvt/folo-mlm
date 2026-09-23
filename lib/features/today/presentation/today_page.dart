@@ -14,11 +14,10 @@ import 'package:folo/features/today/presentation/today_hero.dart';
 
 /// What Today renders.
 ///
-/// Null until there is something to show. There is no repository yet and no
-/// sample data in the app: the screen renders its empty state, and previews and
-/// tests supply their own snapshot. When Supabase lands this becomes the only
-/// line that changes.
-final todaySnapshotProvider = Provider<TodaySnapshot?>((ref) => null);
+/// Sample data while there is no repository, so the screen can be walked through
+/// end to end. Return null to see the empty state. When Supabase lands this
+/// becomes the only line that changes.
+final todaySnapshotProvider = Provider<TodaySnapshot?>((ref) => sampleToday);
 
 /// The home. Everything else in the product is support (design principle #1).
 class TodayPage extends ConsumerWidget {
