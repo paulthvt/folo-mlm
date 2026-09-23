@@ -21,3 +21,11 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  # Bundled, not fetched: identical rendering on Web and mobile, no webfont
+  # request, no google_fonts dependency. One variable file covers every weight;
+  # styles set the `wght` axis (see app_typography.dart). Licence: assets/fonts/OFL.txt
+  fonts:
+    - family: PlusJakartaSans
+      fonts:
+        - asset: assets/fonts/PlusJakartaSans.ttf
