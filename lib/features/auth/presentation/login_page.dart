@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/routes.dart';
@@ -61,10 +63,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         // Telling them the link can be re-sent is only useful next to the
         // button that re-sends it.
         setState(() => _busy = false);
-        context.go(
-          Routes.checkInboxLocation(
-            reason: CheckInboxPage.confirmReason,
-            email: email,
+        unawaited(
+          context.push(
+            Routes.checkInboxLocation(
+              reason: CheckInboxPage.confirmReason,
+              email: email,
+            ),
           ),
         );
         return;
@@ -109,7 +113,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () => context.go(Routes.forgotPassword),
+                  onPressed: () => context.push(Routes.forgotPassword),
                   child: const Text('Forgot password?'),
                 ),
               ),
@@ -125,7 +129,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           children: [
             Text('New here?', style: text.bodySmall),
             TextButton(
-              onPressed: () => context.go(Routes.register),
+              onPressed: () => context.push(Routes.register),
               child: const Text('Create an account'),
             ),
           ],

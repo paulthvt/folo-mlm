@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:folo/app/router/back.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/layout/breakpoints.dart';
-import 'package:go_router/go_router.dart';
 
 /// The shape every auth screen shares: no navigation, one column capped at 400
 /// and centred, flat on the canvas.
@@ -30,7 +30,9 @@ class AuthScaffold extends StatelessWidget {
     return Scaffold(
       appBar: back == null
           ? null
-          : AppBar(leading: BackButton(onPressed: () => context.go(back!))),
+          : AppBar(
+              leading: BackButton(onPressed: () => backOr(context, back!)),
+            ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(

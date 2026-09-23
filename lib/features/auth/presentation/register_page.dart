@@ -60,7 +60,9 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
       if (!mounted) return;
       // Email confirmation is on, so there is no session yet — the next step is
       // the user's inbox.
-      context.go(Routes.checkInboxLocation(reason: 'confirm', email: email));
+      context.pushReplacement(
+        Routes.checkInboxLocation(reason: 'confirm', email: email),
+      );
     } on AuthFailure catch (failure) {
       if (!mounted) return;
       setState(() => _failure = failure);
@@ -131,7 +133,7 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
           children: [
             Text('Already have an account?', style: text.bodySmall),
             TextButton(
-              onPressed: () => context.go(Routes.login),
+              onPressed: () => context.pushReplacement(Routes.login),
               child: const Text('Sign in'),
             ),
           ],

@@ -85,7 +85,7 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
               child: const Text('Continue with Apple'),
             ),
             FilledButton(
-              onPressed: _busy ? null : () => context.go(Routes.login),
+              onPressed: _busy ? null : () => context.push(Routes.login),
               child: const Text('Continue with email'),
             ),
           ],
@@ -98,7 +98,7 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
           children: [
             Text('New here?', style: text.bodySmall),
             TextButton(
-              onPressed: () => context.go(Routes.register),
+              onPressed: () => context.push(Routes.register),
               child: const Text('Create an account'),
             ),
           ],

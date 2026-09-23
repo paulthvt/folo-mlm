@@ -33,6 +33,45 @@ void main() {
     expect(find.text('Continue with email'), findsOneWidget);
   });
 
+  testWidgets('system back from sign-in returns to welcome', (tester) async {
+    await tester.pumpWidget(_app(FakeAuthRepository()));
+    await _openLogin(tester);
+
+    // What the Android back gesture does.
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Continue with email'), findsOneWidget);
+  });
+
+  testWidgets('system back from register returns to welcome', (tester) async {
+    await tester.pumpWidget(_app(FakeAuthRepository()));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Create an account'));
+    await tester.pumpAndSettle();
+    expect(find.text('Create your account'), findsOneWidget);
+
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Continue with email'), findsOneWidget);
+  });
+
+  testWidgets('system back from forgot password returns to sign-in', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app(FakeAuthRepository()));
+    await _openLogin(tester);
+    await tester.tap(find.text('Forgot password?'));
+    await tester.pumpAndSettle();
+    expect(find.text('Reset your password'), findsOneWidget);
+
+    await tester.binding.handlePopRoute();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Welcome back'), findsOneWidget);
+  });
+
   testWidgets('an unconfirmed email lands on check your inbox, which can '
       'resend the link', (tester) async {
     final fake = FakeAuthRepository()..failWith = AuthFailure.emailNotConfirmed;

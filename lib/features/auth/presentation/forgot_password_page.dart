@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:folo/app/router/back.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
@@ -64,7 +65,9 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
     }
     if (!mounted) return;
     setState(() => _busy = false);
-    context.go(Routes.checkInboxLocation(reason: 'reset', email: email));
+    context.pushReplacement(
+      Routes.checkInboxLocation(reason: 'reset', email: email),
+    );
   }
 
   @override
@@ -111,7 +114,7 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
         ),
         Center(
           child: TextButton(
-            onPressed: () => context.go(Routes.login),
+            onPressed: () => backOr(context, Routes.login),
             child: const Text('Back to sign in'),
           ),
         ),

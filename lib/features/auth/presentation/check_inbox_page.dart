@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:folo/app/router/back.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
@@ -8,7 +9,6 @@ import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
 import 'package:folo/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:folo/features/auth/presentation/widgets/form_error.dart';
 import 'package:folo/features/auth/presentation/widgets/submit_button.dart';
-import 'package:go_router/go_router.dart';
 
 /// One screen for both "confirm your email" and "we sent a reset link".
 ///
@@ -99,7 +99,7 @@ class _CheckInboxPageState extends ConsumerState<CheckInboxPage> {
           SubmitButton(label: 'Resend email', busy: _busy, onPressed: _resend),
         Center(
           child: TextButton(
-            onPressed: () => context.go(Routes.login),
+            onPressed: () => backOr(context, Routes.login),
             child: const Text('Back to sign in'),
           ),
         ),
