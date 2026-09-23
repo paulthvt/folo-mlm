@@ -13,6 +13,9 @@ dependencies:
   flutter_riverpod: ^3.4.3
   # Declarative routing with real URLs (web) and deep links (mobile).
   go_router: ^18.0.1
+  # Auth, session persistence and email/OAuth deep links in one package, so
+  # this feature needs no app_links, shared_preferences or provider SDKs.
+  supabase_flutter: ^2.17.2
 
 dev_dependencies:
   flutter_lints: ^6.0.0
