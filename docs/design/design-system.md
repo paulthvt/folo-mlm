@@ -248,7 +248,11 @@ interaction is wrong before the table is.
 
 ### 7.2 Page transitions belong to the platform
 
-Routes use `builder:`, never a `CustomTransitionPage`. Flutter's default
+Routes use `pageBuilder:` returning a plain `MaterialPage`, never a
+`CustomTransitionPage`. The page has to be named: go_router decides page type by
+looking for a `MaterialApp` ancestor from `package:material_ui`, which is a
+different class from the `flutter/material` one this app builds, so the check
+always fails and every route silently falls back to `NoTransitionPage`. Flutter's default
 transition per platform — Cupertino's slide with the edge-swipe on iOS, the zoom
 on Android, both predictive-back ready — reverses correctly, tracks a drag, and
 already is "one identity, native manners" (principle #7). A custom fade over
