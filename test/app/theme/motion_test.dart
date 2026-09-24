@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/app.dart';
 import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-
-import '../../features/auth/fake_auth_repository.dart';
+import 'package:folo/core/ui/folo_progress_bar.dart';
 
 /// Reads `context.motion` under a chosen `disableAnimations` flag.
 Future<Duration> _resolve(
@@ -27,6 +23,15 @@ Future<Duration> _resolve(
   );
   return resolved;
 }
+
+Widget _bar(double value) => MaterialApp(
+  theme: AppTheme.light,
+  home: Scaffold(body: FoloProgressBar(value: value)),
+);
+
+double? _barValue(WidgetTester tester) => tester
+    .widget<LinearProgressIndicator>(find.byType(LinearProgressIndicator))
+    .value;
 
 void main() {
   testWidgets('a duration passes through when motion is allowed', (
@@ -59,34 +64,19 @@ void main() {
     }
   });
 
-  testWidgets('every route animates', (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          authRepositoryProvider.overrideWithValue(FakeAuthRepository()),
-        ],
-        child: const FoloApp(),
-      ),
-    );
-    await tester.pumpAndSettle();
+  testWidgets('progress grows into its new value instead of jumping', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_bar(0.2));
+    expect(_barValue(tester), 0.2);
 
-    await tester.tap(find.text('Continue with email'));
-    // Mid-transition: the arriving page is on screen but not yet opaque.
-    await tester.pump();
-    await tester.pump(AppMotion.slow ~/ 2);
+    await tester.pumpWidget(_bar(0.8));
+    await tester.pump(AppMotion.medium ~/ 2);
 
-    final fade = tester.widget<FadeTransition>(
-      find
-          .ancestor(
-            of: find.text('Welcome back'),
-            matching: find.byType(FadeTransition),
-          )
-          .last,
-    );
-    expect(fade.opacity.value, greaterThan(0));
-    expect(fade.opacity.value, lessThan(1));
+    expect(_barValue(tester), greaterThan(0.2));
+    expect(_barValue(tester), lessThan(0.8));
 
     await tester.pumpAndSettle();
-    expect(find.text('Welcome back'), findsOneWidget);
+    expect(_barValue(tester), 0.8);
   });
 }

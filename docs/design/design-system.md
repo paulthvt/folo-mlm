@@ -217,7 +217,7 @@ Restrained. Motion explains what moved, it never celebrates.
 | 120ms | Hover, pressed, focus ring. |
 | 180ms | Chip/toggle state, small fades. |
 | 240ms | Row collapse on completion, list reorder, tab change. |
-| 320ms | Sheet and dialog present/dismiss, page transition. |
+| 320ms | Sheet and dialog present/dismiss. |
 
 Easing: standard `cubic(0.2, 0, 0, 1)`, decelerate `cubic(0, 0, 0, 1)` for
 entering, accelerate `cubic(0.3, 0, 1, 1)` for leaving.
@@ -243,14 +243,26 @@ interaction is wrong before the table is.
 | Inline message appearing | 180ms | decelerate | `TweenAnimationBuilder` over opacity + `Align.heightFactor` |
 | Progress bar value | 240ms | standard | `TweenAnimationBuilder` |
 | Row collapse on completion, list reorder, tab change | 240ms | standard | `AnimatedSize` / `AnimatedList` |
-| Page transition along one flow (auth) | 320ms in, 240ms out | standard in, accelerate out | `foloPage(..., sharedAxis: true)` — fade plus an 8px shift |
-| Page transition between contexts | 320ms in, 240ms out | standard in, accelerate out | `foloPage(...)` — fade through |
+| Page transition | platform | platform | `builder:` — the platform's own transition, no custom page |
 | Sheet, dialog | 320ms | standard | Material defaults from the component themes |
 
-Leaving is one step quicker than arriving: the user already knows the screen
-they are going back to.
+### 7.2 Page transitions belong to the platform
 
-### 7.2 The reduce-motion contract
+Routes use `builder:`, never a `CustomTransitionPage`. Flutter's default
+transition per platform — Cupertino's slide with the edge-swipe on iOS, the zoom
+on Android, both predictive-back ready — reverses correctly, tracks a drag, and
+already is "one identity, native manners" (principle #7). A custom fade over
+these seven flat routes bought nothing and got back-navigation wrong: the same
+movement played in both directions, so the motion claimed a forward step while
+the user went back.
+
+Directional motion has to be earned by hierarchy. When a list opens a detail
+(contact row → contact), that screen gets a shared axis — and the flow gets a
+real stack first, `push` in and `pop` back, because direction cannot be inferred
+from a router that only ever replaces its location. Until then, page-level motion
+has nothing to say and says nothing.
+
+### 7.3 The reduce-motion contract
 
 Durations never reach a widget as a literal. They arrive through
 `context.motion(AppMotion.medium)` (`lib/app/theme/app_theme.dart`), which
@@ -259,7 +271,7 @@ shape would still read as movement at 120ms — the 8px page shift — drops out
 entirely instead; everything else keeps its fade. Using a raw `Duration` in a
 widget is the bug, not the animation itself.
 
-### 7.3 Never
+### 7.4 Never
 
 Bounce, overshoot, elastic and spring curves. Scale above 1.02. Parallax.
 Looping animation of any kind except an indeterminate loader. Staggered or
@@ -292,9 +304,7 @@ Implemented. One file per concern, no new dependency, no codegen.
   list tile, tooltip), plus `AppElevation` (the two shadow sets and the scrim)
   and `AppMotion` (durations and easing) plus the `Motion` extension on
   `BuildContext` — `context.motion(duration)`, the one place "reduce motion" is
-  honoured (§7.2).
-- `lib/app/router/page_transitions.dart` — `foloPage`, the `CustomTransitionPage`
-  every `GoRoute` uses. `sharedAxis: true` for a move inside one flow.
+  honoured (§7.3).
 - `lib/app/theme/theme_preview.dart` — `@Preview` token sheets (colour, type,
   spacing/shape/elevation, components) in both modes. `flutter widget-preview
   start`, group **Tokens**. Nothing in the app imports it.
