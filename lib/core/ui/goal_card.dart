@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
+import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/app/theme/app_typography.dart';
 import 'package:folo/core/ui/folo_progress_bar.dart';
 
@@ -50,11 +51,15 @@ class GoalCard extends StatelessWidget {
                 Expanded(
                   child: Text(title, style: theme.textTheme.titleMedium),
                 ),
-                Text(
-                  pace,
+                // Pace ink changes as the number moves, so it fades rather than
+                // flicks between warm and muted (§7, 180ms).
+                AnimatedDefaultTextStyle(
+                  duration: context.motion(AppMotion.quick),
+                  curve: AppMotion.standard,
                   style: AppTypography.caption.copyWith(
                     color: behindPace ? folo.secondaryText : folo.textMuted,
                   ),
+                  child: Text(pace),
                 ),
               ],
             ),

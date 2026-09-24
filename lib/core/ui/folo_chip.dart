@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
+import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/app/theme/app_typography.dart';
 
 /// What a chip is allowed to say (`docs/design/components.md` #6). There is no
@@ -46,7 +47,9 @@ class FoloChip extends StatelessWidget {
       ChipTone.accent => (folo.accentContainer, folo.onAccentContainer),
     };
 
-    return Container(
+    return AnimatedContainer(
+      duration: context.motion(AppMotion.quick),
+      curve: AppMotion.standard,
       padding: const EdgeInsets.symmetric(
         horizontal: AppSpacing.sm,
         vertical: AppSpacing.xs,

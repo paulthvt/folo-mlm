@@ -217,7 +217,7 @@ Restrained. Motion explains what moved, it never celebrates.
 | 120ms | Hover, pressed, focus ring. |
 | 180ms | Chip/toggle state, small fades. |
 | 240ms | Row collapse on completion, list reorder, tab change. |
-| 320ms | Sheet and dialog present/dismiss, page transition. |
+| 320ms | Sheet and dialog present/dismiss. |
 
 Easing: standard `cubic(0.2, 0, 0, 1)`, decelerate `cubic(0, 0, 0, 1)` for
 entering, accelerate `cubic(0.3, 0, 1, 1)` for leaving.
@@ -226,6 +226,70 @@ Rules: no bounce or overshoot; no scale above 1.02; completing an action is a
 check plus a 240ms row collapse (no confetti, no counter, no streak — principle
 #5); no looping animation except an indeterminate loader; all of it respects
 "reduce motion" by collapsing to a 120ms opacity change.
+
+Fluidity comes from every screen using the same four durations and three curves,
+not from springs. If a new interaction does not fit the table below, the
+interaction is wrong before the table is.
+
+### 7.1 Decision table
+
+| Interaction | Duration | Curve | Flutter |
+| --- | --- | --- | --- |
+| Hover, press, focus ring | 120ms | standard | `InkWell` / `Material` states — state the wash, let the ink time it |
+| Icon swap in place (reveal toggle) | 120ms | standard | `AnimatedSwitcher` |
+| Tinted container changing tone | 120–180ms | standard | `AnimatedContainer` |
+| Ink colour changing with state | 180ms | standard | `AnimatedDefaultTextStyle` |
+| Label ↔ spinner on a button | 180ms | decelerate in, accelerate out | `AnimatedSwitcher` |
+| Inline message appearing | 180ms | decelerate | `TweenAnimationBuilder` over opacity + `Align.heightFactor` |
+| Progress bar value | 240ms | standard | `TweenAnimationBuilder` |
+| Row collapse on completion, list reorder, tab change | 240ms | standard | `AnimatedSize` / `AnimatedList` |
+| Page transition | platform | platform | a plain `MaterialPage` — the platform's own transition |
+| Sheet, dialog | 320ms | standard | Material defaults from the component themes |
+
+### 7.2 Page transitions belong to the platform
+
+Routes use `pageBuilder:` returning a plain `MaterialPage`, never a
+`CustomTransitionPage`. The page has to be named: go_router decides page type by
+looking for a `MaterialApp` ancestor from `package:material_ui`, which is a
+different class from the `flutter/material` one this app builds, so the check
+always fails and every route silently falls back to `NoTransitionPage`.
+
+The back gesture drags the page on both platforms: the Cupertino edge swipe on
+iOS, predictive back on Android — which needs
+`android:enableOnBackInvokedCallback="true"` in the manifest, or the engine never
+sees the gesture and the transition only plays once the finger lifts. Flutter's default
+transition per platform — Cupertino's slide with the edge-swipe on iOS, the zoom
+on Android, both predictive-back ready — reverses correctly, tracks a drag, and
+already is "one identity, native manners" (principle #7). A custom fade over
+these seven flat routes bought nothing and got back-navigation wrong: the same
+movement played in both directions, so the motion claimed a forward step while
+the user went back.
+
+This works because navigation inside a flow pushes and pops a real stack
+(`context.push`, `context.pop` — see `lib/app/router/back.dart`). Direction comes
+from the stack, never from a hand-written curve: a screen reached with `go`
+replaces the location and has no "back" for motion to describe. If a new flow
+wants a back gesture, it pushes.
+
+Anything beyond the platform transition has to be earned by hierarchy — a list
+opening a detail may later justify a shared axis. Seven sibling screens do not.
+
+### 7.3 The reduce-motion contract
+
+Durations never reach a widget as a literal. They arrive through
+`context.motion(AppMotion.medium)` (`lib/app/theme/app_theme.dart`), which
+returns 120ms whenever the platform asks for reduced motion. A movement whose
+shape would still read as movement at 120ms — the 8px page shift — drops out
+entirely instead; everything else keeps its fade. Using a raw `Duration` in a
+widget is the bug, not the animation itself.
+
+### 7.4 Never
+
+Bounce, overshoot, elastic and spring curves. Scale above 1.02. Parallax.
+Looping animation of any kind except an indeterminate loader. Staggered or
+sequenced entrances — a list appears at once, or it is not ready. Page-load
+fades on content that was already there. Any motion that reads as celebration:
+counting numbers up, filling a ring, confetti, a streak (principle #5).
 
 ---
 
@@ -250,7 +314,9 @@ Implemented. One file per concern, no new dependency, no codegen.
 - `lib/app/theme/app_theme.dart` — the two `ThemeData`s and every component
   theme (buttons, input, card, chip, progress, dialog, sheet, menu, nav bar,
   list tile, tooltip), plus `AppElevation` (the two shadow sets and the scrim)
-  and `AppMotion` (durations and easing).
+  and `AppMotion` (durations and easing) plus the `Motion` extension on
+  `BuildContext` — `context.motion(duration)`, the one place "reduce motion" is
+  honoured (§7.3).
 - `lib/app/theme/theme_preview.dart` — `@Preview` token sheets (colour, type,
   spacing/shape/elevation, components) in both modes. `flutter widget-preview
   start`, group **Tokens**. Nothing in the app imports it.

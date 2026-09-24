@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
+import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/app/theme/app_typography.dart';
 
 /// At most one tinted pair per screen (`docs/design/components.md` #16).
@@ -46,7 +47,9 @@ class StatTile extends StatelessWidget {
     final subdued = tone == StatTone.plain ? folo.textMuted : ink;
     final noteText = note;
 
-    return Container(
+    return AnimatedContainer(
+      duration: context.motion(AppMotion.fast),
+      curve: AppMotion.standard,
       padding: const EdgeInsets.all(AppSpacing.md),
       decoration: BoxDecoration(
         color: background,

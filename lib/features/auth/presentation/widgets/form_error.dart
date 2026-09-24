@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_spacing.dart';
+import 'package:folo/app/theme/app_theme.dart';
 
 /// Form-level failure: "we could not sign you in", as opposed to a field being
 /// wrong (that is the text field's own error state).
@@ -13,25 +14,37 @@ class FormError extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.ms),
-      decoration: BoxDecoration(
-        color: scheme.errorContainer,
-        borderRadius: BorderRadius.circular(AppRadii.md),
+    // The message appears in response to a tap, so it grows and fades in rather
+    // than snapping into the column (§7, 180ms). Callers mount and unmount it,
+    // which is why the entrance is the only animated direction.
+    return TweenAnimationBuilder<double>(
+      tween: Tween(begin: 0, end: 1),
+      duration: context.motion(AppMotion.quick),
+      curve: AppMotion.decelerate,
+      builder: (context, t, child) => Opacity(
+        opacity: t,
+        child: Align(heightFactor: t, child: child),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: AppSpacing.sm,
-        children: [
-          Icon(Icons.error_outline_rounded, size: 20, color: scheme.error),
-          Expanded(
-            child: Text(
-              message,
-              style: Theme.of(context).textTheme.bodySmall
-                  ?.copyWith(color: scheme.error),
+      child: Container(
+        padding: const EdgeInsets.all(AppSpacing.ms),
+        decoration: BoxDecoration(
+          color: scheme.errorContainer,
+          borderRadius: BorderRadius.circular(AppRadii.md),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: AppSpacing.sm,
+          children: [
+            Icon(Icons.error_outline_rounded, size: 20, color: scheme.error),
+            Expanded(
+              child: Text(
+                message,
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(color: scheme.error),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

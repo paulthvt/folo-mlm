@@ -16,9 +16,9 @@ class AuthScaffold extends StatelessWidget {
 
   final List<Widget> children;
 
-  /// Where the back control goes, or null for no app bar. Every auth
-  /// transition uses `context.go`, so there is no stack to pop and the
-  /// destination has to be named.
+  /// Where the back control goes, or null for no app bar. The destination is
+  /// named because a screen can also be reached by URL or deep link, with
+  /// nothing on the stack to pop — see `backOr`.
   final String? back;
 
   @override

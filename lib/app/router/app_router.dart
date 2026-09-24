@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/auth_redirect.dart';
 import 'package:folo/app/router/routes.dart';
@@ -33,45 +34,62 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.today,
         name: Routes.todayName,
-        builder: (context, state) => const TodayPage(),
+        pageBuilder: (context, state) => _page(state, const TodayPage()),
       ),
       GoRoute(
         path: Routes.welcome,
         name: Routes.welcomeName,
-        builder: (context, state) => const WelcomePage(),
+        pageBuilder: (context, state) => _page(state, const WelcomePage()),
       ),
       GoRoute(
         path: Routes.login,
         name: Routes.loginName,
-        builder: (context, state) => const LoginPage(),
+        pageBuilder: (context, state) => _page(state, const LoginPage()),
       ),
       GoRoute(
         path: Routes.register,
         name: Routes.registerName,
-        builder: (context, state) => const RegisterPage(),
+        pageBuilder: (context, state) => _page(state, const RegisterPage()),
       ),
       GoRoute(
         path: Routes.forgotPassword,
         name: Routes.forgotPasswordName,
-        builder: (context, state) => const ForgotPasswordPage(),
+        pageBuilder: (context, state) =>
+            _page(state, const ForgotPasswordPage()),
       ),
       GoRoute(
         path: Routes.checkInbox,
         name: Routes.checkInboxName,
-        builder: (context, state) => CheckInboxPage(
-          reason:
-              state.uri.queryParameters['reason'] ??
-              CheckInboxPage.confirmReason,
-          email: state.uri.queryParameters['email'] ?? '',
+        pageBuilder: (context, state) => _page(
+          state,
+          CheckInboxPage(
+            reason:
+                state.uri.queryParameters['reason'] ??
+                CheckInboxPage.confirmReason,
+            email: state.uri.queryParameters['email'] ?? '',
+          ),
         ),
       ),
       GoRoute(
         path: Routes.resetPassword,
         name: Routes.resetPasswordName,
-        builder: (context, state) => const ResetPasswordPage(),
+        pageBuilder: (context, state) =>
+            _page(state, const ResetPasswordPage()),
       ),
     ],
   );
   ref.onDispose(router.dispose);
   return router;
 });
+
+/// Every route names its page instead of letting go_router pick one.
+///
+/// go_router decides between `MaterialPage`, `CupertinoPage` and
+/// `NoTransitionPage` by looking for a `MaterialApp` ancestor — but the one it
+/// looks for comes from `package:material_ui`, a different class from the
+/// `flutter/material` one this app builds. The check therefore always fails and
+/// every route silently loses its transition. Naming `MaterialPage` restores the
+/// platform's own transition: the Cupertino slide and edge swipe on iOS, the
+/// zoom on Android (`docs/design/design-system.md` §7.2).
+MaterialPage<void> _page(GoRouterState state, Widget child) =>
+    MaterialPage<void>(key: state.pageKey, name: state.name, child: child);
