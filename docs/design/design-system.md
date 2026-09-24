@@ -256,11 +256,14 @@ these seven flat routes bought nothing and got back-navigation wrong: the same
 movement played in both directions, so the motion claimed a forward step while
 the user went back.
 
-Directional motion has to be earned by hierarchy. When a list opens a detail
-(contact row → contact), that screen gets a shared axis — and the flow gets a
-real stack first, `push` in and `pop` back, because direction cannot be inferred
-from a router that only ever replaces its location. Until then, page-level motion
-has nothing to say and says nothing.
+This works because navigation inside a flow pushes and pops a real stack
+(`context.push`, `context.pop` — see `lib/app/router/back.dart`). Direction comes
+from the stack, never from a hand-written curve: a screen reached with `go`
+replaces the location and has no "back" for motion to describe. If a new flow
+wants a back gesture, it pushes.
+
+Anything beyond the platform transition has to be earned by hierarchy — a list
+opening a detail may later justify a shared axis. Seven sibling screens do not.
 
 ### 7.3 The reduce-motion contract
 
