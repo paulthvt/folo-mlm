@@ -33,8 +33,10 @@ lib/
       app_theme.dart             # the only place ThemeData is built
   core/
     layout/breakpoints.dart      # ScreenSize + context.screenSize
+    supabase/                    # client provider + committed project config
     constants/ extensions/ utils/
   features/
+    auth/                        # welcome, sign in, register, reset, guard
     dashboard/ contacts/ follow_ups/ team/ goals/
 test/                            # mirrors lib/
 ```
@@ -95,7 +97,11 @@ patterns adapt.
 
 ### Not yet present, by design
 
-Supabase, Firebase Cloud Messaging, authentication, localisation, local
-persistence, analytics, CI. Each will be added when the feature that needs it is
-built. Supabase access will sit behind repositories in
-`features/<x>/data/`, with a shared client provider in `core/` at that point.
+Firebase Cloud Messaging, a profiles table, account deletion, localisation,
+local persistence beyond the Supabase session, analytics, CI. Each will be added
+when the feature that needs it is built.
+
+Supabase arrived with auth (#21): the client is a provider in
+`core/supabase/`, its project URL and publishable key are committed there, and
+all access sits behind `features/<x>/data/` repositories. The service-role key
+is not in this repo and must never be.
