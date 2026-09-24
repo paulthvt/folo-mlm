@@ -36,8 +36,11 @@ class AuthScaffold extends StatelessWidget {
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
+            // lg, not the md screens use elsewhere: the column is capped at 400
+            // and centred, so this only ever binds on mobile, where the extra
+            // inset keeps the stretched buttons off the edges.
             padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.md,
+              horizontal: AppSpacing.lg,
               vertical: AppSpacing.xl,
             ),
             child: ConstrainedBox(

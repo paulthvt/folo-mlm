@@ -127,6 +127,10 @@ card around a form is chrome (principle #6). This is the only part of the produc
 whose layout does **not** restructure across size classes; a form has one column
 at every width, so only the horizontal centring and the vertical rhythm change.
 
+Auth takes `space/lg` (24) horizontal padding rather than the `space/md` (16)
+other mobile screens use. Because the column is capped and centred, this only
+binds on mobile, where the full-width buttons otherwise crowd the screen edges.
+
 `Welcome` carries the promise (`Know what to do next.`) and the three identity
 paths. The social buttons live here and nowhere else, so a user who signed up
 with Google is never shown a competing email form beside their real path.
