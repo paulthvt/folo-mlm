@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:folo/app/theme/app_theme.dart';
 
 /// A password input with a reveal toggle.
 ///
@@ -44,10 +45,14 @@ class _PasswordFieldState extends State<PasswordField> {
         helperText: widget.helper,
         suffixIcon: IconButton(
           onPressed: () => setState(() => _revealed = !_revealed),
-          icon: Icon(
-            _revealed
-                ? Icons.visibility_off_outlined
-                : Icons.visibility_outlined,
+          icon: AnimatedSwitcher(
+            duration: context.motion(AppMotion.fast),
+            child: Icon(
+              _revealed
+                  ? Icons.visibility_off_outlined
+                  : Icons.visibility_outlined,
+              key: ValueKey(_revealed),
+            ),
           ),
           tooltip: _revealed ? 'Hide password' : 'Show password',
         ),

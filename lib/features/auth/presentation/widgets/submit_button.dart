@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:folo/app/theme/app_theme.dart';
 
 /// The single primary action on an auth screen.
 ///
@@ -21,12 +22,17 @@ class SubmitButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FilledButton(
       onPressed: busy ? null : onPressed,
-      child: busy
-          ? const SizedBox.square(
-              dimension: 16,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : Text(label),
+      child: AnimatedSwitcher(
+        duration: context.motion(AppMotion.quick),
+        switchInCurve: AppMotion.decelerate,
+        switchOutCurve: AppMotion.accelerate,
+        child: busy
+            ? const SizedBox.square(
+                dimension: 16,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : Text(label),
+      ),
     );
   }
 }

@@ -262,3 +262,15 @@ abstract final class AppMotion {
   static const decelerate = Cubic(0, 0, 0, 1);
   static const accelerate = Cubic(0.3, 0, 1, 1);
 }
+
+/// The reduce-motion contract: every duration in the app reaches a widget
+/// through [motion], so "reduce motion" is honoured in one place.
+///
+/// The OS flag collapses movement to a 120ms opacity change (§7) rather than to
+/// zero: something still has to explain what moved.
+extension Motion on BuildContext {
+  bool get reduceMotion => MediaQuery.disableAnimationsOf(this);
+
+  Duration motion(Duration duration) =>
+      reduceMotion ? AppMotion.fast : duration;
+}

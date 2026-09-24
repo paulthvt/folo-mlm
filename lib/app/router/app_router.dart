@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/auth_redirect.dart';
+import 'package:folo/app/router/page_transitions.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/features/auth/presentation/check_inbox_page.dart';
 import 'package:folo/features/auth/presentation/forgot_password_page.dart';
@@ -33,42 +34,61 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: Routes.today,
         name: Routes.todayName,
-        builder: (context, state) => const TodayPage(),
+        pageBuilder: (context, state) =>
+            foloPage(context, state, const TodayPage()),
       ),
       GoRoute(
         path: Routes.welcome,
         name: Routes.welcomeName,
-        builder: (context, state) => const WelcomePage(),
+        pageBuilder: (context, state) =>
+            foloPage(context, state, const WelcomePage(), sharedAxis: true),
       ),
       GoRoute(
         path: Routes.login,
         name: Routes.loginName,
-        builder: (context, state) => const LoginPage(),
+        pageBuilder: (context, state) =>
+            foloPage(context, state, const LoginPage(), sharedAxis: true),
       ),
       GoRoute(
         path: Routes.register,
         name: Routes.registerName,
-        builder: (context, state) => const RegisterPage(),
+        pageBuilder: (context, state) =>
+            foloPage(context, state, const RegisterPage(), sharedAxis: true),
       ),
       GoRoute(
         path: Routes.forgotPassword,
         name: Routes.forgotPasswordName,
-        builder: (context, state) => const ForgotPasswordPage(),
+        pageBuilder: (context, state) => foloPage(
+          context,
+          state,
+          const ForgotPasswordPage(),
+          sharedAxis: true,
+        ),
       ),
       GoRoute(
         path: Routes.checkInbox,
         name: Routes.checkInboxName,
-        builder: (context, state) => CheckInboxPage(
-          reason:
-              state.uri.queryParameters['reason'] ??
-              CheckInboxPage.confirmReason,
-          email: state.uri.queryParameters['email'] ?? '',
+        pageBuilder: (context, state) => foloPage(
+          context,
+          state,
+          CheckInboxPage(
+            reason:
+                state.uri.queryParameters['reason'] ??
+                CheckInboxPage.confirmReason,
+            email: state.uri.queryParameters['email'] ?? '',
+          ),
+          sharedAxis: true,
         ),
       ),
       GoRoute(
         path: Routes.resetPassword,
         name: Routes.resetPasswordName,
-        builder: (context, state) => const ResetPasswordPage(),
+        pageBuilder: (context, state) => foloPage(
+          context,
+          state,
+          const ResetPasswordPage(),
+          sharedAxis: true,
+        ),
       ),
     ],
   );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
+import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/app/theme/app_typography.dart';
 
 /// Pace, not score (`docs/design/components.md` #7).
@@ -45,10 +46,17 @@ class FoloProgressBar extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(AppRadii.pill),
-          child: LinearProgressIndicator(
-            value: value.clamp(0, 1),
-            backgroundColor: track,
-            color: onPrimary ? scheme.secondary : null,
+          // The bar grows into its new value instead of jumping: the movement is
+          // the only thing that says progress was made (§7, 240ms).
+          child: TweenAnimationBuilder<double>(
+            tween: Tween(end: value.clamp(0, 1)),
+            duration: context.motion(AppMotion.medium),
+            curve: AppMotion.standard,
+            builder: (context, animated, child) => LinearProgressIndicator(
+              value: animated,
+              backgroundColor: track,
+              color: onPrimary ? scheme.secondary : null,
+            ),
           ),
         ),
         if (leadingLabel != null || trailingLabel != null)

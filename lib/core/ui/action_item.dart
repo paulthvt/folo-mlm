@@ -47,6 +47,9 @@ class ActionItem extends StatelessWidget {
       ),
       child: InkWell(
         onTap: onOpen,
+        // Hover and press are the ink's own fade — the row states the wash to
+        // use and lets `InkWell` time it (§7).
+        hoverColor: folo.surfaceSunken,
         borderRadius: BorderRadius.circular(AppRadii.lg),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),

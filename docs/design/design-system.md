@@ -227,6 +227,46 @@ check plus a 240ms row collapse (no confetti, no counter, no streak — principl
 #5); no looping animation except an indeterminate loader; all of it respects
 "reduce motion" by collapsing to a 120ms opacity change.
 
+Fluidity comes from every screen using the same four durations and three curves,
+not from springs. If a new interaction does not fit the table below, the
+interaction is wrong before the table is.
+
+### 7.1 Decision table
+
+| Interaction | Duration | Curve | Flutter |
+| --- | --- | --- | --- |
+| Hover, press, focus ring | 120ms | standard | `InkWell` / `Material` states — state the wash, let the ink time it |
+| Icon swap in place (reveal toggle) | 120ms | standard | `AnimatedSwitcher` |
+| Tinted container changing tone | 120–180ms | standard | `AnimatedContainer` |
+| Ink colour changing with state | 180ms | standard | `AnimatedDefaultTextStyle` |
+| Label ↔ spinner on a button | 180ms | decelerate in, accelerate out | `AnimatedSwitcher` |
+| Inline message appearing | 180ms | decelerate | `TweenAnimationBuilder` over opacity + `Align.heightFactor` |
+| Progress bar value | 240ms | standard | `TweenAnimationBuilder` |
+| Row collapse on completion, list reorder, tab change | 240ms | standard | `AnimatedSize` / `AnimatedList` |
+| Page transition along one flow (auth) | 320ms in, 240ms out | standard in, accelerate out | `foloPage(..., sharedAxis: true)` — fade plus an 8px shift |
+| Page transition between contexts | 320ms in, 240ms out | standard in, accelerate out | `foloPage(...)` — fade through |
+| Sheet, dialog | 320ms | standard | Material defaults from the component themes |
+
+Leaving is one step quicker than arriving: the user already knows the screen
+they are going back to.
+
+### 7.2 The reduce-motion contract
+
+Durations never reach a widget as a literal. They arrive through
+`context.motion(AppMotion.medium)` (`lib/app/theme/app_theme.dart`), which
+returns 120ms whenever the platform asks for reduced motion. A movement whose
+shape would still read as movement at 120ms — the 8px page shift — drops out
+entirely instead; everything else keeps its fade. Using a raw `Duration` in a
+widget is the bug, not the animation itself.
+
+### 7.3 Never
+
+Bounce, overshoot, elastic and spring curves. Scale above 1.02. Parallax.
+Looping animation of any kind except an indeterminate loader. Staggered or
+sequenced entrances — a list appears at once, or it is not ready. Page-load
+fades on content that was already there. Any motion that reads as celebration:
+counting numbers up, filling a ring, confetti, a streak (principle #5).
+
 ---
 
 ## 8. Mapping to Flutter
@@ -250,7 +290,11 @@ Implemented. One file per concern, no new dependency, no codegen.
 - `lib/app/theme/app_theme.dart` — the two `ThemeData`s and every component
   theme (buttons, input, card, chip, progress, dialog, sheet, menu, nav bar,
   list tile, tooltip), plus `AppElevation` (the two shadow sets and the scrim)
-  and `AppMotion` (durations and easing).
+  and `AppMotion` (durations and easing) plus the `Motion` extension on
+  `BuildContext` — `context.motion(duration)`, the one place "reduce motion" is
+  honoured (§7.2).
+- `lib/app/router/page_transitions.dart` — `foloPage`, the `CustomTransitionPage`
+  every `GoRoute` uses. `sharedAxis: true` for a move inside one flow.
 - `lib/app/theme/theme_preview.dart` — `@Preview` token sheets (colour, type,
   spacing/shape/elevation, components) in both modes. `flutter widget-preview
   start`, group **Tokens**. Nothing in the app imports it.
