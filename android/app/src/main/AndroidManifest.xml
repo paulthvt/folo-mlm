@@ -1,8 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- enableOnBackInvokedCallback opts into predictive back, which is what
+         makes the back gesture animate along with the finger instead of jumping
+         at the end of it. Flutter already picks
+         PredictiveBackPageTransitionsBuilder for Android; without this flag the
+         engine never receives the gesture progress. Android 14+ only, older
+         versions fade forwards instead. -->
     <application
         android:label="folo"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -243,7 +243,7 @@ interaction is wrong before the table is.
 | Inline message appearing | 180ms | decelerate | `TweenAnimationBuilder` over opacity + `Align.heightFactor` |
 | Progress bar value | 240ms | standard | `TweenAnimationBuilder` |
 | Row collapse on completion, list reorder, tab change | 240ms | standard | `AnimatedSize` / `AnimatedList` |
-| Page transition | platform | platform | `builder:` — the platform's own transition, no custom page |
+| Page transition | platform | platform | a plain `MaterialPage` — the platform's own transition |
 | Sheet, dialog | 320ms | standard | Material defaults from the component themes |
 
 ### 7.2 Page transitions belong to the platform
@@ -252,7 +252,12 @@ Routes use `pageBuilder:` returning a plain `MaterialPage`, never a
 `CustomTransitionPage`. The page has to be named: go_router decides page type by
 looking for a `MaterialApp` ancestor from `package:material_ui`, which is a
 different class from the `flutter/material` one this app builds, so the check
-always fails and every route silently falls back to `NoTransitionPage`. Flutter's default
+always fails and every route silently falls back to `NoTransitionPage`.
+
+The back gesture drags the page on both platforms: the Cupertino edge swipe on
+iOS, predictive back on Android — which needs
+`android:enableOnBackInvokedCallback="true"` in the manifest, or the engine never
+sees the gesture and the transition only plays once the finger lifts. Flutter's default
 transition per platform — Cupertino's slide with the edge-swipe on iOS, the zoom
 on Android, both predictive-back ready — reverses correctly, tracks a drag, and
 already is "one identity, native manners" (principle #7). A custom fade over
