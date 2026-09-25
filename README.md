@@ -4,8 +4,8 @@ A cross-platform productivity app for people who run their business on
 relationships: contacts, follow-ups, customers, prospects, team activity and
 personal goals — all pointed at one question: **"What should I do today?"**
 
-This repository currently contains the technical foundation only. No product
-features, no design system, no backend.
+Current state: design system, auth (Supabase), localisation (EN/FR) and a Today
+screen on sample data. No product data model yet.
 
 ## Platforms
 
@@ -40,10 +40,37 @@ develop on and run web on a fixed port (`flutter run -d chrome --web-port 5000`)
 Both that origin and the custom scheme must be listed under allowed redirect
 URLs, or Supabase silently falls back to the Site URL.
 
-These project settings are managed in the Supabase dashboard, not in this repo:
-email confirmations on, minimum password length 8, the Google provider, Site URL
-and allowed redirect URLs. Sign in with Apple is not wired up — it needs a paid
-Apple Developer account (issue #22).
+Those project settings (email confirmations, minimum password length, the Google
+provider, Site URL, redirect URLs) live in `supabase/config.toml`, not in the
+dashboard. Sign in with Apple is not wired up — it needs a paid Apple Developer
+account (issue #22).
+
+### Database and project config
+
+Needs the [Supabase CLI](https://supabase.com/docs/guides/local-development/cli/getting-started)
+and a running Docker (or Podman) engine.
+
+```bash
+supabase db start                           # local Postgres with every migration applied
+supabase migration new <name>               # new file in supabase/migrations/
+supabase db reset                           # re-apply everything from scratch
+```
+
+The app always talks to the hosted project; the local database is for writing
+and testing migrations.
+
+After a PR merges, apply it to the hosted project (one-off `supabase login` and
+`supabase link --project-ref cskjeqspecsyqioietrj` first):
+
+```bash
+supabase db push                            # pending migrations
+supabase config diff                        # config.toml vs hosted, read-only
+SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET=... supabase config push
+```
+
+`config push` shows each change and asks before writing it. `config.toml`
+references the Google client secret through that variable, so set it before
+pushing (it is in Google Cloud Console, never in this repo).
 
 ## Checks
 

@@ -91,6 +91,28 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
+  # Replays every migration onto an empty database, the same way a fresh
+  # `supabase db reset` would. Also fails if supabase/config.toml does not parse.
+  # Only Postgres is started: the rest of the stack adds minutes and tests nothing.
+  migrations:
+    name: Supabase migrations
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - uses: supabase/setup-cli@45a513f8c64c0bc8e0e3dfe572b5c95be85f6359 # v3.0.1
+        with:
+          version: 2.118.0
+
+      - run: supabase db start
+
+      # `db start` skips migrations when it finds an existing volume; `db reset`
+      # always replays them, and exits non-zero on the first one that fails.
+      - run: supabase db reset
+
+      - run: supabase db lint --fail-on error
+
   # Compiling catches what analyze cannot: Gradle config, plugin mismatches,
   # tree-shaking failures. Artifacts are not kept — release.yaml publishes those.
   build:
