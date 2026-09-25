@@ -198,5 +198,29 @@
   "authHidePassword": "Hide password",
   "@authHidePassword": {
     "description": "Tooltip on the reveal toggle inside a password field, while the password is visible."
+  },
+  "todaySectionPriority": "Priority",
+  "@todaySectionPriority": {
+    "description": "Section heading above the people worth a message today."
+  },
+  "todaySectionThisMonth": "This month",
+  "@todaySectionThisMonth": {
+    "description": "Section heading above the monthly goal card on the Today screen."
+  },
+  "todaySectionRecent": "You talked to",
+  "@todaySectionRecent": {
+    "description": "Section heading above recent conversations, in the desktop right-hand column. Followed by a list of names."
+  },
+  "todayEmptyTitle": "You are up to date",
+  "@todayEmptyTitle": {
+    "description": "Heading of the Today screen's empty state, when nothing needs doing."
+  },
+  "todayEmptyBody": "Nothing is waiting on you today. When someone is worth a message, they will show up here.",
+  "@todayEmptyBody": {
+    "description": "Body of the Today screen's empty state. Reassuring, never a reprimand."
+  },
+  "actionMarkAsDone": "Mark as done",
+  "@actionMarkAsDone": {
+    "description": "Default label of the button that clears a suggested follow-up from the list."
   }
 }

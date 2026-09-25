@@ -3,6 +3,7 @@ import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/ui/folo_avatar.dart';
 import 'package:folo/core/ui/folo_chip.dart';
+import 'package:folo/l10n/app_localizations.dart';
 
 /// The unit of Today — a suggestion, not a task (`docs/design/components.md` #12).
 ///
@@ -15,7 +16,7 @@ class ActionItem extends StatelessWidget {
     this.chip,
     this.onOpen,
     this.onResolve,
-    this.resolveLabel = 'Mark as done',
+    this.resolveLabel,
     super.key,
   });
 
@@ -31,13 +32,16 @@ class ActionItem extends StatelessWidget {
   /// Resolves in one tap; the caller collapses the row over
   /// `AppMotion.medium`.
   final VoidCallback? onResolve;
-  final String resolveLabel;
+
+  /// Label of the resolve button. Defaults to the localized "Mark as done".
+  final String? resolveLabel;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final folo = FoloColors.of(context);
     final chipWidget = chip;
+    final label = resolveLabel ?? AppLocalizations.of(context).actionMarkAsDone;
 
     return Material(
       color: folo.surfaceDefault,
@@ -76,7 +80,7 @@ class ActionItem extends StatelessWidget {
                 const SizedBox(width: AppSpacing.sm),
                 IconButton(
                   onPressed: onResolve,
-                  tooltip: resolveLabel,
+                  tooltip: label,
                   icon: const Icon(Icons.check_rounded),
                 ),
               ],
