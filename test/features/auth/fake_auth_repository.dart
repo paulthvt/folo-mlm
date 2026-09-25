@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:folo/features/auth/data/auth_repository.dart';
+import 'package:folo/features/auth/domain/account.dart';
 import 'package:folo/features/auth/domain/auth_change.dart';
 
 /// Records what a screen asked for, and fails or stalls on demand.
@@ -63,4 +64,29 @@ class FakeAuthRepository implements AuthRepository {
 
   @override
   Future<void> signOut() => _record('signOut()');
+
+  @override
+  Account? account;
+
+  /// Saves like the real one: the account changes, then `userUpdated` fires.
+  @override
+  Future<void> updateLocale(String? locale) async {
+    await _record('updateLocale($locale)');
+    final current = account;
+    if (current == null) return;
+    account = Account(
+      firstName: current.firstName,
+      email: current.email,
+      locale: locale,
+    );
+    emit(AuthChange.userUpdated);
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    await _record('deleteAccount()');
+    session = false;
+    account = null;
+    emit(AuthChange.signedOut);
+  }
 }

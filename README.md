@@ -64,6 +64,7 @@ After a PR merges, apply it to the hosted project (one-off `supabase login` and
 
 ```bash
 supabase db push                            # pending migrations
+supabase functions deploy                   # every function in supabase/functions/
 supabase config diff                        # config.toml vs hosted, read-only
 SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET=... supabase config push
 ```

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:folo/app/shell/app_shell.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/layout/breakpoints.dart';
 import 'package:folo/core/ui/action_item.dart';
@@ -26,16 +27,25 @@ class TodayPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return TodayView(snapshot: ref.watch(todaySnapshotProvider));
+    return TodayView(
+      snapshot: ref.watch(todaySnapshotProvider),
+      // With a sidebar, Settings is its account block instead.
+      accountAction: context.screenSize.usesSideNavigation
+          ? null
+          : const AccountButton(),
+    );
   }
 }
 
 /// The screen as a pure function of [snapshot], so it can be previewed and
 /// tested without providers.
 class TodayView extends StatelessWidget {
-  const TodayView({required this.snapshot, super.key});
+  const TodayView({required this.snapshot, this.accountAction, super.key});
 
   final TodaySnapshot? snapshot;
+
+  /// Top-bar entry to Settings, where there is no sidebar to hold it.
+  final Widget? accountAction;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +53,10 @@ class TodayView extends StatelessWidget {
       body: SafeArea(
         child: switch (context.screenSize) {
           ScreenSize.desktop => _Desktop(snapshot: snapshot),
-          ScreenSize.tablet || ScreenSize.mobile => _Column(snapshot: snapshot),
+          ScreenSize.tablet || ScreenSize.mobile => _Column(
+            snapshot: snapshot,
+            accountAction: accountAction,
+          ),
         },
       ),
     );
@@ -53,9 +66,10 @@ class TodayView extends StatelessWidget {
 /// Mobile and tablet: one column, the goal below the fold on purpose — it is
 /// context, not the job.
 class _Column extends StatelessWidget {
-  const _Column({required this.snapshot});
+  const _Column({required this.snapshot, required this.accountAction});
 
   final TodaySnapshot? snapshot;
+  final Widget? accountAction;
 
   @override
   Widget build(BuildContext context) {
@@ -70,6 +84,7 @@ class _Column extends StatelessWidget {
             FoloTopBar(
               eyebrow: data?.dateLabel,
               title: data?.greeting ?? l10n.todayTitle,
+              action: accountAction,
             ),
             if (data == null)
               const _UpToDate()

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/core/supabase/supabase_config.dart';
 import 'package:folo/core/supabase/supabase_provider.dart';
 import 'package:folo/features/auth/data/auth_failure_mapping.dart';
+import 'package:folo/features/auth/domain/account.dart';
 import 'package:folo/features/auth/domain/auth_change.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -24,7 +25,21 @@ class AuthRepository {
 
   bool get hasSession => _auth.currentSession != null;
 
-  Stream<AuthChange> get changes => _auth.onAuthStateChange.map((state) {
+  /// Null when signed out.
+  Account? get account {
+    final user = _auth.currentUser;
+    if (user == null) return null;
+    final metadata = user.userMetadata ?? const <String, dynamic>{};
+    return Account(
+      firstName: (metadata['first_name'] as String?)?.trim() ?? '',
+      email: user.email ?? '',
+      locale: metadata['locale'] as String?,
+    );
+  }
+
+  /// One shared subscription, so the backfill below runs once per sign-in
+  /// however many listeners there are.
+  late final Stream<AuthChange> changes = _auth.onAuthStateChange.map((state) {
     final change = switch (state.event) {
       AuthChangeEvent.signedIn => AuthChange.signedIn,
       AuthChangeEvent.signedOut => AuthChange.signedOut,
@@ -32,9 +47,11 @@ class AuthRepository {
       AuthChangeEvent.userUpdated => AuthChange.userUpdated,
       _ => AuthChange.other,
     };
-    if (change == AuthChange.signedIn) _backfillFirstName(state.session?.user);
+    if (change == AuthChange.signedIn) {
+      _backfillFirstName(state.session?.user);
+    }
     return change;
-  });
+  }).asBroadcastStream();
 
   /// Google and Apple return a name; keep it where the email flow puts it, so
   /// the greeting has one place to read from. Best effort — a failure here must
@@ -90,6 +107,19 @@ class AuthRepository {
 
   Future<void> signOut() => _guard(_auth.signOut);
 
+  /// A language code, or null to follow the system. Kept on the user so it
+  /// follows them to every device.
+  Future<void> updateLocale(String? locale) =>
+      _guard(() => _auth.updateUser(UserAttributes(data: {'locale': locale})));
+
+  /// Deleting needs the secret key, so it happens in the `delete-account` Edge
+  /// Function. The session is then dead server-side; sign out locally only —
+  /// a server sign-out would fail on a user that no longer exists.
+  Future<void> deleteAccount() => _guard(() async {
+    await _client.functions.invoke('delete-account');
+    await _auth.signOut(scope: SignOutScope.local);
+  });
+
   Future<void> _guard(Future<void> Function() call) async {
     try {
       await call();
@@ -102,3 +132,12 @@ class AuthRepository {
 final authRepositoryProvider = Provider<AuthRepository>(
   (ref) => AuthRepository(ref.watch(supabaseClientProvider)),
 );
+
+/// The signed-in user, re-read on every auth change (sign-in, sign-out, a
+/// saved name or language).
+final accountProvider = Provider<Account?>((ref) {
+  final repository = ref.watch(authRepositoryProvider);
+  final subscription = repository.changes.listen((_) => ref.invalidateSelf());
+  ref.onDispose(subscription.cancel);
+  return repository.account;
+});

@@ -2,21 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/auth_redirect.dart';
 import 'package:folo/app/router/routes.dart';
+import 'package:folo/app/shell/app_shell.dart';
 import 'package:folo/features/auth/presentation/check_inbox_page.dart';
 import 'package:folo/features/auth/presentation/forgot_password_page.dart';
 import 'package:folo/features/auth/presentation/login_page.dart';
 import 'package:folo/features/auth/presentation/register_page.dart';
 import 'package:folo/features/auth/presentation/reset_password_page.dart';
 import 'package:folo/features/auth/presentation/welcome_page.dart';
+import 'package:folo/features/settings/presentation/settings_page.dart';
 import 'package:folo/features/today/presentation/today_page.dart';
 import 'package:go_router/go_router.dart';
 
 /// The app router lives in a provider so that it can watch session state and
 /// `redirect` unauthenticated users.
 ///
-/// Still to come: a `StatefulShellRoute` wrapping the authenticated branches, so
-/// the shell can render bottom navigation on mobile and a sidebar on desktop
-/// (see `ScreenSize.usesSideNavigation`).
+/// Signed-in screens sit inside a `ShellRoute` so [AppShell] draws the sidebar
+/// around them. A plain `ShellRoute` is enough while Today is the only
+/// destination; a `StatefulShellRoute` (one stack per tab) comes with the second.
 final routerProvider = Provider<GoRouter>((ref) {
   final status = ref.watch(authStatusProvider);
 
@@ -31,10 +33,21 @@ final routerProvider = Provider<GoRouter>((ref) {
       location: state.matchedLocation,
     ),
     routes: [
-      GoRoute(
-        path: Routes.today,
-        name: Routes.todayName,
-        pageBuilder: (context, state) => _page(state, const TodayPage()),
+      ShellRoute(
+        builder: (context, state, child) =>
+            AppShell(location: state.uri.path, child: child),
+        routes: [
+          GoRoute(
+            path: Routes.today,
+            name: Routes.todayName,
+            pageBuilder: (context, state) => _page(state, const TodayPage()),
+          ),
+          GoRoute(
+            path: Routes.settings,
+            name: Routes.settingsName,
+            pageBuilder: (context, state) => _page(state, const SettingsPage()),
+          ),
+        ],
       ),
       GoRoute(
         path: Routes.welcome,
