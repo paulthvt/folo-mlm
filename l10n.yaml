@@ -1,0 +1,8 @@
+# Generated Dart is not committed (see .gitignore): flutter run/build regenerate
+# it, and CI runs `flutter gen-l10n` explicitly before analyze and test.
+arb-dir: lib/l10n
+template-arb-file: app_en.arb
+output-localization-file: app_localizations.dart
+# Non-nullable so call sites carry no `!`.
+nullable-getter: false
+untranslated-messages-file: l10n_missing.json

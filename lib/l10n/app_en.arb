@@ -1,0 +1,7 @@
+{
+  "@@locale": "en",
+  "todayTitle": "Today",
+  "@todayTitle": {
+    "description": "Title of the Today screen: its top bar before a greeting is known, and the small label above the hero sentence."
+  }
+}
