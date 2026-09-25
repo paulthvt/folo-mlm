@@ -1,0 +1,52 @@
+# Tolgee → one pull request with every language.
+#
+# Tolgee owns every non-English translation. Never hand-edit app_fr.arb and
+# friends: this workflow overwrites them.
+name: l10n pull
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Mondays, 06:00 UTC. Translation happens in batches, not per commit.
+    - cron: '0 6 * * 1'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: l10n-pull
+  cancel-in-progress: false
+
+jobs:
+  pull:
+    name: Open a translation pull request
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      # No --languages filter: one run exports every language, so one pull
+      # request carries all of them.
+      # No --states filter either, so machine output reaches the pull request —
+      # the pull request is the review gate.
+      # No --empty-dir: it would delete the generated Dart in the same folder.
+      - name: Pull
+        env:
+          TOLGEE_API_KEY: ${{ secrets.TOLGEE_API_KEY }}
+        run: npx --yes @tolgee/cli@2 pull --path lib/l10n
+
+      # A no-op when nothing changed, and it reuses the branch — a later run
+      # updates the open pull request instead of opening a second one.
+      - uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7
+        with:
+          branch: chore/l10n-sync
+          title: 'chore(l10n): sync translations'
+          commit-message: 'chore(l10n): sync translations'
+          body: |
+            Automated pull from Tolgee. Review the copy, then merge.
+
+            English is not touched by this branch — it only ever flows the other
+            way, from `app_en.arb` to Tolgee.
+          labels: l10n
+          delete-branch: true
