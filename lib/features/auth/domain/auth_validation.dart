@@ -1,10 +1,19 @@
-/// Pure field validation, shared by every auth form. Each function returns the
-/// message to show, or `null` when the value is fine, so it can be passed
-/// straight to `TextFormField.validator`.
+/// Pure field validation, shared by every auth form. Each function returns what
+/// is wrong with the value, or `null` when it is fine. Copy lives in the
+/// presentation layer (`auth_validation_copy.dart`) so this layer stays
+/// language-free.
 ///
 /// Minimum password length is 8 here *and* in the Supabase project settings —
 /// the client is not the only gate.
 const int minPasswordLength = 8;
+
+enum EmailProblem { empty, malformed }
+
+enum PasswordProblem { empty, tooShort }
+
+enum FirstNameProblem { empty }
+
+enum PasswordConfirmationProblem { empty, mismatch }
 
 /// A typed address differs from the stored one only by case and stray spaces
 /// far more often than users notice. Normalise before validating and before
@@ -16,29 +25,30 @@ String normalizeEmail(String value) => value.trim().toLowerCase();
 // email arriving.
 final RegExp _emailPattern = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
 
-String? validateEmail(String? value) {
+EmailProblem? validateEmail(String? value) {
   final email = normalizeEmail(value ?? '');
-  if (email.isEmpty) return 'Enter your email address.';
-  if (!_emailPattern.hasMatch(email)) {
-    return 'That address does not look right.';
-  }
+  if (email.isEmpty) return EmailProblem.empty;
+  if (!_emailPattern.hasMatch(email)) return EmailProblem.malformed;
   return null;
 }
 
-String? validatePassword(String? value) {
+PasswordProblem? validatePassword(String? value) {
   final password = value ?? '';
-  if (password.isEmpty) return 'Enter a password.';
-  if (password.length < minPasswordLength) return 'At least 8 characters.';
+  if (password.isEmpty) return PasswordProblem.empty;
+  if (password.length < minPasswordLength) return PasswordProblem.tooShort;
   return null;
 }
 
-String? validateFirstName(String? value) {
-  if ((value ?? '').trim().isEmpty) return 'Enter your first name.';
+FirstNameProblem? validateFirstName(String? value) {
+  if ((value ?? '').trim().isEmpty) return FirstNameProblem.empty;
   return null;
 }
 
-String? validatePasswordConfirmation(String? value, String password) {
-  if ((value ?? '').isEmpty) return 'Confirm your password.';
-  if (value != password) return 'Those passwords do not match.';
+PasswordConfirmationProblem? validatePasswordConfirmation(
+  String? value,
+  String password,
+) {
+  if ((value ?? '').isEmpty) return PasswordConfirmationProblem.empty;
+  if (value != password) return PasswordConfirmationProblem.mismatch;
   return null;
 }

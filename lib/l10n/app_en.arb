@@ -3,5 +3,34 @@
   "todayTitle": "Today",
   "@todayTitle": {
     "description": "Title of the Today screen: its top bar before a greeting is known, and the small label above the hero sentence."
+  },
+  "authEmailRequired": "Enter your email address.",
+  "@authEmailRequired": {
+    "description": "Validation error under the email field when it is empty."
+  },
+  "authEmailInvalid": "That address does not look right.",
+  "@authEmailInvalid": {
+    "description": "Validation error under the email field when the address is malformed."
+  },
+  "authPasswordRequired": "Enter a password.",
+  "@authPasswordRequired": {
+    "description": "Validation error under the password field when it is empty."
+  },
+  "authPasswordTooShort": "At least {count} characters.",
+  "@authPasswordTooShort": {
+    "description": "Validation error under the password field when the password is shorter than the minimum. A complete sentence.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "authFirstNameRequired": "Enter your first name.",
+  "@authFirstNameRequired": {
+    "description": "Validation error under the first name field when it is empty."
+  },
+  "authPasswordConfirmationRequired": "Confirm your password.",
+  "@authPasswordConfirmationRequired": {
+    "description": "Validation error under the confirm-password field when it is empty."
+  },
+  "authPasswordConfirmationMismatch": "Those passwords do not match.",
+  "@authPasswordConfirmationMismatch": {
+    "description": "Validation error under the confirm-password field when it differs from the password above it."
   }
 }
