@@ -5,6 +5,7 @@ import 'package:folo/app/router/routes.dart';
 import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/auth_failure.dart';
+import 'package:folo/features/auth/domain/auth_validation.dart';
 import 'package:folo/features/auth/presentation/register_page.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -55,7 +56,7 @@ void main() {
 
     expect(find.text('Create your account'), findsOneWidget);
     expect(find.text('First name'), findsOneWidget);
-    expect(find.text('At least 8 characters'), findsOneWidget);
+    expect(find.text('At least $minPasswordLength characters'), findsOneWidget);
     expect(find.text('Create account'), findsOneWidget);
   });
 
@@ -79,7 +80,10 @@ void main() {
     await tester.tap(find.text('Create account'));
     await tester.pumpAndSettle();
 
-    expect(find.text('At least 8 characters.'), findsOneWidget);
+    expect(
+      find.text('At least $minPasswordLength characters.'),
+      findsOneWidget,
+    );
     expect(fake.calls, isEmpty);
   });
 

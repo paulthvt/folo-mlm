@@ -71,6 +71,11 @@ arrival.
 - **Never** edit English in Tolgee, and never hand-edit a translated `.arb`:
   each direction overwrites the other.
 
+`.tolgeerc` is what makes the CLI speak Flutter ARB instead of its own JSON
+format, and what keeps a pulled file named `app_fr.arb` rather than `fr.arb`.
+Changing it breaks both directions; `test/l10n/tolgee_config_test.dart` pins the
+parts that matter.
+
 Generated Dart (`lib/l10n/app_localizations*.dart`) is not committed. Run
 `flutter gen-l10n` after changing an ARB file, or just `flutter run`.
 

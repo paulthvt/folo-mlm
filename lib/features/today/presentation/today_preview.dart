@@ -3,6 +3,7 @@ import 'package:flutter/widget_previews.dart';
 import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/features/today/domain/today_snapshot.dart';
 import 'package:folo/features/today/presentation/today_page.dart';
+import 'package:folo/l10n/app_localizations.dart';
 
 /// Today in both modes and both layouts, for `flutter widget-preview start`.
 ///
@@ -27,6 +28,10 @@ Widget todayEmptyLight() => _app(AppTheme.light, null);
 Widget _app(ThemeData theme, TodaySnapshot? snapshot) {
   return MaterialApp(
     debugShowCheckedModeBanner: false,
+    // The preview is its own app: without the delegates, any component that
+    // reads AppLocalizations throws here.
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
     theme: theme,
     home: TodayView(snapshot: snapshot),
   );

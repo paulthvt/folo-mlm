@@ -27,20 +27,41 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       # No --languages filter: one run exports every language, so one pull
-      # request carries all of them.
+      # request carries all of them — and a language added in the Tolgee UI
+      # needs no edit here.
       # No --states filter either, so machine output reaches the pull request —
       # the pull request is the review gate.
-      # No --empty-dir: it would delete the generated Dart in the same folder.
+      #
+      # The export lands in build/l10n (see .tolgeerc), not lib/l10n, for two
+      # reasons: it contains English, which the repository owns and this branch
+      # must never touch, and --empty-dir on the real folder would delete the
+      # generated Dart beside the ARB files.
       - name: Pull
         env:
           TOLGEE_API_KEY: ${{ secrets.TOLGEE_API_KEY }}
-        run: npx --yes @tolgee/cli@2 pull --path lib/l10n
+        run: npx --yes @tolgee/cli@2 pull --empty-dir
+
+      - name: Copy every language except English into lib/l10n
+        run: |
+          shopt -s nullglob
+          copied=0
+          for file in build/l10n/app_*.arb; do
+            [ "$(basename "$file")" = 'app_en.arb' ] && continue
+            cp "$file" lib/l10n/
+            copied=$((copied + 1))
+          done
+          # Zero files means the export was empty or the format is wrong — an
+          # empty pull request would hide that.
+          [ "$copied" -gt 0 ] || { echo 'no translated ARB files in the export'; exit 1; }
+          echo "copied $copied language(s)"
 
       # A no-op when nothing changed, and it reuses the branch — a later run
       # updates the open pull request instead of opening a second one.
       - uses: peter-evans/create-pull-request@22a9089034f40e5a961c8808d113e2c98fb63676 # v7
         with:
           branch: chore/l10n-sync
+          # Only the translations: the staging copy in build/ is never committed.
+          add-paths: lib/l10n/*.arb
           title: 'chore(l10n): sync translations'
           commit-message: 'chore(l10n): sync translations'
           body: |

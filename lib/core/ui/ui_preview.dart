@@ -12,6 +12,7 @@ import 'package:folo/core/ui/folo_top_bar.dart';
 import 'package:folo/core/ui/goal_card.dart';
 import 'package:folo/core/ui/section_header.dart';
 import 'package:folo/core/ui/stat_tile.dart';
+import 'package:folo/l10n/app_localizations.dart';
 
 /// Every shared component in one sheet, both modes, for
 /// `flutter widget-preview start`. Nothing in the app imports this file.
@@ -24,6 +25,10 @@ Widget uiComponentsDark() => _sheet(AppTheme.dark);
 Widget _sheet(ThemeData theme) {
   return MaterialApp(
     debugShowCheckedModeBanner: false,
+    // The preview is its own app: without the delegates, any component that
+    // reads AppLocalizations throws here.
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
     theme: theme,
     home: const Scaffold(body: SafeArea(child: _Gallery())),
   );

@@ -77,7 +77,7 @@ void main() {
     expect(find.text('Check your inbox'), findsOneWidget);
   });
 
-  testWidgets('a missing address still renders and can still resend', (
+  testWidgets('a missing address still renders and offers no resend', (
     tester,
   ) async {
     final fake = FakeAuthRepository();
