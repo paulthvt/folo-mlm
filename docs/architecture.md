@@ -95,13 +95,30 @@ very wide screens.
 The visual identity stays identical across platforms; only layout and navigation
 patterns adapt.
 
-### Not yet present, by design
-
-Firebase Cloud Messaging, a profiles table, account deletion, localisation,
-local persistence beyond the Supabase session, analytics, CI. Each will be added
-when the feature that needs it is built.
+### Backend — Supabase
 
 Supabase arrived with auth (#21): the client is a provider in
 `core/supabase/`, its project URL and publishable key are committed there, and
 all access sits behind `features/<x>/data/` repositories. The service-role key
 is not in this repo and must never be.
+
+The project itself is described by `supabase/` (#28), not by the dashboard:
+
+- `supabase/config.toml` holds the auth settings (Site URL, redirect URLs,
+  email confirmation, password length, Google). It was pulled from the hosted
+  project; a change there is a PR here first. Secrets are `env(...)` references,
+  never values.
+- `supabase/migrations/` is the only way the schema changes. CI replays every
+  migration onto an empty database, so a migration that does not apply cleanly
+  fails the PR.
+
+Migrations reach the hosted project by hand, after merge, with
+`supabase db push`. One maintainer, rare migrations: a deploy job would be more
+secrets than it saves. Automate it when either stops being true.
+
+### Not yet present, by design
+
+Firebase Cloud Messaging, database tables (a `profiles` table included — the
+user's first name lives in auth `user_metadata` until something needs more),
+account deletion, local persistence beyond the Supabase session, analytics.
+Each will be added when the feature that needs it is built.

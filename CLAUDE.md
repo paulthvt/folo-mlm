@@ -14,8 +14,8 @@ activity, goals. Everything points at one question: **"What should I do today?"*
 It must not read as an MLM or sales tool. No leaderboards, no rank badges, no
 "recruit" language in UI copy or naming.
 
-Current state: technical foundation only. No auth, no backend, no design system,
-no product features.
+Current state: design system, Supabase auth, EN/FR localisation, Today screen on
+sample data. No database tables and no product data model yet.
 
 ## Essential Commands
 
@@ -90,7 +90,9 @@ already-installed packages first.
 
 - Don't scaffold for later. No placeholder screens, no fake data, no empty
   abstraction layers. If it isn't needed by the task, leave it out.
-- Don't introduce Supabase or Firebase until a feature needs them. When Supabase
-  lands: a single client provider in `core/`, access behind repositories in
-  `features/<x>/data/`.
+- Don't introduce Firebase until a feature needs it. Supabase: single client
+  provider in `core/supabase/`, access behind repositories in
+  `features/<x>/data/`. Schema changes only via `supabase/migrations/`
+  (`supabase migration new`), auth settings only via `supabase/config.toml` —
+  never the dashboard.
 - Flag a significant architectural decision before making it, briefly.
