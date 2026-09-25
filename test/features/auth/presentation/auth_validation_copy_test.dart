@@ -4,11 +4,11 @@ import 'package:folo/features/auth/domain/auth_validation.dart';
 import 'package:folo/features/auth/presentation/auth_validation_copy.dart';
 import 'package:folo/l10n/app_localizations.dart';
 
-/// The mappers need an [AppLocalizations], which only exists under a
-/// localized widget tree. Pumping one and capturing it is cheaper than
-/// loading the delegate by hand in every test.
-Future<AppLocalizations> _localizations(WidgetTester tester) async {
-  late AppLocalizations l10n;
+/// Pumps a widget that hands the English AppLocalizations to [body].
+Future<void> _withL10n(
+  WidgetTester tester,
+  void Function(AppLocalizations l10n) body,
+) async {
   await tester.pumpWidget(
     MaterialApp(
       locale: const Locale('en'),
@@ -16,58 +16,55 @@ Future<AppLocalizations> _localizations(WidgetTester tester) async {
       supportedLocales: AppLocalizations.supportedLocales,
       home: Builder(
         builder: (context) {
-          l10n = AppLocalizations.of(context);
+          body(AppLocalizations.of(context));
           return const SizedBox.shrink();
         },
       ),
     ),
   );
-  return l10n;
 }
 
 void main() {
-  testWidgets('every email problem has copy', (tester) async {
-    final l10n = await _localizations(tester);
-
-    expect(emailProblemCopy(l10n, EmailProblem.empty), isNotEmpty);
-    expect(emailProblemCopy(l10n, EmailProblem.malformed), isNotEmpty);
+  testWidgets('a valid value has no error', (tester) async {
+    await _withL10n(tester, (l10n) {
+      expect(emailFieldError(l10n, 'pauline@example.com'), isNull);
+      expect(passwordFieldError(l10n, 'abcdefgh'), isNull);
+      expect(firstNameFieldError(l10n, 'Pauline'), isNull);
+      expect(
+        passwordConfirmationFieldError(l10n, 'abcdefgh', 'abcdefgh'),
+        isNull,
+      );
+    });
   });
 
-  testWidgets('a null problem has no copy', (tester) async {
-    final l10n = await _localizations(tester);
-
-    expect(emailProblemCopy(l10n, null), isNull);
-    expect(passwordProblemCopy(l10n, null), isNull);
-    expect(firstNameProblemCopy(l10n, null), isNull);
-    expect(passwordConfirmationProblemCopy(l10n, null), isNull);
+  testWidgets('each problem maps to its own sentence', (tester) async {
+    await _withL10n(tester, (l10n) {
+      expect(emailFieldError(l10n, ''), 'Enter your email address.');
+      expect(
+        emailFieldError(l10n, 'pauline'),
+        'That address does not look right.',
+      );
+      expect(passwordFieldError(l10n, ''), 'Enter a password.');
+      expect(firstNameFieldError(l10n, '  '), 'Enter your first name.');
+      expect(
+        passwordConfirmationFieldError(l10n, '', 'abcdefgh'),
+        'Confirm your password.',
+      );
+      expect(
+        passwordConfirmationFieldError(l10n, 'nope', 'abcdefgh'),
+        'Those passwords do not match.',
+      );
+    });
   });
 
-  // The minimum is a constant, not a literal in the sentence: a change to
-  // minPasswordLength must reach the message without a copy edit.
-  testWidgets('the too-short message names the minimum', (tester) async {
-    final l10n = await _localizations(tester);
-
-    expect(
-      passwordProblemCopy(l10n, PasswordProblem.tooShort),
-      contains('$minPasswordLength'),
-    );
-  });
-
-  testWidgets('the other problems have copy', (tester) async {
-    final l10n = await _localizations(tester);
-
-    expect(passwordProblemCopy(l10n, PasswordProblem.empty), isNotEmpty);
-    expect(firstNameProblemCopy(l10n, FirstNameProblem.empty), isNotEmpty);
-    expect(
-      passwordConfirmationProblemCopy(l10n, PasswordConfirmationProblem.empty),
-      isNotEmpty,
-    );
-    expect(
-      passwordConfirmationProblemCopy(
-        l10n,
-        PasswordConfirmationProblem.mismatch,
-      ),
-      isNotEmpty,
-    );
+  // The message states the number, so the number must come from the constant.
+  // Bumping minPasswordLength must not leave the copy behind.
+  testWidgets('the too-short message names minPasswordLength', (tester) async {
+    await _withL10n(tester, (l10n) {
+      expect(
+        passwordFieldError(l10n, 'a' * (minPasswordLength - 1)),
+        'At least $minPasswordLength characters.',
+      );
+    });
   });
 }
