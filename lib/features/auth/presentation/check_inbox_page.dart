@@ -9,6 +9,7 @@ import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
 import 'package:folo/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:folo/features/auth/presentation/widgets/form_error.dart';
 import 'package:folo/features/auth/presentation/widgets/submit_button.dart';
+import 'package:folo/l10n/app_localizations.dart';
 
 /// One screen for both "confirm your email" and "we sent a reset link".
 ///
@@ -63,6 +64,7 @@ class _CheckInboxPageState extends ConsumerState<CheckInboxPage> {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context);
     final scheme = Theme.of(context).colorScheme;
     final hasEmail = widget.email.isNotEmpty;
 
@@ -73,34 +75,36 @@ class _CheckInboxPageState extends ConsumerState<CheckInboxPage> {
           spacing: AppSpacing.sm,
           children: [
             Text(
-              _isReset ? 'Check your email' : 'Check your inbox',
+              _isReset ? l10n.authCheckEmailTitle : l10n.authCheckInboxTitle,
               style: text.titleLarge,
             ),
             Text(
               _isReset
                   // Says nothing about whether the address is registered.
-                  ? 'If an account exists for that address, we sent a link.'
+                  ? l10n.authResetLinkSentBody
                   : hasEmail
-                  ? 'We sent a confirmation link to ${widget.email}. Open it to '
-                        'finish setting up your account.'
-                  : 'We sent a confirmation link. Open it to finish setting up '
-                        'your account.',
+                  ? l10n.authCheckInboxBodyWithEmail(widget.email)
+                  : l10n.authCheckInboxBody,
               style: text.bodyMedium,
             ),
           ],
         ),
-        if (_failure != null) FormError(authFailureCopy(_failure!)),
+        if (_failure != null) FormError(authFailureCopy(l10n, _failure!)),
         if (_sent)
           Text(
-            'Sent. It can take a minute to arrive.',
+            l10n.authResendSent,
             style: text.bodySmall?.copyWith(color: scheme.primary),
           ),
         if (hasEmail)
-          SubmitButton(label: 'Resend email', busy: _busy, onPressed: _resend),
+          SubmitButton(
+            label: l10n.authResendEmailAction,
+            busy: _busy,
+            onPressed: _resend,
+          ),
         Center(
           child: TextButton(
             onPressed: () => backOr(context, Routes.login),
-            child: const Text('Back to sign in'),
+            child: Text(l10n.authBackToSignIn),
           ),
         ),
       ],

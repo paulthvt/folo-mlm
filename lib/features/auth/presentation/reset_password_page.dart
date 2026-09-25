@@ -6,10 +6,12 @@ import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/auth_failure.dart';
 import 'package:folo/features/auth/domain/auth_validation.dart';
 import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
+import 'package:folo/features/auth/presentation/auth_validation_copy.dart';
 import 'package:folo/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:folo/features/auth/presentation/widgets/form_error.dart';
 import 'package:folo/features/auth/presentation/widgets/password_field.dart';
 import 'package:folo/features/auth/presentation/widgets/submit_button.dart';
+import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 /// Reached by the recovery deep link, which has already created a session — so
@@ -71,11 +73,12 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context);
 
     return AuthScaffold(
       children: [
-        Text('Choose a new password', style: text.headlineSmall),
-        if (_failure != null) FormError(authFailureCopy(_failure!)),
+        Text(l10n.authNewPasswordTitle, style: text.headlineSmall),
+        if (_failure != null) FormError(authFailureCopy(l10n, _failure!)),
         Form(
           key: _form,
           child: Column(
@@ -84,21 +87,21 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
             children: [
               PasswordField(
                 controller: _password,
-                label: 'New password',
-                helper: 'At least 8 characters',
+                label: l10n.authNewPasswordLabel,
+                helper: l10n.authPasswordHelperMinimum(minPasswordLength),
                 enabled: !_busy,
-                validator: validatePassword,
+                validator: (value) => passwordFieldError(l10n, value),
               ),
               PasswordField(
                 controller: _confirmation,
-                label: 'Confirm password',
+                label: l10n.authConfirmPasswordLabel,
                 enabled: !_busy,
                 validator: (value) =>
-                    validatePasswordConfirmation(value, _password.text),
+                    passwordConfirmationFieldError(l10n, value, _password.text),
                 onSubmitted: (_) => _busy ? null : _submit(),
               ),
               SubmitButton(
-                label: 'Save and sign in',
+                label: l10n.authSaveAndSignInAction,
                 busy: _busy,
                 onPressed: _submit,
               ),
@@ -111,7 +114,7 @@ class _ResetPasswordPageState extends ConsumerState<ResetPasswordPage> {
         Center(
           child: TextButton(
             onPressed: _busy ? null : _leave,
-            child: const Text('Back to sign in'),
+            child: Text(l10n.authBackToSignIn),
           ),
         ),
       ],

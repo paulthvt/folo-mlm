@@ -60,5 +60,143 @@
   "authFailureUnknown": "Something went wrong. Try again.",
   "@authFailureUnknown": {
     "description": "Fallback error for a failure with no specific cause."
+  },
+  "authWelcomeHeadline": "Know what to do next.",
+  "@authWelcomeHeadline": {
+    "description": "Main promise on the signed-out welcome screen, under the Folo wordmark."
+  },
+  "authWelcomeBody": "Organize your relationships, know what to do next.",
+  "@authWelcomeBody": {
+    "description": "Supporting sentence on the signed-out welcome screen."
+  },
+  "authContinueWithGoogle": "Continue with Google",
+  "@authContinueWithGoogle": {
+    "description": "Button that starts Google sign-in. Google is a brand name and stays untranslated."
+  },
+  "authContinueWithEmail": "Continue with email",
+  "@authContinueWithEmail": {
+    "description": "Button that opens the email sign-in form."
+  },
+  "authNewHere": "New here?",
+  "@authNewHere": {
+    "description": "Label beside the create-an-account link, on the welcome and sign-in screens."
+  },
+  "authCreateAccountAction": "Create an account",
+  "@authCreateAccountAction": {
+    "description": "Link to the registration screen. A link, not the submit button — see authCreateAccountSubmit."
+  },
+  "authLoginTitle": "Welcome back",
+  "@authLoginTitle": {
+    "description": "Heading of the email sign-in screen."
+  },
+  "authEmailLabel": "Email",
+  "@authEmailLabel": {
+    "description": "Label of the email input."
+  },
+  "authPasswordLabel": "Password",
+  "@authPasswordLabel": {
+    "description": "Label of the password input on the sign-in and registration screens."
+  },
+  "authForgotPasswordAction": "Forgot password?",
+  "@authForgotPasswordAction": {
+    "description": "Link under the password field that opens the password-reset request screen."
+  },
+  "authSignInAction": "Sign in",
+  "@authSignInAction": {
+    "description": "Submit button of the sign-in form, and the link back to it from the registration screen."
+  },
+  "authRegisterTitle": "Create your account",
+  "@authRegisterTitle": {
+    "description": "Heading of the registration screen."
+  },
+  "authFirstNameLabel": "First name",
+  "@authFirstNameLabel": {
+    "description": "Label of the first-name input on the registration screen."
+  },
+  "authPasswordHelperMinimum": "At least {count} characters",
+  "@authPasswordHelperMinimum": {
+    "description": "Helper text under a new-password input, stating the minimum length. Not a sentence and takes no full stop — the error message authPasswordTooShort is the sentence version.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "authCreateAccountSubmit": "Create account",
+  "@authCreateAccountSubmit": {
+    "description": "Submit button of the registration form."
+  },
+  "authRegisterTerms": "By creating an account you agree to the terms and the privacy policy.",
+  "@authRegisterTerms": {
+    "description": "Small print under the registration form."
+  },
+  "authAlreadyHaveAccount": "Already have an account?",
+  "@authAlreadyHaveAccount": {
+    "description": "Label beside the sign-in link on the registration screen."
+  },
+  "authForgotTitle": "Reset your password",
+  "@authForgotTitle": {
+    "description": "Heading of the screen that requests a password-reset link."
+  },
+  "authForgotBody": "Enter the address you signed up with and we will send a link.",
+  "@authForgotBody": {
+    "description": "Instruction on the password-reset request screen."
+  },
+  "authSendResetLinkAction": "Send reset link",
+  "@authSendResetLinkAction": {
+    "description": "Submit button that requests a password-reset email."
+  },
+  "authBackToSignIn": "Back to sign in",
+  "@authBackToSignIn": {
+    "description": "Link back to the sign-in screen, on the reset, check-inbox and new-password screens."
+  },
+  "authCheckEmailTitle": "Check your email",
+  "@authCheckEmailTitle": {
+    "description": "Heading of the check-your-inbox screen after requesting a password reset."
+  },
+  "authCheckInboxTitle": "Check your inbox",
+  "@authCheckInboxTitle": {
+    "description": "Heading of the check-your-inbox screen after registering."
+  },
+  "authResetLinkSentBody": "If an account exists for that address, we sent a link.",
+  "@authResetLinkSentBody": {
+    "description": "Body after requesting a password reset. Deliberately vague: it must not reveal whether the address is registered."
+  },
+  "authCheckInboxBodyWithEmail": "We sent a confirmation link to {email}. Open it to finish setting up your account.",
+  "@authCheckInboxBodyWithEmail": {
+    "description": "Body of the check-your-inbox screen after registration, when the address is known.",
+    "placeholders": { "email": { "type": "String" } }
+  },
+  "authCheckInboxBody": "We sent a confirmation link. Open it to finish setting up your account.",
+  "@authCheckInboxBody": {
+    "description": "Body of the check-your-inbox screen after registration, when the address is not known — the same message without the address."
+  },
+  "authResendSent": "Sent. It can take a minute to arrive.",
+  "@authResendSent": {
+    "description": "Confirmation shown after re-sending a confirmation or reset email."
+  },
+  "authResendEmailAction": "Resend email",
+  "@authResendEmailAction": {
+    "description": "Button that re-sends the confirmation or reset email."
+  },
+  "authNewPasswordTitle": "Choose a new password",
+  "@authNewPasswordTitle": {
+    "description": "Heading of the screen reached from a password-recovery link."
+  },
+  "authNewPasswordLabel": "New password",
+  "@authNewPasswordLabel": {
+    "description": "Label of the new-password input."
+  },
+  "authConfirmPasswordLabel": "Confirm password",
+  "@authConfirmPasswordLabel": {
+    "description": "Label of the input that repeats the new password."
+  },
+  "authSaveAndSignInAction": "Save and sign in",
+  "@authSaveAndSignInAction": {
+    "description": "Submit button that saves the new password and continues into the app."
+  },
+  "authShowPassword": "Show password",
+  "@authShowPassword": {
+    "description": "Tooltip on the reveal toggle inside a password field, while the password is hidden."
+  },
+  "authHidePassword": "Hide password",
+  "@authHidePassword": {
+    "description": "Tooltip on the reveal toggle inside a password field, while the password is visible."
   }
 }
