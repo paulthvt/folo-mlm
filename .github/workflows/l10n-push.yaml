@@ -1,0 +1,41 @@
+# English → Tolgee.
+#
+# The repository owns which keys exist and what English says. Never edit English
+# in the Tolgee UI: the next run of this workflow overwrites it.
+name: l10n push
+
+on:
+  push:
+    branches: [main]
+    paths: ['lib/l10n/app_en.arb']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: l10n-push
+  cancel-in-progress: false
+
+jobs:
+  push:
+    name: Push English to Tolgee
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      # --languages en: a push must never touch a translation.
+      # --override-key-descriptions: the ARB descriptions are the machine
+      #   translator's only context.
+      # --remove-other-keys: a key deleted here is deleted there, otherwise it
+      #   lives on in the platform and returns in every language's pull.
+      - name: Push
+        env:
+          TOLGEE_API_KEY: ${{ secrets.TOLGEE_API_KEY }}
+        run: |
+          npx --yes @tolgee/cli@2 push \
+            --force-mode OVERRIDE \
+            --languages en \
+            --override-key-descriptions \
+            --remove-other-keys

@@ -7,6 +7,7 @@ import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/auth_failure.dart';
 import 'package:folo/features/auth/presentation/check_inbox_page.dart';
+import 'package:folo/l10n/app_localizations.dart';
 
 import '../fake_auth_repository.dart';
 
@@ -17,6 +18,9 @@ Widget _host(
 }) => ProviderScope(
   overrides: [authRepositoryProvider.overrideWithValue(fake)],
   child: MaterialApp(
+    locale: const Locale('en'),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
     theme: AppTheme.light,
     home: CheckInboxPage(reason: reason, email: email),
   ),
@@ -73,13 +77,22 @@ void main() {
     expect(find.text('Check your inbox'), findsOneWidget);
   });
 
-  testWidgets('a missing address still renders and can still resend', (
+  testWidgets('a missing address still renders and offers no resend', (
     tester,
   ) async {
     final fake = FakeAuthRepository();
     await tester.pumpWidget(_host(fake, email: ''));
 
     expect(find.text('Check your inbox'), findsOneWidget);
+    // Two keys, one branch: the address-free body is its own message, not the
+    // other one with an empty placeholder.
+    expect(
+      find.text(
+        'We sent a confirmation link. Open it to finish setting up your '
+        'account.',
+      ),
+      findsOneWidget,
+    );
     expect(find.widgetWithText(FilledButton, 'Resend email'), findsNothing);
   });
 

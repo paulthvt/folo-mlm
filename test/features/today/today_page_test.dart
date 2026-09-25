@@ -7,6 +7,7 @@ import 'package:folo/core/ui/activity_item.dart';
 import 'package:folo/core/ui/goal_card.dart';
 import 'package:folo/features/today/domain/today_snapshot.dart';
 import 'package:folo/features/today/presentation/today_page.dart';
+import 'package:folo/l10n/app_localizations.dart';
 
 const _mobile = Size(390, 844);
 const _desktop = Size(1440, 900);
@@ -23,6 +24,9 @@ Future<void> _pump(
 
   await tester.pumpWidget(
     MaterialApp(
+      locale: const Locale('en'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: AppTheme.light,
       home: TodayView(snapshot: snapshot),
     ),

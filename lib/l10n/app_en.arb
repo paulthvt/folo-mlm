@@ -1,0 +1,226 @@
+{
+  "@@locale": "en",
+  "todayTitle": "Today",
+  "@todayTitle": {
+    "description": "Title of the Today screen: its top bar before a greeting is known, and the small label above the hero sentence."
+  },
+  "authEmailRequired": "Enter your email address.",
+  "@authEmailRequired": {
+    "description": "Validation error under the email field when it is empty."
+  },
+  "authEmailInvalid": "That address does not look right.",
+  "@authEmailInvalid": {
+    "description": "Validation error under the email field when the address is malformed."
+  },
+  "authPasswordRequired": "Enter a password.",
+  "@authPasswordRequired": {
+    "description": "Validation error under the password field when it is empty."
+  },
+  "authPasswordTooShort": "At least {count} characters.",
+  "@authPasswordTooShort": {
+    "description": "Validation error under the password field when the password is shorter than the minimum. A complete sentence.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "authFirstNameRequired": "Enter your first name.",
+  "@authFirstNameRequired": {
+    "description": "Validation error under the first name field when it is empty."
+  },
+  "authPasswordConfirmationRequired": "Confirm your password.",
+  "@authPasswordConfirmationRequired": {
+    "description": "Validation error under the confirm-password field when it is empty."
+  },
+  "authPasswordConfirmationMismatch": "Those passwords do not match.",
+  "@authPasswordConfirmationMismatch": {
+    "description": "Validation error under the confirm-password field when it differs from the password above it."
+  },
+  "authFailureInvalidCredentials": "Email or password is incorrect.",
+  "@authFailureInvalidCredentials": {
+    "description": "Sign-in error. Must not say which of the two was wrong, and must not reveal whether the account exists."
+  },
+  "authFailureEmailNotConfirmed": "Confirm your email first. We can send the link again.",
+  "@authFailureEmailNotConfirmed": {
+    "description": "Sign-in error when the account exists but its email was never confirmed."
+  },
+  "authFailureSamePassword": "That is already your password. Choose a different one.",
+  "@authFailureSamePassword": {
+    "description": "Password-reset error when the new password equals the current one."
+  },
+  "authFailureWeakPassword": "That password is too easy to guess. Choose another one.",
+  "@authFailureWeakPassword": {
+    "description": "Error when the server rejects a password as too weak."
+  },
+  "authFailureRateLimited": "Too many attempts. Try again in a few minutes.",
+  "@authFailureRateLimited": {
+    "description": "Error after too many requests in a short time."
+  },
+  "authFailureNetwork": "We could not reach Folo. Check your connection.",
+  "@authFailureNetwork": {
+    "description": "Error when the request never reached the server. Folo is the product name and is not translated."
+  },
+  "authFailureUnknown": "Something went wrong. Try again.",
+  "@authFailureUnknown": {
+    "description": "Fallback error for a failure with no specific cause."
+  },
+  "authWelcomeHeadline": "Know what to do next.",
+  "@authWelcomeHeadline": {
+    "description": "Main promise on the signed-out welcome screen, under the Folo wordmark."
+  },
+  "authWelcomeBody": "Organize your relationships, know what to do next.",
+  "@authWelcomeBody": {
+    "description": "Supporting sentence on the signed-out welcome screen."
+  },
+  "authContinueWithGoogle": "Continue with Google",
+  "@authContinueWithGoogle": {
+    "description": "Button that starts Google sign-in. Google is a brand name and stays untranslated."
+  },
+  "authContinueWithEmail": "Continue with email",
+  "@authContinueWithEmail": {
+    "description": "Button that opens the email sign-in form."
+  },
+  "authNewHere": "New here?",
+  "@authNewHere": {
+    "description": "Label beside the create-an-account link, on the welcome and sign-in screens."
+  },
+  "authCreateAccountAction": "Create an account",
+  "@authCreateAccountAction": {
+    "description": "Link to the registration screen. A link, not the submit button — see authCreateAccountSubmit."
+  },
+  "authLoginTitle": "Welcome back",
+  "@authLoginTitle": {
+    "description": "Heading of the email sign-in screen."
+  },
+  "authEmailLabel": "Email",
+  "@authEmailLabel": {
+    "description": "Label of the email input."
+  },
+  "authPasswordLabel": "Password",
+  "@authPasswordLabel": {
+    "description": "Label of the password input on the sign-in and registration screens."
+  },
+  "authForgotPasswordAction": "Forgot password?",
+  "@authForgotPasswordAction": {
+    "description": "Link under the password field that opens the password-reset request screen."
+  },
+  "authSignInAction": "Sign in",
+  "@authSignInAction": {
+    "description": "Submit button of the sign-in form, and the link back to it from the registration screen."
+  },
+  "authRegisterTitle": "Create your account",
+  "@authRegisterTitle": {
+    "description": "Heading of the registration screen."
+  },
+  "authFirstNameLabel": "First name",
+  "@authFirstNameLabel": {
+    "description": "Label of the first-name input on the registration screen."
+  },
+  "authPasswordHelperMinimum": "At least {count} characters",
+  "@authPasswordHelperMinimum": {
+    "description": "Helper text under a new-password input, stating the minimum length. Not a sentence and takes no full stop — the error message authPasswordTooShort is the sentence version.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "authCreateAccountSubmit": "Create account",
+  "@authCreateAccountSubmit": {
+    "description": "Submit button of the registration form."
+  },
+  "authRegisterTerms": "By creating an account you agree to the terms and the privacy policy.",
+  "@authRegisterTerms": {
+    "description": "Small print under the registration form."
+  },
+  "authAlreadyHaveAccount": "Already have an account?",
+  "@authAlreadyHaveAccount": {
+    "description": "Label beside the sign-in link on the registration screen."
+  },
+  "authForgotTitle": "Reset your password",
+  "@authForgotTitle": {
+    "description": "Heading of the screen that requests a password-reset link."
+  },
+  "authForgotBody": "Enter the address you signed up with and we will send a link.",
+  "@authForgotBody": {
+    "description": "Instruction on the password-reset request screen."
+  },
+  "authSendResetLinkAction": "Send reset link",
+  "@authSendResetLinkAction": {
+    "description": "Submit button that requests a password-reset email."
+  },
+  "authBackToSignIn": "Back to sign in",
+  "@authBackToSignIn": {
+    "description": "Link back to the sign-in screen, on the reset, check-inbox and new-password screens."
+  },
+  "authCheckEmailTitle": "Check your email",
+  "@authCheckEmailTitle": {
+    "description": "Heading of the check-your-inbox screen after requesting a password reset."
+  },
+  "authCheckInboxTitle": "Check your inbox",
+  "@authCheckInboxTitle": {
+    "description": "Heading of the check-your-inbox screen after registering."
+  },
+  "authResetLinkSentBody": "If an account exists for that address, we sent a link.",
+  "@authResetLinkSentBody": {
+    "description": "Body after requesting a password reset. Deliberately vague: it must not reveal whether the address is registered."
+  },
+  "authCheckInboxBodyWithEmail": "We sent a confirmation link to {email}. Open it to finish setting up your account.",
+  "@authCheckInboxBodyWithEmail": {
+    "description": "Body of the check-your-inbox screen after registration, when the address is known.",
+    "placeholders": { "email": { "type": "String" } }
+  },
+  "authCheckInboxBody": "We sent a confirmation link. Open it to finish setting up your account.",
+  "@authCheckInboxBody": {
+    "description": "Body of the check-your-inbox screen after registration, when the address is not known — the same message without the address."
+  },
+  "authResendSent": "Sent. It can take a minute to arrive.",
+  "@authResendSent": {
+    "description": "Confirmation shown after re-sending a confirmation or reset email."
+  },
+  "authResendEmailAction": "Resend email",
+  "@authResendEmailAction": {
+    "description": "Button that re-sends the confirmation or reset email."
+  },
+  "authNewPasswordTitle": "Choose a new password",
+  "@authNewPasswordTitle": {
+    "description": "Heading of the screen reached from a password-recovery link."
+  },
+  "authNewPasswordLabel": "New password",
+  "@authNewPasswordLabel": {
+    "description": "Label of the new-password input."
+  },
+  "authConfirmPasswordLabel": "Confirm password",
+  "@authConfirmPasswordLabel": {
+    "description": "Label of the input that repeats the new password."
+  },
+  "authSaveAndSignInAction": "Save and sign in",
+  "@authSaveAndSignInAction": {
+    "description": "Submit button that saves the new password and continues into the app."
+  },
+  "authShowPassword": "Show password",
+  "@authShowPassword": {
+    "description": "Tooltip on the reveal toggle inside a password field, while the password is hidden."
+  },
+  "authHidePassword": "Hide password",
+  "@authHidePassword": {
+    "description": "Tooltip on the reveal toggle inside a password field, while the password is visible."
+  },
+  "todaySectionPriority": "Priority",
+  "@todaySectionPriority": {
+    "description": "Section heading above the people worth a message today."
+  },
+  "todaySectionThisMonth": "This month",
+  "@todaySectionThisMonth": {
+    "description": "Section heading above the monthly goal card on the Today screen."
+  },
+  "todaySectionRecent": "You talked to",
+  "@todaySectionRecent": {
+    "description": "Section heading above recent conversations, in the desktop right-hand column. Followed by a list of names."
+  },
+  "todayEmptyTitle": "You are up to date",
+  "@todayEmptyTitle": {
+    "description": "Heading of the Today screen's empty state, when nothing needs doing."
+  },
+  "todayEmptyBody": "Nothing is waiting on you today. When someone is worth a message, they will show up here.",
+  "@todayEmptyBody": {
+    "description": "Body of the Today screen's empty state. Reassuring, never a reprimand."
+  },
+  "actionMarkAsDone": "Mark as done",
+  "@actionMarkAsDone": {
+    "description": "Default label of the button that clears a suggested follow-up from the list."
+  }
+}

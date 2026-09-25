@@ -1,0 +1,11 @@
+{
+  "$schema": "https://docs.tolgee.io/cli-schema.json",
+  "format": "FLUTTER_ARB",
+  "push": {
+    "filesTemplate": "lib/l10n/app_{languageTag}.arb"
+  },
+  "pull": {
+    "path": "build/l10n",
+    "fileStructureTemplate": "app_{languageTag}.{extension}"
+  }
+}

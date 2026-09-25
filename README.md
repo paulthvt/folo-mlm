@@ -53,6 +53,32 @@ flutter analyze
 flutter test
 ```
 
+## Translations
+
+English lives in `lib/l10n/app_en.arb` and is the source of truth. Every other
+language comes from [Tolgee](https://tolgee.io) and is machine-translated on
+arrival.
+
+- **Adding a string:** add the key *and its description* to `app_en.arb`. The
+  description is what the machine translator reads — a key without one gets
+  translated blind. Merging to `main` pushes it up automatically.
+- **Getting translations back:** run the *l10n pull* workflow (or wait for
+  Monday). It opens one pull request, `chore/l10n-sync`, containing every
+  language. Review the copy and merge.
+- **Adding a language:** add it in the Tolgee UI, then run *l10n pull*. The new
+  `app_xx.arb` arrives in that pull request and the app supports it with no code
+  change — `supportedLocales` is generated from the files present.
+- **Never** edit English in Tolgee, and never hand-edit a translated `.arb`:
+  each direction overwrites the other.
+
+`.tolgeerc` is what makes the CLI speak Flutter ARB instead of its own JSON
+format, and what keeps a pulled file named `app_fr.arb` rather than `fr.arb`.
+Changing it breaks both directions; `test/l10n/tolgee_config_test.dart` pins the
+parts that matter.
+
+Generated Dart (`lib/l10n/app_localizations*.dart`) is not committed. Run
+`flutter gen-l10n` after changing an ARB file, or just `flutter run`.
+
 ## Tracking work
 
 Work is tracked on the

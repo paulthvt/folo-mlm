@@ -8,11 +8,13 @@ import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/auth_failure.dart';
 import 'package:folo/features/auth/domain/auth_validation.dart';
 import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
+import 'package:folo/features/auth/presentation/auth_validation_copy.dart';
 import 'package:folo/features/auth/presentation/check_inbox_page.dart';
 import 'package:folo/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:folo/features/auth/presentation/widgets/form_error.dart';
 import 'package:folo/features/auth/presentation/widgets/password_field.dart';
 import 'package:folo/features/auth/presentation/widgets/submit_button.dart';
+import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 /// Email + password sign-in.
@@ -82,12 +84,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context);
 
     return AuthScaffold(
       back: Routes.welcome,
       children: [
-        Text('Welcome back', style: text.headlineSmall),
-        if (_failure != null) FormError(authFailureCopy(_failure!)),
+        Text(l10n.authLoginTitle, style: text.headlineSmall),
+        if (_failure != null) FormError(authFailureCopy(l10n, _failure!)),
         Form(
           key: _form,
           child: Column(
@@ -97,27 +100,31 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               TextFormField(
                 controller: _email,
                 enabled: !_busy,
-                validator: validateEmail,
+                validator: (value) => emailFieldError(l10n, value),
                 keyboardType: TextInputType.emailAddress,
                 autofillHints: const [AutofillHints.email],
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(labelText: l10n.authEmailLabel),
               ),
               PasswordField(
                 controller: _password,
-                label: 'Password',
+                label: l10n.authPasswordLabel,
                 enabled: !_busy,
-                validator: validatePassword,
+                validator: (value) => passwordFieldError(l10n, value),
                 onSubmitted: (_) => _busy ? null : _submit(),
               ),
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () => context.push(Routes.forgotPassword),
-                  child: const Text('Forgot password?'),
+                  child: Text(l10n.authForgotPasswordAction),
                 ),
               ),
-              SubmitButton(label: 'Sign in', busy: _busy, onPressed: _submit),
+              SubmitButton(
+                label: l10n.authSignInAction,
+                busy: _busy,
+                onPressed: _submit,
+              ),
             ],
           ),
         ),
@@ -127,10 +134,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Text('New here?', style: text.bodySmall),
+            Text(l10n.authNewHere, style: text.bodySmall),
             TextButton(
               onPressed: () => context.push(Routes.register),
-              child: const Text('Create an account'),
+              child: Text(l10n.authCreateAccountAction),
             ),
           ],
         ),

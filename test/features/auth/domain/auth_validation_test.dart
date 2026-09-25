@@ -18,17 +18,14 @@ void main() {
     });
 
     test('rejects empty', () {
-      expect(validateEmail(''), 'Enter your email address.');
-      expect(validateEmail(null), 'Enter your email address.');
+      expect(validateEmail(''), EmailProblem.empty);
+      expect(validateEmail(null), EmailProblem.empty);
     });
 
     test('rejects a string with no domain', () {
-      expect(validateEmail('pauline@'), 'That address does not look right.');
-      expect(validateEmail('pauline'), 'That address does not look right.');
-      expect(
-        validateEmail('a b@example.com'),
-        'That address does not look right.',
-      );
+      expect(validateEmail('pauline@'), EmailProblem.malformed);
+      expect(validateEmail('pauline'), EmailProblem.malformed);
+      expect(validateEmail('a b@example.com'), EmailProblem.malformed);
     });
   });
 
@@ -38,14 +35,14 @@ void main() {
     });
 
     test('rejects seven', () {
-      expect(validatePassword('abcdefg'), 'At least 8 characters.');
+      expect(validatePassword('abcdefg'), PasswordProblem.tooShort);
     });
 
     test('rejects empty', () {
-      expect(validatePassword(''), 'Enter a password.');
+      expect(validatePassword(''), PasswordProblem.empty);
     });
 
-    test('does not trim — a space is a character in a password', () {
+    test('does not trim \u2014 a space is a character in a password', () {
       expect(validatePassword(' abcdefg'), isNull);
     });
   });
@@ -54,8 +51,8 @@ void main() {
     test('accepts a name', () => expect(validateFirstName('Pauline'), isNull));
 
     test('rejects blank and whitespace-only', () {
-      expect(validateFirstName(''), 'Enter your first name.');
-      expect(validateFirstName('   '), 'Enter your first name.');
+      expect(validateFirstName(''), FirstNameProblem.empty);
+      expect(validateFirstName('   '), FirstNameProblem.empty);
     });
   });
 
@@ -67,14 +64,14 @@ void main() {
     test('rejects a mismatch', () {
       expect(
         validatePasswordConfirmation('abcdefgi', 'abcdefgh'),
-        'Those passwords do not match.',
+        PasswordConfirmationProblem.mismatch,
       );
     });
 
     test('rejects empty', () {
       expect(
         validatePasswordConfirmation('', 'abcdefgh'),
-        'Confirm your password.',
+        PasswordConfirmationProblem.empty,
       );
     });
   });

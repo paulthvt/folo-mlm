@@ -3,10 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/core/ui/action_item.dart';
 import 'package:folo/core/ui/folo_avatar.dart';
+import 'package:folo/l10n/app_localizations.dart';
 
 Future<void> pump(WidgetTester tester, Widget child) {
   return tester.pumpWidget(
     MaterialApp(
+      locale: const Locale('en'),
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
       theme: AppTheme.light,
       home: Scaffold(body: Center(child: child)),
     ),

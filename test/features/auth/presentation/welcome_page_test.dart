@@ -7,12 +7,16 @@ import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/auth_failure.dart';
 import 'package:folo/features/auth/presentation/welcome_page.dart';
+import 'package:folo/l10n/app_localizations.dart';
 
 import '../fake_auth_repository.dart';
 
 Widget _host(FakeAuthRepository fake, {double textScale = 1}) => ProviderScope(
   overrides: [authRepositoryProvider.overrideWithValue(fake)],
   child: MaterialApp(
+    locale: const Locale('en'),
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
     theme: AppTheme.light,
     builder: (context, child) => MediaQuery.withClampedTextScaling(
       minScaleFactor: textScale,

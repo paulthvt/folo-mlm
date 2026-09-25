@@ -65,6 +65,10 @@ jobs:
 
       - run: flutter pub get
 
+      # Generated l10n is not committed, and analyze does not generate it.
+      - name: Generate localizations
+        run: flutter gen-l10n
+
       - name: Check formatting
         run: dart format --output=none --set-exit-if-changed .
 

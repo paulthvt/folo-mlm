@@ -11,6 +11,7 @@ import 'package:folo/core/ui/section_header.dart';
 import 'package:folo/core/ui/stat_tile.dart';
 import 'package:folo/features/today/domain/today_snapshot.dart';
 import 'package:folo/features/today/presentation/today_hero.dart';
+import 'package:folo/l10n/app_localizations.dart';
 
 /// What Today renders.
 ///
@@ -59,6 +60,7 @@ class _Column extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = snapshot;
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 600),
@@ -67,23 +69,23 @@ class _Column extends StatelessWidget {
           children: [
             FoloTopBar(
               eyebrow: data?.dateLabel,
-              title: data?.greeting ?? 'Today',
+              title: data?.greeting ?? l10n.todayTitle,
             ),
             if (data == null)
               const _UpToDate()
             else ...[
               TodayHero(
-                eyebrow: 'Today',
+                eyebrow: l10n.todayTitle,
                 headline: data.heroSentence,
                 progress: data.progress,
                 progressLabel: data.progressLabel,
                 effortLabel: data.effortLabel,
               ),
               const SizedBox(height: AppSpacing.lg),
-              const SectionHeader(title: 'Priority'),
+              SectionHeader(title: l10n.todaySectionPriority),
               _Suggestions(data.suggestions),
               const SizedBox(height: AppSpacing.lg),
-              const SectionHeader(title: 'This month'),
+              SectionHeader(title: l10n.todaySectionThisMonth),
               _Goal(data.goal),
               const SizedBox(height: AppSpacing.ms),
               _Stats(data.stats, perRow: 2),
@@ -109,6 +111,7 @@ class _Desktop extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = snapshot;
+    final l10n = AppLocalizations.of(context);
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(
@@ -124,7 +127,7 @@ class _Desktop extends StatelessWidget {
             children: [
               FoloTopBar(
                 eyebrow: data?.dateLabel,
-                title: data?.greeting ?? 'Today',
+                title: data?.greeting ?? l10n.todayTitle,
                 large: true,
               ),
               if (data == null)
@@ -138,7 +141,7 @@ class _Desktop extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           TodayHero(
-                            eyebrow: 'Today',
+                            eyebrow: l10n.todayTitle,
                             headline: data.heroSentence,
                             progress: data.progress,
                             progressLabel: data.progressLabel,
@@ -146,7 +149,7 @@ class _Desktop extends StatelessWidget {
                             compact: false,
                           ),
                           const SizedBox(height: AppSpacing.xl),
-                          const SectionHeader(title: 'Priority'),
+                          SectionHeader(title: l10n.todaySectionPriority),
                           _Suggestions(data.suggestions),
                         ],
                       ),
@@ -157,12 +160,12 @@ class _Desktop extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const SectionHeader(title: 'This month'),
+                          SectionHeader(title: l10n.todaySectionThisMonth),
                           _Goal(data.goal),
                           const SizedBox(height: AppSpacing.ms),
                           _Stats(data.stats, perRow: 2),
                           const SizedBox(height: AppSpacing.xl),
-                          const SectionHeader(title: 'You talked to'),
+                          SectionHeader(title: l10n.todaySectionRecent),
                           for (final (index, activity) in data.recent.indexed)
                             ActivityItem(
                               title: activity.title,
@@ -274,12 +277,12 @@ class _UpToDate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const EmptyState(
+    final l10n = AppLocalizations.of(context);
+
+    return EmptyState(
       icon: Icons.wb_twilight_rounded,
-      title: 'You are up to date',
-      body:
-          'Nothing is waiting on you today. When someone is worth a message, '
-          'they will show up here.',
+      title: l10n.todayEmptyTitle,
+      body: l10n.todayEmptyBody,
     );
   }
 }

@@ -6,10 +6,12 @@ import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/auth_failure.dart';
 import 'package:folo/features/auth/domain/auth_validation.dart';
 import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
+import 'package:folo/features/auth/presentation/auth_validation_copy.dart';
 import 'package:folo/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:folo/features/auth/presentation/widgets/form_error.dart';
 import 'package:folo/features/auth/presentation/widgets/password_field.dart';
 import 'package:folo/features/auth/presentation/widgets/submit_button.dart';
+import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 /// Registration. The first name goes into the auth user's metadata; there is no
@@ -74,12 +76,13 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context);
 
     return AuthScaffold(
       back: Routes.welcome,
       children: [
-        Text('Create your account', style: text.headlineSmall),
-        if (_failure != null) FormError(authFailureCopy(_failure!)),
+        Text(l10n.authRegisterTitle, style: text.headlineSmall),
+        if (_failure != null) FormError(authFailureCopy(l10n, _failure!)),
         Form(
           key: _form,
           child: Column(
@@ -89,52 +92,48 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
               TextFormField(
                 controller: _firstName,
                 enabled: !_busy,
-                validator: validateFirstName,
+                validator: (value) => firstNameFieldError(l10n, value),
                 textCapitalization: TextCapitalization.words,
                 autofillHints: const [AutofillHints.givenName],
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(labelText: 'First name'),
+                decoration: InputDecoration(labelText: l10n.authFirstNameLabel),
               ),
               TextFormField(
                 controller: _email,
                 enabled: !_busy,
-                validator: validateEmail,
+                validator: (value) => emailFieldError(l10n, value),
                 keyboardType: TextInputType.emailAddress,
                 autofillHints: const [AutofillHints.email],
                 textInputAction: TextInputAction.next,
-                decoration: const InputDecoration(labelText: 'Email'),
+                decoration: InputDecoration(labelText: l10n.authEmailLabel),
               ),
               PasswordField(
                 controller: _password,
-                label: 'Password',
-                helper: 'At least 8 characters',
+                label: l10n.authPasswordLabel,
+                helper: l10n.authPasswordHelperMinimum(minPasswordLength),
                 enabled: !_busy,
-                validator: validatePassword,
+                validator: (value) => passwordFieldError(l10n, value),
                 onSubmitted: (_) => _busy ? null : _submit(),
               ),
               SubmitButton(
-                label: 'Create account',
+                label: l10n.authCreateAccountSubmit,
                 busy: _busy,
                 onPressed: _submit,
               ),
             ],
           ),
         ),
-        Text(
-          'By creating an account you agree to the terms and the privacy '
-          'policy.',
-          style: text.bodySmall,
-        ),
+        Text(l10n.authRegisterTerms, style: text.bodySmall),
         // Wrap, not Row: "Already have an account?" plus the button is wider
         // than the 400-wide column at larger text scales.
         Wrap(
           alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Text('Already have an account?', style: text.bodySmall),
+            Text(l10n.authAlreadyHaveAccount, style: text.bodySmall),
             TextButton(
               onPressed: () => context.pushReplacement(Routes.login),
-              child: const Text('Sign in'),
+              child: Text(l10n.authSignInAction),
             ),
           ],
         ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_theme.dart';
+import 'package:folo/l10n/app_localizations.dart';
 
 /// A password input with a reveal toggle.
 ///
@@ -32,6 +33,8 @@ class _PasswordFieldState extends State<PasswordField> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return TextFormField(
       controller: widget.controller,
       obscureText: !_revealed,
@@ -54,7 +57,7 @@ class _PasswordFieldState extends State<PasswordField> {
               key: ValueKey(_revealed),
             ),
           ),
-          tooltip: _revealed ? 'Hide password' : 'Show password',
+          tooltip: _revealed ? l10n.authHidePassword : l10n.authShowPassword,
         ),
       ),
     );

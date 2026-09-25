@@ -7,23 +7,50 @@ import 'package:folo/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:folo/features/auth/presentation/widgets/form_error.dart';
 import 'package:folo/features/auth/presentation/widgets/password_field.dart';
 import 'package:folo/features/auth/presentation/widgets/submit_button.dart';
+import 'package:folo/l10n/app_localizations.dart';
 
 Widget _host(Widget child) => MaterialApp(
   theme: AppTheme.light,
+  locale: const Locale('en'),
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
   home: Scaffold(body: child),
 );
 
+/// The copy mapper needs an [AppLocalizations], which only exists under a
+/// localized widget tree.
+Future<AppLocalizations> _localizations(WidgetTester tester) async {
+  late AppLocalizations l10n;
+  await tester.pumpWidget(
+    _host(
+      Builder(
+        builder: (context) {
+          l10n = AppLocalizations.of(context);
+          return const SizedBox.shrink();
+        },
+      ),
+    ),
+  );
+  return l10n;
+}
+
 void main() {
   group('authFailureCopy', () {
-    test('never names the field that was wrong', () {
+    testWidgets('never names the field that was wrong', (tester) async {
+      final l10n = await _localizations(tester);
+
       expect(
-        authFailureCopy(AuthFailure.invalidCredentials),
+        authFailureCopy(l10n, AuthFailure.invalidCredentials),
         'Email or password is incorrect.',
       );
     });
 
-    test('covers every failure with its own sentence', () {
-      final copies = AuthFailure.values.map(authFailureCopy).toSet();
+    testWidgets('covers every failure with its own sentence', (tester) async {
+      final l10n = await _localizations(tester);
+
+      final copies = AuthFailure.values
+          .map((failure) => authFailureCopy(l10n, failure))
+          .toSet();
       expect(copies.length, AuthFailure.values.length);
       expect(copies.every((copy) => copy.endsWith('.')), isTrue);
     });

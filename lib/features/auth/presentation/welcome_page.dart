@@ -7,6 +7,7 @@ import 'package:folo/features/auth/domain/auth_failure.dart';
 import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
 import 'package:folo/features/auth/presentation/widgets/auth_scaffold.dart';
 import 'package:folo/features/auth/presentation/widgets/form_error.dart';
+import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
 /// The signed-out root: the promise, and the three ways in.
@@ -44,6 +45,7 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final l10n = AppLocalizations.of(context);
 
     return AuthScaffold(
       children: [
@@ -54,14 +56,11 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
             // ponytail: the wordmark is set type until there is a real logo —
             // that is its own issue.
             Text('Folo', style: text.displaySmall),
-            Text('Know what to do next.', style: text.titleLarge),
-            Text(
-              'Organize your relationships, know what to do next.',
-              style: text.bodyMedium,
-            ),
+            Text(l10n.authWelcomeHeadline, style: text.titleLarge),
+            Text(l10n.authWelcomeBody, style: text.bodyMedium),
           ],
         ),
-        if (_failure != null) FormError(authFailureCopy(_failure!)),
+        if (_failure != null) FormError(authFailureCopy(l10n, _failure!)),
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: AppSpacing.ms,
@@ -77,11 +76,11 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
               // Not an AppSpacing value: 18 is the minimum mark height Google's
               // branding guidelines set, so it is theirs to change, not ours.
               icon: Image.asset('assets/images/google_g.png', height: 18),
-              label: const Text('Continue with Google'),
+              label: Text(l10n.authContinueWithGoogle),
             ),
             FilledButton(
               onPressed: _busy ? null : () => context.push(Routes.login),
-              child: const Text('Continue with email'),
+              child: Text(l10n.authContinueWithEmail),
             ),
           ],
         ),
@@ -91,10 +90,10 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
           alignment: WrapAlignment.center,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            Text('New here?', style: text.bodySmall),
+            Text(l10n.authNewHere, style: text.bodySmall),
             TextButton(
               onPressed: () => context.push(Routes.register),
-              child: const Text('Create an account'),
+              child: Text(l10n.authCreateAccountAction),
             ),
           ],
         ),
