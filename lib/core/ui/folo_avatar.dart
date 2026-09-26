@@ -81,6 +81,7 @@ class FoloAvatarGroup extends StatelessWidget {
     final overflow = names.length - shown.length;
     const overlap = 10.0;
     const ring = 2.0;
+    final ringed = AvatarSize.dense.diameter + 2 * ring;
 
     return Semantics(
       label: '${names.length} people',
@@ -88,15 +89,20 @@ class FoloAvatarGroup extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           for (final (index, name) in shown.indexed)
-            Container(
-              margin: EdgeInsets.only(left: index == 0 ? 0 : -overlap),
-              padding: const EdgeInsets.all(ring),
-              decoration: BoxDecoration(
-                color: folo.surfaceDefault,
-                shape: BoxShape.circle,
-              ),
-              child: ExcludeSemantics(
-                child: FoloAvatar(name: name, size: AvatarSize.dense),
+            // Container rejects a negative margin; a narrower Align lets the
+            // avatar spill left, under nothing, over the one before it.
+            Align(
+              alignment: Alignment.centerRight,
+              widthFactor: index == 0 ? 1 : (ringed - overlap) / ringed,
+              child: Container(
+                padding: const EdgeInsets.all(ring),
+                decoration: BoxDecoration(
+                  color: folo.surfaceDefault,
+                  shape: BoxShape.circle,
+                ),
+                child: ExcludeSemantics(
+                  child: FoloAvatar(name: name, size: AvatarSize.dense),
+                ),
               ),
             ),
           if (overflow > 0)

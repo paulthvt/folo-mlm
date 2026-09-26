@@ -81,6 +81,28 @@ flutter analyze
 flutter test
 ```
 
+### Golden tests
+
+`test/previews_test.dart` renders every `@Preview` and compares it against a PNG
+in `test/goldens/`. Pixels are compared on Linux only, so a local `flutter test`
+on macOS or Windows never catches a visual change — CI does. The PNGs must come
+from CI too: never commit goldens generated on your machine.
+
+When a preview changes on purpose (or a new `@Preview` is added to the test's
+list), regenerate from the pushed branch:
+
+```bash
+gh workflow run CI --ref <branch> -f update-goldens=true
+gh run list --workflow CI --branch <branch> --event workflow_dispatch --limit 1
+gh run watch <run-id>
+rm test/goldens/*.png   # drop stale files for renamed or removed previews
+gh run download <run-id> -n goldens -D test/goldens
+```
+
+Open the PNGs and check them before committing — `--update-goldens` accepts
+whatever renders. When the PR's CI fails on a golden, the diff images are in the
+run's `golden-failures` artifact.
+
 ## Translations
 
 English lives in `lib/l10n/app_en.arb` and is the source of truth. Every other

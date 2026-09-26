@@ -80,7 +80,9 @@ already-installed packages first.
 - **Pickers** (date, time): Cupertino on iOS, Material on Android and Web.
   Everything else is Material everywhere. See docs/architecture.md.
 - **Tests**: `test/` mirrors `lib/`. Widget test for screens, plain Dart unit
-  test for domain logic.
+  test for domain logic. Every `@Preview` has a golden in `test/goldens/`,
+  compared on Linux only; after a visual change, regenerate them through CI —
+  procedure in README.md → *Golden tests*. Never commit locally made goldens.
 - **Commits**: Conventional Commits (`feat`/`fix`/`docs`/`style`/`refactor`/
   `perf`/`test`/`chore`). Branch off `main`, issue number first:
   `feature/<issue>-<slug>`, `fix/<issue>-<slug>`, `chore/<issue>-<slug>`.
