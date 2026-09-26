@@ -60,6 +60,12 @@ final routerProvider = Provider<GoRouter>((ref) {
                 pageBuilder: (context, state) =>
                     _settingsPage(context, state, SettingsSection.language),
               ),
+              GoRoute(
+                path: Routes.settingsAppearanceSegment,
+                name: Routes.settingsAppearanceName,
+                pageBuilder: (context, state) =>
+                    _settingsPage(context, state, SettingsSection.appearance),
+              ),
             ],
           ),
         ],

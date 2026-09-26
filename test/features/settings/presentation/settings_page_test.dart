@@ -132,10 +132,29 @@ void main() {
     expect(find.byType(SettingsPage), findsOneWidget);
   });
 
-  testWidgets('the list shows the language in use', (tester) async {
+  testWidgets('the list shows the language and appearance in use', (
+    tester,
+  ) async {
     await _openSettings(tester);
 
-    expect(find.text('Same as this device'), findsOneWidget);
+    expect(find.text('Same as this device'), findsNWidgets(2));
+  });
+
+  testWidgets('choosing dark saves it and switches the app', (tester) async {
+    final fake = await _openSection(tester, 'Appearance');
+
+    await tester.tap(find.byKey(const ValueKey('appearance-dark')));
+    await tester.pumpAndSettle();
+
+    expect(fake.calls, ['updateAppearance(dark)']);
+    final context = tester.element(find.byType(SettingsPage));
+    expect(Theme.of(context).brightness, Brightness.dark);
+
+    await tester.tap(find.byKey(const ValueKey('appearance-system')));
+    await tester.pumpAndSettle();
+    expect(fake.calls.last, 'updateAppearance(system)');
+    // The test device is light.
+    expect(Theme.of(context).brightness, Brightness.light);
   });
 
   testWidgets('editing the name saves it', (tester) async {

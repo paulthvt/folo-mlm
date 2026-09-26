@@ -256,6 +256,22 @@
     "description": "The name of a language, written in the language of this file, shown beside that language's own name in the language list (e.g. in French: 'Deutsch  allemand'). Add a case for every language the app supports.",
     "placeholders": { "code": { "type": "String" } }
   },
+  "settingsSectionAppearance": "Appearance",
+  "@settingsSectionAppearance": {
+    "description": "Settings row that opens the light/dark choice, and the title of that screen."
+  },
+  "settingsAppearanceSystem": "Same as this device",
+  "@settingsAppearanceSystem": {
+    "description": "Appearance option in Settings: light or dark following the phone or computer's own setting. Also shown beside the Appearance row while it is chosen."
+  },
+  "settingsAppearanceLight": "Light",
+  "@settingsAppearanceLight": {
+    "description": "Appearance option in Settings: always use the light colours."
+  },
+  "settingsAppearanceDark": "Dark",
+  "@settingsAppearanceDark": {
+    "description": "Appearance option in Settings: always use the dark colours."
+  },
   "settingsEditNameTitle": "Edit your first name",
   "@settingsEditNameTitle": {
     "description": "Title of the sheet or dialog in Settings where the user changes their first name."
