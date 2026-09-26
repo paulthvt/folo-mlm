@@ -222,5 +222,49 @@
   "actionMarkAsDone": "Mark as done",
   "@actionMarkAsDone": {
     "description": "Default label of the button that clears a suggested follow-up from the list."
+  },
+  "languageName": "English",
+  "@languageName": {
+    "description": "The name of THIS language, written in this language itself (an endonym), e.g. 'Français' for French, 'Deutsch' for German. Shown in the language picker so people can find their own language."
+  },
+  "navToday": "Today",
+  "@navToday": {
+    "description": "Navigation destination leading to the Today screen, in the sidebar."
+  },
+  "settingsTitle": "Settings",
+  "@settingsTitle": {
+    "description": "Title of the Settings screen, and the accessible label of the account button that opens it."
+  },
+  "settingsSectionAccount": "Account",
+  "@settingsSectionAccount": {
+    "description": "Section heading on the Settings screen above the user's name and email."
+  },
+  "settingsSectionLanguage": "Language",
+  "@settingsSectionLanguage": {
+    "description": "Section heading on the Settings screen above the list of languages the app can be shown in."
+  },
+  "settingsLanguageSystem": "Same as this device",
+  "@settingsLanguageSystem": {
+    "description": "Language option on the Settings screen: follow the language set on the phone or computer instead of choosing one."
+  },
+  "settingsSignOut": "Sign out",
+  "@settingsSignOut": {
+    "description": "Button on the Settings screen that signs the user out of the app on this device."
+  },
+  "settingsDeleteAccount": "Delete account",
+  "@settingsDeleteAccount": {
+    "description": "Button on the Settings screen that starts permanently deleting the user's account. Opens a confirmation first."
+  },
+  "settingsDeleteTitle": "Delete your account?",
+  "@settingsDeleteTitle": {
+    "description": "Title of the confirmation dialog shown before the account is permanently deleted."
+  },
+  "settingsDeleteBody": "Your account and everything in it will be deleted for good. This cannot be undone.",
+  "@settingsDeleteBody": {
+    "description": "Body of the confirmation dialog shown before the account is permanently deleted. Plain and calm, not alarming."
+  },
+  "settingsDeleteConfirm": "Delete",
+  "@settingsDeleteConfirm": {
+    "description": "Destructive button in the account deletion confirmation dialog that deletes the account."
   }
 }

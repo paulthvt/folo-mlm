@@ -3,6 +3,9 @@ abstract final class Routes {
   static const String today = '/';
   static const String todayName = 'today';
 
+  static const String settings = '/settings';
+  static const String settingsName = 'settings';
+
   static const String welcome = '/welcome';
   static const String welcomeName = 'welcome';
 

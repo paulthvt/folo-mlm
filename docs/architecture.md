@@ -70,9 +70,12 @@ authentication arrives it can `ref.watch` session state and use `redirect` to
 separate authenticated from unauthenticated areas. `app_router.dart` documents
 those extension points inline.
 
-Navigation shells (bottom bar on mobile, sidebar on desktop) will be a
-`StatefulShellRoute` wrapping the authenticated branches — one shell widget that
-picks its chrome from `context.screenSize`. Not built yet.
+Signed-in screens sit in a `ShellRoute` whose `AppShell` (`lib/app/shell/`)
+picks its chrome from `context.screenSize`: a sidebar on desktop, the same
+sidebar as an icon rail on tablet, nothing on mobile. Settings is not a
+destination — it opens from the account block at the bottom of the sidebar, or
+from the avatar in the top bar on mobile. The mobile bottom bar and a
+`StatefulShellRoute` (one stack per tab) arrive with the second destination.
 
 ### Theming
 
@@ -112,13 +115,18 @@ The project itself is described by `supabase/` (#28), not by the dashboard:
   migration onto an empty database, so a migration that does not apply cleanly
   fails the PR.
 
-Migrations reach the hosted project by hand, after merge, with
-`supabase db push`. One maintainer, rare migrations: a deploy job would be more
-secrets than it saves. Automate it when either stops being true.
+Anything the client must not do with its own key runs in an Edge Function in
+`supabase/functions/` — so far only `delete-account`, which deletes the caller
+and nobody else. The user's language choice is in `user_metadata`, next to their
+first name, so it follows them across devices.
+
+Migrations and functions reach the hosted project by hand, after merge, with
+`supabase db push` and `supabase functions deploy`. One maintainer, rare
+migrations: a deploy job would be more secrets than it saves. Automate it when either stops being true.
 
 ### Not yet present, by design
 
 Firebase Cloud Messaging, database tables (a `profiles` table included — the
 user's first name lives in auth `user_metadata` until something needs more),
-account deletion, local persistence beyond the Supabase session, analytics.
+local persistence beyond the Supabase session, analytics.
 Each will be added when the feature that needs it is built.
