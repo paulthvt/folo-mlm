@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/auth_redirect.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/app/shell/app_shell.dart';
+import 'package:folo/core/layout/breakpoints.dart';
 import 'package:folo/features/auth/presentation/check_inbox_page.dart';
 import 'package:folo/features/auth/presentation/forgot_password_page.dart';
 import 'package:folo/features/auth/presentation/login_page.dart';
@@ -46,6 +47,20 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: Routes.settings,
             name: Routes.settingsName,
             pageBuilder: (context, state) => _page(state, const SettingsPage()),
+            routes: [
+              GoRoute(
+                path: Routes.settingsAccountSegment,
+                name: Routes.settingsAccountName,
+                pageBuilder: (context, state) =>
+                    _settingsPage(context, state, SettingsSection.account),
+              ),
+              GoRoute(
+                path: Routes.settingsLanguageSegment,
+                name: Routes.settingsLanguageName,
+                pageBuilder: (context, state) =>
+                    _settingsPage(context, state, SettingsSection.language),
+              ),
+            ],
           ),
         ],
       ),
@@ -106,3 +121,20 @@ final routerProvider = Provider<GoRouter>((ref) {
 /// zoom on Android (`docs/design/design-system.md` §7.2).
 MaterialPage<void> _page(GoRouterState state, Widget child) =>
     MaterialPage<void>(key: state.pageKey, name: state.name, child: child);
+
+/// On desktop a section only swaps the right-hand pane beside a list that stays
+/// put; the platform transition would slide the whole screen in instead.
+Page<void> _settingsPage(
+  BuildContext context,
+  GoRouterState state,
+  SettingsSection section,
+) {
+  final child = SettingsPage(section: section);
+  return context.screenSize.isDesktop
+      ? NoTransitionPage<void>(
+          key: state.pageKey,
+          name: state.name,
+          child: child,
+        )
+      : _page(state, child);
+}

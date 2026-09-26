@@ -237,15 +237,28 @@
   },
   "settingsSectionAccount": "Account",
   "@settingsSectionAccount": {
-    "description": "Section heading on the Settings screen above the user's name and email."
+    "description": "Title of the Settings section with the user's name and email, and the delete-account button."
+  },
+  "settingsSectionPreferences": "Preferences",
+  "@settingsSectionPreferences": {
+    "description": "Group heading on the Settings screen above rows such as Language."
   },
   "settingsSectionLanguage": "Language",
   "@settingsSectionLanguage": {
-    "description": "Section heading on the Settings screen above the list of languages the app can be shown in."
+    "description": "Settings row that opens the language list, and the title of that list."
   },
   "settingsLanguageSystem": "Same as this device",
   "@settingsLanguageSystem": {
-    "description": "Language option on the Settings screen: follow the language set on the phone or computer instead of choosing one."
+    "description": "Language option in Settings: follow the language set on the phone or computer instead of choosing one. Also shown beside the Language row while it is chosen."
+  },
+  "settingsLanguageNameIn": "{code, select, en{English} fr{French} other{}}",
+  "@settingsLanguageNameIn": {
+    "description": "The name of a language, written in the language of this file, shown beside that language's own name in the language list (e.g. in French: 'Deutsch  allemand'). Add a case for every language the app supports.",
+    "placeholders": { "code": { "type": "String" } }
+  },
+  "settingsEditNameTitle": "Edit your first name",
+  "@settingsEditNameTitle": {
+    "description": "Title of the sheet or dialog in Settings where the user changes their first name."
   },
   "settingsSignOut": "Sign out",
   "@settingsSignOut": {
@@ -257,7 +270,7 @@
   },
   "settingsDeleteTitle": "Delete your account?",
   "@settingsDeleteTitle": {
-    "description": "Title of the confirmation dialog shown before the account is permanently deleted."
+    "description": "Title of the confirmation shown before the account is permanently deleted (a bottom sheet on phones, a dialog elsewhere)."
   },
   "settingsDeleteBody": "Your account and everything in it will be deleted for good. This cannot be undone.",
   "@settingsDeleteBody": {

@@ -83,6 +83,19 @@ class FakeAuthRepository implements AuthRepository {
   }
 
   @override
+  Future<void> updateFirstName(String firstName) async {
+    await _record('updateFirstName($firstName)');
+    final current = account;
+    if (current == null) return;
+    account = Account(
+      firstName: firstName,
+      email: current.email,
+      locale: current.locale,
+    );
+    emit(AuthChange.userUpdated);
+  }
+
+  @override
   Future<void> deleteAccount() async {
     await _record('deleteAccount()');
     session = false;

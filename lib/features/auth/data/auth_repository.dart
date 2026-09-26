@@ -107,6 +107,13 @@ class AuthRepository {
 
   Future<void> signOut() => _guard(_auth.signOut);
 
+  /// Where sign-up and the provider backfill put it, so the greeting follows.
+  Future<void> updateFirstName(String firstName) => _guard(
+    () => _auth.updateUser(
+      UserAttributes(data: {'first_name': firstName.trim()}),
+    ),
+  );
+
   /// A language code, or null to follow the system. Kept on the user so it
   /// follows them to every device.
   Future<void> updateLocale(String? locale) =>
