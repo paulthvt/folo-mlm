@@ -15,6 +15,11 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      update-goldens:
+        description: Regenerate golden PNGs and upload them as an artifact
+        type: boolean
+        default: false
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -76,11 +81,19 @@ jobs:
         run: flutter analyze
 
       # Golden tests are pixel comparisons — the committed PNGs must be produced
-      # on the same platform that renders them here (Linux). Regenerate locally with:
-      #   docker run --rm -v "$PWD":/app -w /app ghcr.io/cirruslabs/flutter:3.47.0 \
-      #     flutter test --update-goldens
+      # here, on this runner and this Flutter version. To regenerate:
+      #   gh workflow run CI --ref <branch> -f update-goldens=true
+      #   gh run download <run-id> -n goldens -D test/goldens
       - name: Test
-        run: flutter test
+        run: flutter test ${{ inputs.update-goldens && '--update-goldens' || '' }}
+
+      - name: Upload goldens
+        if: inputs.update-goldens
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: goldens
+          path: test/goldens/*.png
+          retention-days: 7
 
       - name: Upload golden failures
         if: failure()
