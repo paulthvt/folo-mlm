@@ -91,6 +91,26 @@ read `Theme.of(context)` and the `AppSpacing`/`AppRadii` scales.
 Component themes (cards, inputs, buttons…) belong in `app_theme.dart`, not in
 widgets.
 
+### Design packages — material_ui, cupertino_ui
+
+Since Flutter 3.47, Material and Cupertino ship as the pub packages
+`material_ui` and `cupertino_ui`. The framework's `flutter/material.dart` and
+`flutter/cupertino.dart` are frozen. Import `package:material_ui/material_ui.dart`,
+never `flutter/material.dart`: they define separate `MaterialApp`, `Theme` and
+`MaterialLocalizations` classes. A widget from the old library would not see
+this app's theme or strings, and go_router would not detect the app
+(`test/app/router/page_test.dart`). For the same reason, register
+`lib/l10n/localizations_delegates.dart`, not
+`AppLocalizations.localizationsDelegates`.
+
+Material is the design system on every platform. The exception is **system
+pickers** (date, time): they follow the platform, because a Material calendar
+feels foreign on an iPhone. Use Cupertino (`CupertinoDatePicker` in a modal
+popup) on iOS. Use Material (`showDatePicker`) on Android and the web; on the
+web, a mouse and keyboard suit the Material calendar better than a wheel. Branch
+on `!kIsWeb && defaultTargetPlatform == TargetPlatform.iOS`. `cupertino_ui`
+becomes a direct dependency with the first picker.
+
 ### Responsiveness
 
 Three layout classes — `mobile`, `tablet`, `desktop` — behind

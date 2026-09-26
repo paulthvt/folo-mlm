@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/app/theme/app_typography.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The four sizes the product uses (`docs/design/components.md` #4): inline in a
 /// sentence, dense list or stack, list row, contact header.

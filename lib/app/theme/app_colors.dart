@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Colour tokens, mirroring the Figma collection `Folo/color`
 /// (see `docs/design/design-system.md` §1). Figma is the source of truth; this

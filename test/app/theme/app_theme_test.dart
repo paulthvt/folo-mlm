@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/app/theme/app_typography.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Captures the theme as a widget actually sees it.
 Future<(ThemeData, FoloColors)> _resolve(

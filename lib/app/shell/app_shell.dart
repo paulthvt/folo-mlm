@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/app/theme/app_colors.dart';
@@ -8,6 +7,7 @@ import 'package:folo/core/ui/folo_avatar.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Chrome around every signed-in screen (`docs/design/components.md` #23).
 ///

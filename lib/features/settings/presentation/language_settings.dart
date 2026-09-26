@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
@@ -8,6 +7,7 @@ import 'package:folo/features/settings/presentation/settings_action.dart';
 import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
 import 'package:folo/features/settings/presentation/widgets/settings_option.dart';
 import 'package:folo/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The languages the app can be shown in, as a list rather than a dropdown so
 /// it grows with them.

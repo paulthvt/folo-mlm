@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/app/theme/app_typography.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The only structural divider in the product (`docs/design/components.md` #10):
 /// no rules, no card headers, no chevrons — space and this header do all the

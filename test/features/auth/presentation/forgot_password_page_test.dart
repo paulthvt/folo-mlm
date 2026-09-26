@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/router/routes.dart';
@@ -7,7 +6,9 @@ import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/auth_failure.dart';
 import 'package:folo/features/auth/presentation/forgot_password_page.dart';
 import 'package:folo/l10n/app_localizations.dart';
+import 'package:folo/l10n/localizations_delegates.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../fake_auth_repository.dart';
 
@@ -25,7 +26,7 @@ Widget _host(GoRouter router, FakeAuthRepository fake) => ProviderScope(
   overrides: [authRepositoryProvider.overrideWithValue(fake)],
   child: MaterialApp.router(
     locale: const Locale('en'),
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    localizationsDelegates: localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
     theme: AppTheme.light,
     routerConfig: router,

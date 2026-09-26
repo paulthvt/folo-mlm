@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/app/theme/app_typography.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// One thing that happened (`docs/design/components.md` #14). Reads as memory,
 /// not as an audit log: no edit metadata, no author.

@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/app/theme/app_typography.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Screen header (`docs/design/components.md` #24): the eyebrow carries the date,
 /// the title carries the place. No shadow and no border — the canvas colour is

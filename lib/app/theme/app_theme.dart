@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/app/theme/app_typography.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The only place `ThemeData` is built. Component styling lives here so widgets
 /// stay style-free (`docs/design/design-system.md` §8).

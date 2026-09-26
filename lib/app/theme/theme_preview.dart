@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/widget_previews.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/app/theme/app_typography.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Token sheets for `flutter widget-preview start`. This is the visual check on
 /// the theme: if a token is wrong, it is wrong here first.

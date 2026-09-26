@@ -1,16 +1,15 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/app.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../features/auth/fake_auth_repository.dart';
 
 /// go_router picks `NoTransitionPage` whenever it cannot find the `MaterialApp`
-/// class it was compiled against — which is every time here, because it looks
-/// for `package:material_ui`'s and the app builds `flutter/material`'s. The
-/// symptom is silent: screens still work, they just stop animating. So assert
-/// the page type rather than the animation.
+/// class it was compiled against (`package:material_ui`'s). Building the
+/// framework's `flutter/material` one instead fails silently: screens still
+/// work, they just stop animating. So assert the page type, not the animation.
 void main() {
   testWidgets('routes build a page that carries the platform transition', (
     tester,

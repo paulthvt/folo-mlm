@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/ui/folo_dialog.dart';
@@ -9,6 +8,7 @@ import 'package:folo/features/auth/presentation/widgets/form_error.dart';
 import 'package:folo/features/settings/presentation/settings_action.dart';
 import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
 import 'package:folo/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Name, email, delete account.
 ///

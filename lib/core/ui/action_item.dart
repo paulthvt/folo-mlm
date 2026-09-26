@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/ui/folo_avatar.dart';
 import 'package:folo/core/ui/folo_chip.dart';
 import 'package:folo/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The unit of Today — a suggestion, not a task (`docs/design/components.md` #12).
 ///

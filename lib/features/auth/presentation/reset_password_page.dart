@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/app/theme/app_spacing.dart';
@@ -13,6 +12,7 @@ import 'package:folo/features/auth/presentation/widgets/password_field.dart';
 import 'package:folo/features/auth/presentation/widgets/submit_button.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Reached by the recovery deep link, which has already created a session — so
 /// there is no back button and nowhere to go back to.

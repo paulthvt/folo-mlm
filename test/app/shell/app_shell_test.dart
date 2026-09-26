@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/app.dart';
@@ -6,6 +5,7 @@ import 'package:folo/app/shell/app_shell.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/account.dart';
 import 'package:folo/features/settings/presentation/settings_page.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../features/auth/fake_auth_repository.dart';
 

@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/features/auth/domain/auth_validation.dart';
 import 'package:folo/features/auth/presentation/auth_validation_copy.dart';
 import 'package:folo/l10n/app_localizations.dart';
+import 'package:folo/l10n/localizations_delegates.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Pumps a widget that hands the English AppLocalizations to [body].
 Future<void> _withL10n(
@@ -12,7 +13,7 @@ Future<void> _withL10n(
   await tester.pumpWidget(
     MaterialApp(
       locale: const Locale('en'),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      localizationsDelegates: localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       home: Builder(
         builder: (context) {

@@ -1,9 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/app/theme/app_typography.dart';
 import 'package:folo/core/ui/folo_progress_bar.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Own intent vs. own progress (`docs/design/components.md` #17). Pace is never
 /// red and never a comparison with another person (design principle #5).
