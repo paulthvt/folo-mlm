@@ -6,6 +6,16 @@ abstract final class Routes {
   static const String settings = '/settings';
   static const String settingsName = 'settings';
 
+  /// Settings sections nest under [settings], so back from one returns to the
+  /// list. The segment is what the nested `GoRoute` declares.
+  static const String settingsAccountSegment = 'account';
+  static const String settingsAccount = '$settings/$settingsAccountSegment';
+  static const String settingsAccountName = 'settingsAccount';
+
+  static const String settingsLanguageSegment = 'language';
+  static const String settingsLanguage = '$settings/$settingsLanguageSegment';
+  static const String settingsLanguageName = 'settingsLanguage';
+
   static const String welcome = '/welcome';
   static const String welcomeName = 'welcome';
 

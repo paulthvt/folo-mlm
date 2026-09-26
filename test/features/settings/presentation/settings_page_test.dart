@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/app.dart';
 import 'package:folo/app/shell/app_shell.dart';
+import 'package:folo/core/layout/breakpoints.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/account.dart';
 import 'package:folo/features/auth/domain/auth_failure.dart';
@@ -13,8 +14,11 @@ import '../../auth/fake_auth_repository.dart';
 
 /// Through the real app, so the redirect after sign-out and the locale switch
 /// are part of what is tested.
-Future<FakeAuthRepository> _openSettings(WidgetTester tester) async {
-  tester.view.physicalSize = const Size(390, 844);
+Future<FakeAuthRepository> _openSettings(
+  WidgetTester tester, {
+  Size size = const Size(390, 844),
+}) async {
+  tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
   final fake = FakeAuthRepository()
@@ -28,7 +32,24 @@ Future<FakeAuthRepository> _openSettings(WidgetTester tester) async {
     ),
   );
   await tester.pumpAndSettle();
-  await tester.tap(find.byType(AccountButton));
+  switch (Breakpoints.of(size.width)) {
+    case ScreenSize.mobile:
+      await tester.tap(find.byType(AccountButton));
+    case ScreenSize.tablet:
+      // The rail shows only an avatar; its label is for screen readers.
+      final semantics = tester.ensureSemantics();
+      tester.semantics.tap(find.semantics.byLabel('Settings'));
+      semantics.dispose();
+    case ScreenSize.desktop:
+      await tester.tap(find.text('Pauline'));
+  }
+  await tester.pumpAndSettle();
+  return fake;
+}
+
+Future<FakeAuthRepository> _openSection(WidgetTester tester, String row) async {
+  final fake = await _openSettings(tester);
+  await tester.tap(find.text(row));
   await tester.pumpAndSettle();
   return fake;
 }
@@ -44,7 +65,7 @@ void main() {
   testWidgets('choosing a language saves it and switches the app', (
     tester,
   ) async {
-    final fake = await _openSettings(tester);
+    final fake = await _openSection(tester, 'Language');
 
     // By key: French names itself only once its translations are pulled.
     await tester.tap(find.byKey(const ValueKey('language-fr')));
@@ -71,7 +92,7 @@ void main() {
   });
 
   testWidgets('delete asks first; cancel deletes nothing', (tester) async {
-    final fake = await _openSettings(tester);
+    final fake = await _openSection(tester, 'Pauline');
 
     await tester.tap(find.text('Delete account'));
     await tester.pumpAndSettle();
@@ -84,7 +105,7 @@ void main() {
   testWidgets('confirmed delete removes the account and lands on welcome', (
     tester,
   ) async {
-    final fake = await _openSettings(tester);
+    final fake = await _openSection(tester, 'Pauline');
 
     await tester.tap(find.text('Delete account'));
     await tester.pumpAndSettle();
@@ -96,7 +117,7 @@ void main() {
   });
 
   testWidgets('a failed delete says so and stays', (tester) async {
-    final fake = await _openSettings(tester);
+    final fake = await _openSection(tester, 'Pauline');
     fake.failWith = AuthFailure.network;
 
     await tester.tap(find.text('Delete account'));
@@ -109,5 +130,86 @@ void main() {
       findsOneWidget,
     );
     expect(find.byType(SettingsPage), findsOneWidget);
+  });
+
+  testWidgets('the list shows the language in use', (tester) async {
+    await _openSettings(tester);
+
+    expect(find.text('Same as this device'), findsOneWidget);
+  });
+
+  testWidgets('editing the name saves it', (tester) async {
+    final fake = await _openSection(tester, 'Pauline');
+
+    await tester.tap(find.text('First name'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextFormField), '  Paula ');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(fake.calls, ['updateFirstName(Paula)']);
+    expect(find.text('Paula'), findsOneWidget);
+  });
+
+  testWidgets('an empty name is refused', (tester) async {
+    final fake = await _openSection(tester, 'Pauline');
+
+    await tester.tap(find.text('First name'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextFormField), ' ');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Enter your first name.'), findsOneWidget);
+    expect(fake.calls, isEmpty);
+  });
+
+  testWidgets('mobile: delete confirms in a bottom sheet', (tester) async {
+    await _openSection(tester, 'Pauline');
+    // A gesture/navigation bar at the bottom of the screen.
+    tester.view.padding = const FakeViewPadding(bottom: 48);
+
+    await tester.tap(find.text('Delete account'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(BottomSheet), findsOneWidget);
+    expect(tester.getBottomLeft(find.text('Cancel')).dy, lessThan(844 - 48));
+  });
+
+  testWidgets('desktop: the list beside the open section', (tester) async {
+    await _openSettings(tester, size: const Size(1440, 900));
+
+    // Account is open until another section is chosen.
+    expect(find.text('Delete account'), findsOneWidget);
+    expect(find.byType(BackButton), findsNothing);
+
+    await tester.tap(find.text('Language'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('language-fr')), findsOneWidget);
+    expect(find.text('Sign out'), findsOneWidget);
+    expect(find.byType(BackButton), findsNothing);
+  });
+
+  testWidgets('desktop: delete confirms in a dialog', (tester) async {
+    await _openSettings(tester, size: const Size(1440, 900));
+
+    await tester.tap(find.text('Delete account'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(Dialog), findsOneWidget);
+  });
+
+  testWidgets('tablet: a section opens on its own screen', (tester) async {
+    await _openSettings(tester, size: const Size(800, 1000));
+
+    expect(find.byType(BackButton), findsNothing);
+    await tester.tap(find.text('Language'));
+    await tester.pumpAndSettle();
+
+    expect(find.byKey(const ValueKey('language-fr')), findsOneWidget);
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    expect(find.text('Sign out'), findsOneWidget);
   });
 }

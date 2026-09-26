@@ -102,7 +102,7 @@ class _Sidebar extends ConsumerWidget {
                     ),
                     label: account.displayName,
                     semanticLabel: l10n.settingsTitle,
-                    selected: location == Routes.settings,
+                    selected: location.startsWith(Routes.settings),
                     expanded: expanded,
                     onTap: () => context.go(Routes.settings),
                   ),
