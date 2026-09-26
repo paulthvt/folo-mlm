@@ -129,6 +129,69 @@ parts that matter.
 Generated Dart (`lib/l10n/app_localizations*.dart`) is not committed. Run
 `flutter gen-l10n` after changing an ARB file, or just `flutter run`.
 
+## Releases
+
+release-please keeps a Release PR open on `main`. Merging it tags the version,
+builds a signed AAB and APK, publishes a GitHub **pre-release** with the APK and
+web build, and uploads the AAB to Play **internal testing**
+(`.github/workflows/release.yaml`).
+
+Every release starts there. To ship one further, promote the same build — no
+rebuild:
+
+```bash
+gh workflow run Promote -f tag=v0.2.0 -f track=alpha        # closed testing
+gh workflow run Promote -f tag=v0.2.0 -f track=production   # also marks the GitHub release final
+```
+
+Promote from the workflow only, never from the Play Console, so the GitHub
+pre-release flags keep matching what users get. Production needs a closed test
+first on a personal developer account (12 testers opted in for 14 days).
+
+versionCode comes from the tag: `major*10000 + minor*100 + patch`.
+
+### One-time setup
+
+1. **Upload key.** Keep `upload.jks` and its passwords in a password manager,
+   never in the repo. Play App Signing holds the real app key, so a lost upload
+   key can be reset from the Play Console.
+
+   ```bash
+   keytool -genkeypair -v -keystore upload.jks -alias upload \
+     -keyalg RSA -keysize 2048 -validity 10000
+   ```
+
+2. **Play Console app.** Create the app with package `com.folo.folo` (permanent
+   once created) and keep Play App Signing on. The API cannot publish the first
+   build, so upload one by hand: put the key in `android/` with an
+   `android/key.properties` (both git-ignored),
+
+   ```properties
+   storeFile=upload.jks
+   storePassword=...
+   keyAlias=upload
+   keyPassword=...
+   ```
+
+   run `flutter build appbundle --release --build-number=1`, then upload
+   `build/app/outputs/bundle/release/app-release.aab` to **Internal testing** and
+   roll it out. Delete both files afterwards.
+
+3. **Service account.** In a Google Cloud project, enable the *Google Play
+   Android Developer API*, create a service account and download a JSON key. In
+   Play Console → *Users and permissions*, invite its email with release
+   permissions (testing tracks and production) on the app.
+
+4. **Secrets.**
+
+   ```bash
+   base64 -i upload.jks | gh secret set ANDROID_KEYSTORE_BASE64
+   gh secret set ANDROID_KEYSTORE_PASSWORD
+   gh secret set ANDROID_KEY_ALIAS --body upload
+   gh secret set ANDROID_KEY_PASSWORD
+   gh secret set PLAY_SERVICE_ACCOUNT_JSON < service-account.json
+   ```
+
 ## Tracking work
 
 Work is tracked on the
