@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/features/today/presentation/today_preview.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// `flutter widget-preview start` builds each `@Preview` function directly, so
 /// a preview's own `MaterialApp` is the only host its subject gets. The moment a

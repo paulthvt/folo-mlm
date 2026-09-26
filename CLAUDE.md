@@ -75,6 +75,10 @@ already-installed packages first.
   for purely local widget state (a toggle, an animation). Providers live next to
   their consumer, not in a global folder.
 - **Imports**: `package:folo/...` always (`always_use_package_imports`).
+  Material comes from `package:material_ui/material_ui.dart`, never
+  `flutter/material.dart` (frozen, and its classes don't match).
+- **Pickers** (date, time): Cupertino on iOS, Material on Android and Web.
+  Everything else is Material everywhere. See docs/architecture.md.
 - **Tests**: `test/` mirrors `lib/`. Widget test for screens, plain Dart unit
   test for domain logic.
 - **Commits**: Conventional Commits (`feat`/`fix`/`docs`/`style`/`refactor`/

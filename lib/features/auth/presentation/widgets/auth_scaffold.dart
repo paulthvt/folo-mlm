@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:folo/app/router/back.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/layout/breakpoints.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The shape every auth screen shares: no navigation, one column capped at 400
 /// and centred, flat on the canvas.

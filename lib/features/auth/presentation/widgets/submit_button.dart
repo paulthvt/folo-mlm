@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_theme.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// The single primary action on an auth screen.
 ///

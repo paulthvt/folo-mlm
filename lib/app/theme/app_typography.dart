@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Type ramp (`docs/design/design-system.md` §2): Plus Jakarta Sans, one
 /// bundled variable font, three weights in use.

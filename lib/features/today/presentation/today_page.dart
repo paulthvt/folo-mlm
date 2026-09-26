@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/shell/app_shell.dart';
 import 'package:folo/app/theme/app_spacing.dart';
@@ -13,6 +12,7 @@ import 'package:folo/core/ui/stat_tile.dart';
 import 'package:folo/features/today/domain/today_snapshot.dart';
 import 'package:folo/features/today/presentation/today_hero.dart';
 import 'package:folo/l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// What Today renders.
 ///

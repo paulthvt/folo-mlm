@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// One choice in a list of them: its label, a check when chosen.
 class SettingsOption extends StatelessWidget {

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/app/theme/app_theme.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Form-level failure: "we could not sign you in", as opposed to a field being
 /// wrong (that is the text field's own error state).

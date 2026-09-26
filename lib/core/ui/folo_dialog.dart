@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/layout/breakpoints.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// ConfirmDialog (`docs/design/components.md` #19), and any short form: a
 /// bottom sheet on mobile, a centred dialog elsewhere, the same internals.

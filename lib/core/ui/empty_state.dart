@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Tells the user that empty is fine (`docs/design/components.md` #18). Copy says
 /// "you are up to date", never "no data", and there is no illustration.

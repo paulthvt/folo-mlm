@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_colors.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// One group of Settings rows (`SettingsRow` in Figma): a flat hairline card,
 /// a hairline between rows, square row highlights so they meet its edges.

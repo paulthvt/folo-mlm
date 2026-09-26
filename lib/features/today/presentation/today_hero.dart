@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/app/theme/app_typography.dart';
 import 'package:folo/core/ui/folo_progress_bar.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Answers "what should I do today?" from arm's length
 /// (`docs/design/components.md` #11).
