@@ -7,6 +7,7 @@ import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/account.dart';
 import 'package:folo/features/auth/domain/auth_failure.dart';
 import 'package:folo/features/settings/presentation/settings_page.dart';
+import 'package:folo/l10n/app_localizations.dart';
 
 import '../../auth/fake_auth_repository.dart';
 
@@ -53,7 +54,9 @@ void main() {
     final context = tester.element(find.byType(SettingsPage));
     expect(Localizations.localeOf(context), const Locale('fr'));
 
-    await tester.tap(find.text('Same as this device'));
+    // The screen itself is now in French.
+    final fr = lookupAppLocalizations(const Locale('fr'));
+    await tester.tap(find.text(fr.settingsLanguageSystem));
     await tester.pumpAndSettle();
     expect(fake.calls.last, 'updateLocale(null)');
   });
