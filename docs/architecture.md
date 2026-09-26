@@ -75,7 +75,7 @@ picks its chrome from `context.screenSize`: a sidebar on desktop, the same
 sidebar as an icon rail on tablet, nothing on mobile. Settings is not a
 destination — it opens from the account block at the bottom of the sidebar, or
 from the avatar in the top bar on mobile. Its sections (`/settings/account`,
-`/settings/language`) are nested routes: on desktop they fill a pane beside the
+`/settings/language`, `/settings/appearance`) are nested routes: on desktop they fill a pane beside the
 Settings list without a transition; on mobile and tablet each is its own pushed
 screen. The mobile bottom bar and a
 `StatefulShellRoute` (one stack per tab) arrive with the second destination.

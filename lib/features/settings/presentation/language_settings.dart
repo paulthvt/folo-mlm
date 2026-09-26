@@ -6,6 +6,7 @@ import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
 import 'package:folo/features/auth/presentation/widgets/form_error.dart';
 import 'package:folo/features/settings/presentation/settings_action.dart';
 import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
+import 'package:folo/features/settings/presentation/widgets/settings_option.dart';
 import 'package:folo/l10n/app_localizations.dart';
 
 /// The languages the app can be shown in, as a list rather than a dropdown so
@@ -36,13 +37,13 @@ class _LanguageSettingsState extends ConsumerState<LanguageSettings>
         ],
         SettingsGroup(
           children: [
-            _LanguageOption(
+            SettingsOption(
               label: l10n.settingsLanguageSystem,
               selected: chosen == null,
               onTap: busy ? null : () => run((a) => a.updateLocale(null)),
             ),
             for (final locale in AppLocalizations.supportedLocales)
-              _LanguageOption(
+              SettingsOption(
                 key: ValueKey('language-${locale.languageCode}'),
                 // Each language in its own name, so it can be found by someone
                 // who cannot read the current one; its name in the current one
@@ -57,37 +58,6 @@ class _LanguageSettingsState extends ConsumerState<LanguageSettings>
           ],
         ),
       ],
-    );
-  }
-}
-
-class _LanguageOption extends StatelessWidget {
-  const _LanguageOption({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-    this.translation = '',
-    super.key,
-  });
-
-  final String label;
-
-  /// Hidden when empty or the same as [label].
-  final String translation;
-  final bool selected;
-  final VoidCallback? onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final showTranslation = translation.isNotEmpty && translation != label;
-    return Semantics(
-      selected: selected,
-      child: ListTile(
-        title: Text(label),
-        subtitle: showTranslation ? Text(translation) : null,
-        trailing: selected ? const Icon(Icons.check_rounded) : null,
-        onTap: onTap,
-      ),
     );
   }
 }

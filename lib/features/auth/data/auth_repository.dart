@@ -34,6 +34,8 @@ class AuthRepository {
       firstName: (metadata['first_name'] as String?)?.trim() ?? '',
       email: user.email ?? '',
       locale: metadata['locale'] as String?,
+      appearance:
+          Appearance.values.asNameMap()[metadata['theme']] ?? Appearance.system,
     );
   }
 
@@ -119,6 +121,17 @@ class AuthRepository {
   Future<void> updateLocale(String? locale) =>
       _guard(() => _auth.updateUser(UserAttributes(data: {'locale': locale})));
 
+  /// Stored as `theme`; removed for [Appearance.system], like a null locale.
+  Future<void> updateAppearance(Appearance appearance) => _guard(
+    () => _auth.updateUser(
+      UserAttributes(
+        data: {
+          'theme': appearance == Appearance.system ? null : appearance.name,
+        },
+      ),
+    ),
+  );
+
   /// Deleting needs the secret key, so it happens in the `delete-account` Edge
   /// Function. The session is then dead server-side; sign out locally only —
   /// a server sign-out would fail on a user that no longer exists.
@@ -141,7 +154,7 @@ final authRepositoryProvider = Provider<AuthRepository>(
 );
 
 /// The signed-in user, re-read on every auth change (sign-in, sign-out, a
-/// saved name or language).
+/// saved name, language or appearance).
 final accountProvider = Provider<Account?>((ref) {
   final repository = ref.watch(authRepositoryProvider);
   final subscription = repository.changes.listen((_) => ref.invalidateSelf());

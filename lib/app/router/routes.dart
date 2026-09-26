@@ -16,6 +16,11 @@ abstract final class Routes {
   static const String settingsLanguage = '$settings/$settingsLanguageSegment';
   static const String settingsLanguageName = 'settingsLanguage';
 
+  static const String settingsAppearanceSegment = 'appearance';
+  static const String settingsAppearance =
+      '$settings/$settingsAppearanceSegment';
+  static const String settingsAppearanceName = 'settingsAppearance';
+
   static const String welcome = '/welcome';
   static const String welcomeName = 'welcome';
 

@@ -9,16 +9,18 @@ import 'package:folo/core/ui/folo_avatar.dart';
 import 'package:folo/core/ui/folo_top_bar.dart';
 import 'package:folo/core/ui/section_header.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
+import 'package:folo/features/auth/domain/account.dart';
 import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
 import 'package:folo/features/auth/presentation/widgets/form_error.dart';
 import 'package:folo/features/settings/presentation/account_settings.dart';
+import 'package:folo/features/settings/presentation/appearance_settings.dart';
 import 'package:folo/features/settings/presentation/language_settings.dart';
 import 'package:folo/features/settings/presentation/settings_action.dart';
 import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 
-enum SettingsSection { account, language }
+enum SettingsSection { account, language, appearance }
 
 /// The Settings list, and one of its sections.
 ///
@@ -37,6 +39,7 @@ class SettingsPage extends StatelessWidget {
     final location = switch (section) {
       SettingsSection.account => Routes.settingsAccount,
       SettingsSection.language => Routes.settingsLanguage,
+      SettingsSection.appearance => Routes.settingsAppearance,
     };
     if (context.screenSize.isDesktop) {
       context.go(location);
@@ -118,6 +121,10 @@ class _Section extends StatelessWidget {
       SettingsSection.language => _Scroll(
         title: l10n.settingsSectionLanguage,
         child: const LanguageSettings(),
+      ),
+      SettingsSection.appearance => _Scroll(
+        title: l10n.settingsSectionAppearance,
+        child: const AppearanceSettings(),
       ),
     };
   }
@@ -218,6 +225,17 @@ class _SettingsListState extends ConsumerState<_SettingsList>
               ),
               trailing: const Icon(Icons.chevron_right_rounded),
               onTap: () => SettingsPage.open(context, SettingsSection.language),
+            ),
+            ListTile(
+              selected: selected == SettingsSection.appearance,
+              leading: const Icon(Icons.contrast_rounded),
+              title: Text(l10n.settingsSectionAppearance),
+              subtitle: Text(
+                appearanceLabel(l10n, account?.appearance ?? Appearance.system),
+              ),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () =>
+                  SettingsPage.open(context, SettingsSection.appearance),
             ),
           ],
         ),

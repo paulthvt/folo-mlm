@@ -78,6 +78,7 @@ class FakeAuthRepository implements AuthRepository {
       firstName: current.firstName,
       email: current.email,
       locale: locale,
+      appearance: current.appearance,
     );
     emit(AuthChange.userUpdated);
   }
@@ -91,6 +92,21 @@ class FakeAuthRepository implements AuthRepository {
       firstName: firstName,
       email: current.email,
       locale: current.locale,
+      appearance: current.appearance,
+    );
+    emit(AuthChange.userUpdated);
+  }
+
+  @override
+  Future<void> updateAppearance(Appearance appearance) async {
+    await _record('updateAppearance(${appearance.name})');
+    final current = account;
+    if (current == null) return;
+    account = Account(
+      firstName: current.firstName,
+      email: current.email,
+      locale: current.locale,
+      appearance: appearance,
     );
     emit(AuthChange.userUpdated);
   }
