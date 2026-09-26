@@ -166,11 +166,14 @@ void main() {
 
   testWidgets('mobile: delete confirms in a bottom sheet', (tester) async {
     await _openSection(tester, 'Pauline');
+    // A gesture/navigation bar at the bottom of the screen.
+    tester.view.padding = const FakeViewPadding(bottom: 48);
 
     await tester.tap(find.text('Delete account'));
     await tester.pumpAndSettle();
 
     expect(find.byType(BottomSheet), findsOneWidget);
+    expect(tester.getBottomLeft(find.text('Cancel')).dy, lessThan(844 - 48));
   });
 
   testWidgets('desktop: the list beside the open section', (tester) async {

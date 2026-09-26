@@ -182,10 +182,20 @@ class _SettingsListState extends ConsumerState<_SettingsList>
                   name: account.displayName,
                   size: AvatarSize.row,
                 ),
-                title: Text(account.displayName),
+                // One line each: this row only says whose account it is; the
+                // full email is on the Account screen.
+                title: Text(
+                  account.displayName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 subtitle: account.firstName.isEmpty
                     ? null
-                    : Text(account.email),
+                    : Text(
+                        account.email,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                 trailing: const Icon(Icons.chevron_right_rounded),
                 onTap: () =>
                     SettingsPage.open(context, SettingsSection.account),
