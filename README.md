@@ -73,6 +73,14 @@ SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET=... supabase config push
 references the Google client secret through that variable, so set it before
 pushing (it is in Google Cloud Console, never in this repo).
 
+### Error reporting
+
+Release builds send uncaught errors to [Sentry](https://sentry.io) (Flutter
+project, free plan). The DSN is committed in `lib/main.dart`: it can only send
+events. Debug and profile builds send nothing. PII is off: no email, no IP.
+
+Web stack traces are minified until source maps are uploaded (not set up yet).
+
 ## Checks
 
 ```bash
