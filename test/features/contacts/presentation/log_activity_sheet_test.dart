@@ -1,5 +1,4 @@
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoDatePicker;
-import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/features/contacts/domain/activity.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
@@ -120,7 +119,6 @@ void main() {
   });
 
   testWidgets('iOS: a wheel that cannot go past today', (tester) async {
-    debugDefaultTargetPlatformOverride = TargetPlatform.iOS;
     await open(tester);
 
     await tester.tap(find.textContaining('Today, '));
@@ -134,6 +132,5 @@ void main() {
 
     expect(find.byType(CupertinoDatePicker), findsNothing);
     expect(find.textContaining('Today, '), findsOneWidget);
-    debugDefaultTargetPlatformOverride = null;
-  });
+  }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
 }
