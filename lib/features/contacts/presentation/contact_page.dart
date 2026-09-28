@@ -5,6 +5,7 @@ import 'package:folo/app/router/back.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/core/layout/breakpoints.dart';
 import 'package:folo/core/ui/empty_state.dart';
+import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/presentation/contact_details.dart';
@@ -62,11 +63,12 @@ class ContactPane extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
-    final people = ref.watch(peopleProvider);
+    final book = peopleProvider(ref.watch(accountProvider)?.email);
+    final people = ref.watch(book);
     final list = people.value;
     if (list == null) {
       return people.hasError
-          ? PeopleLoadError(onRetry: () => ref.invalidate(peopleProvider))
+          ? PeopleLoadError(onRetry: () => ref.invalidate(book))
           : const Center(child: CircularProgressIndicator());
     }
 
@@ -103,7 +105,9 @@ class ContactPane extends ConsumerWidget {
     final messenger = ScaffoldMessenger.of(context);
     final l10n = AppLocalizations.of(context);
     try {
-      await ref.read(peopleProvider.notifier).setStatus(person, status);
+      await ref
+          .read(peopleProvider(ref.read(accountProvider)?.email).notifier)
+          .setStatus(person, status);
     } on PeopleFailure catch (failure) {
       // The controller has already put the chip back.
       messenger.showSnackBar(
@@ -118,7 +122,9 @@ class ContactPane extends ConsumerWidget {
   Future<void> _delete(BuildContext context, WidgetRef ref) async {
     final messenger = ScaffoldMessenger.of(context);
     final l10n = AppLocalizations.of(context);
-    final controller = ref.read(peopleProvider.notifier);
+    final controller = ref.read(
+      peopleProvider(ref.read(accountProvider)?.email).notifier,
+    );
     if (context.screenSize.isDesktop) {
       context.go(Routes.contacts);
     } else {

@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/ui/folo_dialog.dart';
 import 'package:folo/core/ui/form_error.dart';
+import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/domain/contact_channel.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
@@ -47,7 +48,8 @@ class _AddPersonFormState extends ConsumerState<_AddPersonForm> {
       _failure = null;
     });
     try {
-      final person = await ref.read(peopleProvider.notifier).add((
+      final people = peopleProvider(ref.read(accountProvider)?.email);
+      final person = await ref.read(people.notifier).add((
         name: _name.text.trim(),
         stage: _stage,
         phone: value(ChannelKind.phone),

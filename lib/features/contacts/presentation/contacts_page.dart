@@ -6,6 +6,7 @@ import 'package:folo/app/shell/app_shell.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/core/layout/breakpoints.dart';
 import 'package:folo/core/ui/empty_state.dart';
+import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/presentation/add_person_sheet.dart';
 import 'package:folo/features/contacts/presentation/contact_list.dart';
@@ -30,9 +31,10 @@ void openContact(BuildContext context, String id) {
 Future<void> refreshPeople(BuildContext context, WidgetRef ref) async {
   final messenger = ScaffoldMessenger.of(context);
   final l10n = AppLocalizations.of(context);
+  final people = peopleProvider(ref.read(accountProvider)?.email);
   try {
-    ref.invalidate(peopleProvider);
-    await ref.read(peopleProvider.future);
+    ref.invalidate(people);
+    await ref.read(people.future);
   } on PeopleFailure {
     messenger.showSnackBar(SnackBar(content: Text(l10n.contactsRefreshFailed)));
   }
@@ -72,8 +74,9 @@ class _ContactsPageState extends ConsumerState<ContactsPage> {
   /// another device are most likely waiting. Quiet — a failure here keeps the
   /// list and says nothing; the user did not ask.
   void _onResume() {
-    if (!ref.read(peopleProvider.notifier).isStaleAt(DateTime.now())) return;
-    ref.refresh(peopleProvider.future).ignore();
+    final people = peopleProvider(ref.read(accountProvider)?.email);
+    if (!ref.read(people.notifier).isStaleAt(DateTime.now())) return;
+    ref.refresh(people.future).ignore();
   }
 
   Future<void> _add() async {
@@ -83,7 +86,8 @@ class _ContactsPageState extends ConsumerState<ContactsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final people = ref.watch(peopleProvider);
+    final book = peopleProvider(ref.watch(accountProvider)?.email);
+    final people = ref.watch(book);
     final list = people.value;
     final sideNavigation = context.screenSize.usesSideNavigation;
     final pane = widget.pane;
@@ -100,7 +104,7 @@ class _ContactsPageState extends ConsumerState<ContactsPage> {
         accountAction: sideNavigation ? null : const AccountButton(),
       );
     } else if (people.hasError) {
-      body = PeopleLoadError(onRetry: () => ref.invalidate(peopleProvider));
+      body = PeopleLoadError(onRetry: () => ref.invalidate(book));
     } else {
       body = const Center(child: CircularProgressIndicator());
     }

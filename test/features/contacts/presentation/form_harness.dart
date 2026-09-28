@@ -38,7 +38,7 @@ Future<void> pumpFormHarness(
         home: Consumer(
           builder: (context, ref, _) {
             // Loaded, as it is when the list opens the form.
-            ref.watch(peopleProvider);
+            ref.watch(peopleProvider(ref.watch(accountProvider)?.email));
             return Scaffold(
               body: Center(
                 child: FilledButton(

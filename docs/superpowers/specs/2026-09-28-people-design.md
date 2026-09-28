@@ -165,9 +165,11 @@ The comment on `AuthRepository` saying it is "the only file that imports
 ### `presentation/people_controller.dart`
 
 - `peopleProvider = AsyncNotifierProvider<PeopleController, List<Person>>`.
-  - `build()` watches `accountProvider`, so signing out or switching accounts
-    reloads, and user B never sees user A's cached list. It returns
-    `repository.list()`.
+  - It is a family keyed on the account email; screens read
+    `peopleProvider(account?.email)`. Each account gets its own instance, so
+    user B never sees user A's cached list — a rebuilt instance would carry
+    A's value into B's loading and error states. `build()` returns
+    `repository.list()`, or `[]` when signed out.
   - `add`, `save` and `remove` call the repository, then replace `state` with
     the updated list, keeping it sorted by name.
   - On failure, those three rethrow the `PeopleFailure` and leave `state` as it
