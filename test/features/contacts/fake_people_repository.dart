@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:folo/features/contacts/data/people_repository.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 
+import 'fake_activity_repository.dart';
+
 /// An in-memory book that records calls, and fails or stalls on demand.
 class FakePeopleRepository implements PeopleRepository {
   FakePeopleRepository([Iterable<Person> people = const []]) {
@@ -21,6 +23,10 @@ class FakePeopleRepository implements PeopleRepository {
 
   /// Calls started while set wait on it.
   Completer<void>? gate;
+
+  /// Where [setStage] writes its history entry, as the database does. Unset,
+  /// stage changes leave no entry.
+  FakeActivityRepository? activities;
 
   var _next = 0;
 
@@ -90,6 +96,7 @@ class FakePeopleRepository implements PeopleRepository {
       notes: before.notes,
     );
     store[id] = moved;
+    activities?.recordStage(id, stage);
     return moved;
   }
 }
