@@ -12,6 +12,8 @@ import 'package:folo/features/contacts/presentation/change_stage_sheet.dart';
 import 'package:folo/features/contacts/presentation/contact_details.dart';
 import 'package:folo/features/contacts/presentation/contacts_page.dart';
 import 'package:folo/features/contacts/presentation/edit_person_form.dart';
+import 'package:folo/features/contacts/presentation/history_controller.dart';
+import 'package:folo/features/contacts/presentation/history_section.dart';
 import 'package:folo/features/contacts/presentation/log_activity_sheet.dart';
 import 'package:folo/features/contacts/presentation/people_controller.dart';
 import 'package:folo/features/contacts/presentation/people_copy.dart';
@@ -88,6 +90,10 @@ class ContactPane extends ConsumerWidget {
       );
     }
 
+    // Loads the history as the page opens, and keeps it while the section
+    // scrolls out of the lazy list.
+    ref.listen(historyProvider(person.id), (_, _) {});
+
     return ContactDetails(
       person: person,
       onStatus: (status) => unawaited(_setStatus(context, ref, person, status)),
@@ -96,7 +102,16 @@ class ContactPane extends ConsumerWidget {
       onLog: () => unawaited(showLogActivity(context, person)),
       onMove: (stage) => unawaited(showChangeStage(context, person, stage)),
       onLaunch: (uri) => unawaited(_launch(context, uri)),
-      onRefresh: () => refreshPeople(context, ref),
+      onRefresh: () {
+        ref.invalidate(historyProvider(person.id));
+        return refreshPeople(context, ref);
+      },
+      history: HistorySection(
+        // A new person starts collapsed.
+        key: ValueKey(person.id),
+        person: person,
+        onAdd: () => unawaited(showLogActivity(context, person)),
+      ),
     );
   }
 

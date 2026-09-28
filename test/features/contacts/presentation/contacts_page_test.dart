@@ -1,6 +1,8 @@
+import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/router/app_router.dart';
 import 'package:folo/app/router/routes.dart';
+import 'package:folo/features/contacts/domain/activity.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/presentation/contact_details.dart';
@@ -9,6 +11,7 @@ import 'package:folo/features/contacts/presentation/contact_page.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../app/app_harness.dart';
+import '../fake_activity_repository.dart';
 import '../fake_people_repository.dart';
 
 final _marie = Person(
@@ -30,13 +33,31 @@ final _lucas = Person(
 const _phone = Size(390, 844);
 const _desktop = Size(1440, 900);
 
+Activity _note(String id, String text, int day) => Activity(
+  id: id,
+  personId: 'p1',
+  kind: ActivityKind.note,
+  happenedOn: DateTime(2026, 9, day),
+  text: text,
+  createdAt: DateTime.utc(2026, 9, day, 12),
+);
+
 void main() {
   late FakePeopleRepository people;
+  late FakeActivityRepository activities;
 
-  setUp(() => people = FakePeopleRepository([_marie, _lucas]));
+  setUp(() {
+    activities = FakeActivityRepository();
+    people = FakePeopleRepository([_marie, _lucas])..activities = activities;
+  });
 
   Future<void> openContacts(WidgetTester tester, {Size size = _phone}) async {
-    final container = await pumpFolo(tester, size: size, people: people);
+    final container = await pumpFolo(
+      tester,
+      size: size,
+      people: people,
+      activities: activities,
+    );
     container.read(routerProvider).go(Routes.contacts);
     await tester.pumpAndSettle();
   }
@@ -45,6 +66,20 @@ void main() {
     await openContacts(tester);
     await tester.tap(find.text('Marie Dupont'));
     await tester.pumpAndSettle();
+  }
+
+  /// HISTORY sits below the fold on a phone, and the list builds lazily.
+  Future<void> reveal(WidgetTester tester, Finder finder) async {
+    await tester.scrollUntilVisible(
+      finder,
+      300,
+      scrollable: find.descendant(
+        of: find.byType(ContactDetails),
+        matching: find.byType(Scrollable),
+      ),
+    );
+    // The last jump lays out on the next frame.
+    await tester.pump();
   }
 
   testWidgets('a failed load shows Retry, which loads the list', (
@@ -146,6 +181,182 @@ void main() {
       find.text('Couldn\'t save. Check your connection and try again.'),
       findsOneWidget,
     );
+  });
+
+  testWidgets('moving someone updates the header and the history', (
+    tester,
+  ) async {
+    await openMarie(tester);
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Move to customers'));
+    await tester.pumpAndSettle();
+    expect(find.text('Marie is now a customer'), findsOneWidget);
+    expect(
+      find.text(
+        'Everything you noted stays with them. Where it stands is cleared.',
+      ),
+      findsOneWidget,
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Move to customers'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Customer since September 2026'), findsOneWidget);
+    await reveal(tester, find.text('Became a customer'));
+    expect(find.text('Became a customer'), findsOneWidget);
+  });
+
+  testWidgets('a failed move keeps the sheet open and the stage', (
+    tester,
+  ) async {
+    await openMarie(tester);
+    people.failWith = PeopleFailure.network;
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Move to team'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Move to team'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text("Couldn't save. Check your connection and try again."),
+      findsOneWidget,
+    );
+    expect(find.text('Marie is now on your team'), findsOneWidget);
+    expect(find.text('Prospect since March 2026'), findsOneWidget);
+  });
+
+  testWidgets('the latest 3 entries; See all shows the rest in place', (
+    tester,
+  ) async {
+    activities.store.addAll([
+      _note('a1', 'First call', 1),
+      _note('a2', 'Sent the price list', 5),
+      _note('a3', 'Ordered the cream', 10),
+      _note('a4', 'Asked about delivery', 15),
+    ]);
+    await openMarie(tester);
+
+    await reveal(tester, find.text('See all 4'));
+    expect(find.text('Asked about delivery'), findsOneWidget);
+    expect(find.text('First call'), findsNothing);
+    await tester.tap(find.text('See all 4'));
+    await tester.pumpAndSettle();
+
+    await reveal(tester, find.text('First call'));
+    expect(find.text('See all 4'), findsNothing);
+  });
+
+  testWidgets('nothing logged yet', (tester) async {
+    await openMarie(tester);
+
+    await reveal(tester, find.text('Nothing logged yet.'));
+    expect(find.text('Nothing logged yet.'), findsOneWidget);
+  });
+
+  testWidgets('a failed history load has its own Retry', (tester) async {
+    activities.failWith = PeopleFailure.network;
+    await openMarie(tester);
+
+    await reveal(tester, find.text("Couldn't load the history."));
+    expect(find.text('Marie Dupont'), findsOneWidget);
+    activities.failWith = null;
+    await tester.tap(find.text('Try again'));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Couldn't load the history."), findsNothing);
+    expect(find.text('Nothing logged yet.'), findsOneWidget);
+  });
+
+  testWidgets('long-press deletes an entry once confirmed', (tester) async {
+    activities.store.add(_note('a1', 'Ordered the cream', 10));
+    await openMarie(tester);
+
+    await reveal(tester, find.text('Ordered the cream'));
+    await tester.longPress(find.text('Ordered the cream'));
+    await tester.pumpAndSettle();
+    expect(find.text('Delete this entry?'), findsOneWidget);
+    await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
+    await tester.pumpAndSettle();
+
+    expect(activities.calls, contains('delete(a1)'));
+    expect(find.text('Ordered the cream'), findsNothing);
+  });
+
+  testWidgets('a failed delete brings the entry back with a SnackBar', (
+    tester,
+  ) async {
+    activities.store.add(_note('a1', 'Ordered the cream', 10));
+    await openMarie(tester);
+    activities.failWith = PeopleFailure.network;
+
+    await reveal(tester, find.text('Ordered the cream'));
+    await tester.longPress(find.text('Ordered the cream'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ordered the cream'), findsOneWidget);
+    expect(
+      find.text("Couldn't save. Check your connection and try again."),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('a stage entry cannot be deleted', (tester) async {
+    activities.recordStage('p1', Stage.customer);
+    await openMarie(tester);
+
+    await reveal(tester, find.text('Became a customer'));
+    await tester.longPress(find.text('Became a customer'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Delete this entry?'), findsNothing);
+  });
+
+  testWidgets('screen readers get a Delete action on an entry', (tester) async {
+    final semantics = tester.ensureSemantics();
+    activities.store.add(_note('a1', 'Ordered the cream', 10));
+    await openMarie(tester);
+    await reveal(tester, find.text('Ordered the cream'));
+
+    expect(
+      tester.getSemantics(find.text('Ordered the cream')),
+      isSemantics(
+        customActions: [const CustomSemanticsAction(label: 'Delete')],
+      ),
+    );
+    semantics.dispose();
+  });
+
+  testWidgets('Log something from ⋯ adds to the history', (tester) async {
+    await openMarie(tester);
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Log something'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'What happened'),
+      'Met at the market',
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+    await tester.pumpAndSettle();
+
+    await reveal(tester, find.text('Met at the market'));
+    expect(find.text('Met at the market'), findsOneWidget);
+  });
+
+  testWidgets('Add in HISTORY opens Log something', (tester) async {
+    await openMarie(tester);
+
+    await reveal(tester, find.text('HISTORY'));
+    await tester.tap(find.text('Add'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Log something with Marie'), findsOneWidget);
   });
 
   testWidgets('desktop: the split keeps the list and its filter', (

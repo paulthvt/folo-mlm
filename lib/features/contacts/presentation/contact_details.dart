@@ -113,6 +113,7 @@ class ContactDetails extends StatelessWidget {
             ),
           );
           // Run once the sheet is gone, from this page's context.
+          if (!context.mounted) return;
           chosen?.call();
         },
       );
@@ -135,29 +136,14 @@ class ContactDetails extends StatelessWidget {
   }
 
   Future<void> _confirmDelete(BuildContext context) async {
-    final confirmed = await FoloDialog.show<bool>(context, (context) {
-      final l10n = AppLocalizations.of(context);
-      final scheme = Theme.of(context).colorScheme;
-      return FoloDialog(
-        title: l10n.contactDeleteTitle(person.name),
-        body: l10n.contactDeleteBody,
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: scheme.error,
-              foregroundColor: scheme.onError,
-            ),
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(l10n.contactDeleteConfirm),
-          ),
-        ],
-      );
-    });
-    if (confirmed == true) onDelete();
+    final l10n = AppLocalizations.of(context);
+    final confirmed = await confirmDestructive(
+      context,
+      title: l10n.contactDeleteTitle(person.name),
+      body: l10n.contactDeleteBody,
+      action: l10n.contactDeleteConfirm,
+    );
+    if (confirmed) onDelete();
   }
 
   @override

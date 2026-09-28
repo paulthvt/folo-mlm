@@ -96,3 +96,34 @@ class FoloDialog extends StatelessWidget {
     );
   }
 }
+
+/// "Delete …?" with Cancel and a red [action]; true once confirmed.
+Future<bool> confirmDestructive(
+  BuildContext context, {
+  required String title,
+  required String action,
+  String? body,
+}) async {
+  final confirmed = await FoloDialog.show<bool>(context, (context) {
+    final scheme = Theme.of(context).colorScheme;
+    return FoloDialog(
+      title: title,
+      body: body,
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+        ),
+        FilledButton(
+          style: FilledButton.styleFrom(
+            backgroundColor: scheme.error,
+            foregroundColor: scheme.onError,
+          ),
+          onPressed: () => Navigator.pop(context, true),
+          child: Text(action),
+        ),
+      ],
+    );
+  });
+  return confirmed ?? false;
+}
