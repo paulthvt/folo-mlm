@@ -108,10 +108,11 @@ class PeopleController extends AsyncNotifier<List<Person>> {
   );
 
   void _change(List<Person> Function(List<Person> people) change) {
-    final people = state.value;
     // Rebuilt or disposed while a save was in flight: the new build has the
-    // truth.
-    if (!ref.mounted || people == null) return;
+    // truth. Checked first: reading state once unmounted throws.
+    if (!ref.mounted) return;
+    final people = state.value;
+    if (people == null) return;
     state = AsyncData(_sorted(change(people)));
   }
 
