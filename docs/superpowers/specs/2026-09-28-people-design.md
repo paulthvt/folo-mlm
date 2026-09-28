@@ -124,7 +124,8 @@ nothing. It runs in CI after `supabase db reset` with `supabase test db`.
 - `enum ProspectStatus { interested, thinking, notNow, noReply }`.
 - `Person`, an immutable class. Fields: `id`, `name`, `stage`, `prospectStatus`,
   `phone`, `email`, `instagram`, `needs`, `products`, `profession`, `address`,
-  `notes`, `createdAt`. It has a `copyWith`. When the stage is not prospect,
+  `notes`, `createdAt`. It has `withStatus(status)`; Edit builds a new `Person`
+  from its fields, so there is no generic `copyWith`. When the stage is not prospect,
   `prospectStatus` is null (the database enforces this too).
 - `PersonDraft`, a record used by Add someone: name, stage, and the optional
   channels.
@@ -145,7 +146,8 @@ two, the same way `AuthFailure` works.
 
 This is a concrete class with no interface.
 
-- `Future<List<Person>> list()`: `from('person').select().order('name')`.
+- `Future<List<Person>> list()`: `from('person').select()`. The controller
+  sorts by `searchKey(name)`, so "Élodie" sorts with the E's.
 - `Future<Person> add(PersonDraft)`: `insert(...).select().single()`.
 - `Future<Person> update(Person)`: `update(...).eq('id', id).select().single()`.
 - `Future<void> delete(String id)`.
@@ -174,8 +176,8 @@ The comment on `AuthRepository` saying it is "the only file that imports
     fails, it puts the previous value back and rethrows.
   - `refresh()` reloads while keeping the old list visible:
     `ref.refresh(peopleProvider.future)` from the screens.
-- `personProvider = Provider.family<AsyncValue<Person?>, String>`, derived
-  from `peopleProvider`. There is no second fetch.
+- There is no `personProvider`: the detail pane finds its id in
+  `peopleProvider`'s list. There is no second fetch.
 - The search text and the stage filter live in the list screen's local
   `setState`.
 
@@ -189,16 +191,17 @@ if the last load finished more than a minute ago. The controller keeps
 
 - In `routes.dart`, first: `contacts = '/contacts'` and `contact = '/contacts/:id'`,
   plus `contactLocation(id)`.
-- The router moves to `StatefulShellRoute.indexedStack` with two branches:
-  Today (`/`) and Contacts (`/contacts`, with a child route `:id`). Settings
-  stays a top-level route, reached from the account avatar (mobile) or the
-  account block (sidebar), as now.
+- The router keeps its plain `ShellRoute`. `/contacts` (with a child route
+  `:id`) gets its own nested `ShellRoute`, which on desktop keeps the list
+  built beside the pane. There is no `StatefulShellRoute`: a tab does not keep
+  its own stack. Settings stays where it is, reached from the account avatar
+  (mobile) or the account block (sidebar), as now.
 - `AppShell`:
   - On mobile it shows a `NavigationBar` with Today and Contacts. Team and Goals
     join when they exist, never as placeholders.
   - The sidebar and rail get a Contacts item.
-  - On mobile, `/contacts/:id` sits above the shell (a `parentNavigatorKey` on
-    the root navigator), so the bottom bar is hidden, as in the mockups.
+  - On mobile the bottom bar stays visible on `/contacts/:id`, as in the
+    mockups. It is hidden only on Settings, which has its own back button.
 - On desktop (`usesSideNavigation` and `isDesktop`), `/contacts` and
   `/contacts/:id` both render the split: a 440px list column plus the detail
   pane. Selecting a row calls `context.go(Routes.contactLocation(id))`: the URL
@@ -240,7 +243,7 @@ prospect / customer / team, and never "prospecting", "recruit" or "lead".
   - A button is hidden when its channel is empty. When neither exists, the row
     is hidden too.
   - Email shows as a fact and opens `mailto:` when tapped.
-- ⋯ opens a sheet with Edit details and Delete. Delete is the only red item.
+- ⋯ opens a menu (`PopupMenuButton`) with Edit details and Delete. Delete is the only red item.
   It asks for confirmation first ("Delete Sarah? Her details are removed for
   good."). The remaining items arrive in #56.
 - For prospects, `WHERE IT STANDS` shows the four `ChoiceChip`s, saved as soon
@@ -262,7 +265,7 @@ prospect / customer / team, and never "prospecting", "recruit" or "lead".
 - Save stays on the sheet while the insert runs. On failure it shows a
   `FormError`. On success the sheet closes and the new person's detail opens.
 
-### Edit details (full-screen page on mobile, dialog on desktop)
+### Edit details (the same scrolling sheet as Add someone on mobile, dialog on desktop)
 
 - Every field of §3 except the stage, which moves through the ⋯ menu in #56.
   The prospect status is edited on the detail screen, not here.
@@ -313,8 +316,8 @@ from Message / Call. Nothing in the SDK launches another app.* Android 11+ needs
     confirmation, missing person.
   - Add sheet: validation, failure, success opens detail.
   - Edit: save and failure.
-- Router: on mobile, detail hides the bottom bar; on desktop, the split with a
-  selection; the tab keeps its stack.
+- Router: on mobile, the bottom bar stays on a person and is hidden on
+  Settings; on desktop, the split with a selection keeps the list's filter.
 - Goldens for every new `@Preview`, regenerated through CI (README → *Golden
   tests*).
 
