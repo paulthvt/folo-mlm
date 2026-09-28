@@ -2,7 +2,7 @@
 -- anon sees nothing, and the table's checks hold. Run with `supabase test db`.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(8);
+select plan(10);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-00000000000a', 'a@example.com'),
@@ -51,6 +51,14 @@ select is(
   'another user can neither update nor delete the row'
 );
 
+select throws_ok(
+  $$ update public.person
+     set owner_id = '00000000-0000-0000-0000-00000000000b'
+     where owner_id = '00000000-0000-0000-0000-00000000000a' $$,
+  '42501', null,
+  'the owner cannot transfer the row to another user'
+);
+
 -- As anon.
 set local role anon;
 set local request.jwt.claims = '{"role": "anon"}';
@@ -74,6 +82,12 @@ select throws_ok(
      values ('00000000-0000-0000-0000-00000000000a', '   ', 'prospect') $$,
   '23514', null,
   'a blank name is refused'
+);
+
+select table_privs_are(
+  'public', 'person', 'authenticated',
+  ARRAY['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
+  'authenticated has only SELECT, INSERT, UPDATE, DELETE on person'
 );
 
 select * from finish();

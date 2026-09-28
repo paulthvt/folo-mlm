@@ -61,5 +61,5 @@ create policy person_delete_own on public.person
   for delete to authenticated
   using (owner_id = (select auth.uid()));
 
-revoke all on public.person from anon;
+revoke all on public.person from anon, authenticated;
 grant select, insert, update, delete on public.person to authenticated;

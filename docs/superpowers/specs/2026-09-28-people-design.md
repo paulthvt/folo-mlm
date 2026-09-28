@@ -101,7 +101,7 @@ create trigger person_set_updated_at before update on public.person
 
 alter table public.person enable row level security;
 -- four policies, one per command, all on owner_id = (select auth.uid())
-revoke all on public.person from anon;
+revoke all on public.person from anon, authenticated;
 grant select, insert, update, delete on public.person to authenticated;
 ```
 

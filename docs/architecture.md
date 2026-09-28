@@ -151,7 +151,8 @@ Every table follows the same conventions (#48), first applied to `person`:
 - Hard delete. A state such as "Not now" is a column, not a hidden row.
 - A calendar day is `date`, an instant is `timestamptz`. "Today" is computed
   on the device, never on the server.
-- Grants to `authenticated` only; `anon` gets nothing.
+- Default privileges are revoked from both `anon` and `authenticated`; only
+  SELECT, INSERT, UPDATE, DELETE are granted to `authenticated`.
 - Enums are Postgres enum types; a new value is a migration.
 - Each table's RLS gets a pgTAP test in `supabase/tests/`.
 
