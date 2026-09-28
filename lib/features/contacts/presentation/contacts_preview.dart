@@ -97,6 +97,8 @@ Widget _details() => ContactDetails(
   onStatus: (_) {},
   onEdit: () {},
   onDelete: () {},
+  onLog: () {},
+  onMove: (_) {},
   onLaunch: (_) {},
   onRefresh: () async {},
 );

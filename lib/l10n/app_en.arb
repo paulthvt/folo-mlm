@@ -468,10 +468,6 @@
   "@contactEditDetails": {
     "description": "Item of the ⋯ menu on a person's detail screen that opens the edit form."
   },
-  "contactDelete": "Delete",
-  "@contactDelete": {
-    "description": "Destructive item of the ⋯ menu on a person's detail screen."
-  },
   "contactDeleteTitle": "Delete {name}?",
   "@contactDeleteTitle": {
     "description": "Title of the confirmation before deleting a person.",

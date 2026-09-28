@@ -8,9 +8,11 @@ import 'package:folo/core/ui/empty_state.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
+import 'package:folo/features/contacts/presentation/change_stage_sheet.dart';
 import 'package:folo/features/contacts/presentation/contact_details.dart';
 import 'package:folo/features/contacts/presentation/contacts_page.dart';
 import 'package:folo/features/contacts/presentation/edit_person_form.dart';
+import 'package:folo/features/contacts/presentation/log_activity_sheet.dart';
 import 'package:folo/features/contacts/presentation/people_controller.dart';
 import 'package:folo/features/contacts/presentation/people_copy.dart';
 import 'package:folo/l10n/app_localizations.dart';
@@ -91,6 +93,8 @@ class ContactPane extends ConsumerWidget {
       onStatus: (status) => unawaited(_setStatus(context, ref, person, status)),
       onEdit: () => unawaited(showEditPerson(context, person)),
       onDelete: () => unawaited(_delete(context, ref)),
+      onLog: () => unawaited(showLogActivity(context, person)),
+      onMove: (stage) => unawaited(showChangeStage(context, person, stage)),
       onLaunch: (uri) => unawaited(_launch(context, uri)),
       onRefresh: () => refreshPeople(context, ref),
     );

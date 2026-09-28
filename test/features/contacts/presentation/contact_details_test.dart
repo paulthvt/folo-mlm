@@ -30,9 +30,18 @@ class _Calls {
   final launched = <Uri>[];
   var edits = 0;
   var deletes = 0;
+  var logs = 0;
+  final moves = <Stage>[];
 }
 
-Future<_Calls> _pump(WidgetTester tester, Person person) async {
+Future<_Calls> _pump(
+  WidgetTester tester,
+  Person person, {
+  Size size = const Size(800, 600),
+}) async {
+  tester.view.physicalSize = size;
+  tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.reset);
   final calls = _Calls();
   await tester.pumpWidget(
     MaterialApp(
@@ -46,6 +55,8 @@ Future<_Calls> _pump(WidgetTester tester, Person person) async {
           onStatus: calls.statuses.add,
           onEdit: () => calls.edits++,
           onDelete: () => calls.deletes++,
+          onLog: () => calls.logs++,
+          onMove: calls.moves.add,
           onLaunch: calls.launched.add,
           onRefresh: () async {},
         ),
@@ -157,7 +168,7 @@ void main() {
 
     await tester.tap(find.byTooltip('More'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Delete'));
+    await tester.tap(find.text('Delete Marie'));
     await tester.pumpAndSettle();
 
     expect(find.text('Delete Marie Dupont?'), findsOneWidget);
@@ -168,10 +179,80 @@ void main() {
 
     await tester.tap(find.byTooltip('More'));
     await tester.pumpAndSettle();
-    await tester.tap(find.text('Delete'));
+    await tester.tap(find.text('Delete Marie'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
     await tester.pumpAndSettle();
     expect(calls.deletes, 1);
+  });
+
+  testWidgets('⋯ menu: Log, a Move row per other stage, Edit, Delete', (
+    tester,
+  ) async {
+    final calls = await _pump(tester, _person());
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Log something'), findsOneWidget);
+    expect(find.text('Move to prospects'), findsNothing);
+    expect(find.text('Move to customers'), findsOneWidget);
+    expect(find.text('Move to team'), findsOneWidget);
+    expect(find.text('Edit details'), findsOneWidget);
+    expect(find.text('Delete Marie'), findsOneWidget);
+    await tester.tap(find.text('Move to team'));
+    await tester.pumpAndSettle();
+
+    expect(calls.moves, [Stage.team]);
+  });
+
+  testWidgets('mobile: ⋯ is a sheet titled with the name', (tester) async {
+    final calls = await _pump(
+      tester,
+      _person(stage: Stage.customer),
+      size: const Size(390, 844),
+    );
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(BottomSheet), findsOneWidget);
+    expect(find.text('Marie Dupont'), findsNWidgets(2));
+    expect(find.text('Move to prospects'), findsOneWidget);
+    expect(find.text('Move to customers'), findsNothing);
+    expect(find.text('Move to team'), findsOneWidget);
+    await tester.tap(find.text('Log something'));
+    await tester.pumpAndSettle();
+
+    expect(calls.logs, 1);
+    expect(find.byType(BottomSheet), findsNothing);
+  });
+
+  testWidgets('mobile: Delete in the sheet still asks first', (tester) async {
+    final calls = await _pump(tester, _person(), size: const Size(390, 844));
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete Marie'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Delete Marie Dupont?'), findsOneWidget);
+    await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
+    await tester.pumpAndSettle();
+    expect(calls.deletes, 1);
+  });
+
+  testWidgets('mobile: Cancel closes the sheet and does nothing', (
+    tester,
+  ) async {
+    final calls = await _pump(tester, _person(), size: const Size(390, 844));
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(BottomSheet), findsNothing);
+    expect(calls.logs + calls.edits + calls.deletes + calls.moves.length, 0);
   });
 }
