@@ -68,4 +68,9 @@ keyboard shortcuts, hover) is welcome; platform-specific visual identity is not.
 Never in UI copy: recruit, downline, upline, rank, prospect*ing*, close, pitch,
 leads, sales funnel, hustle.
 
-Use instead: contact, person, team, follow-up, conversation, customer, goal.
+Use instead: contact, person, team, follow-up, conversation, customer, prospect,
+goal.
+
+"Prospect" is allowed as a noun for a person at that stage — it is the word the
+people using Folo already use for themselves. The activity ("prospecting") stays
+banned.
