@@ -71,7 +71,8 @@ void main() {
     });
   });
 
-  test('personToRow writes snake_case values and nulls for blanks', () {
+  test('personToRow writes snake_case values and nulls for blanks, never the '
+      'stage', () {
     final row = personToRow(
       Person(
         id: 'p1',
@@ -86,7 +87,6 @@ void main() {
 
     expect(row, {
       'name': 'Marie Dupont',
-      'stage': 'prospect',
       'prospect_status': 'no_reply',
       'phone': null,
       'email': null,

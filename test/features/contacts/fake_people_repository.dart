@@ -64,8 +64,27 @@ class FakePeopleRepository implements PeopleRepository {
   @override
   Future<Person> update(Person person) async {
     await _record('update(${person.id})');
-    store[person.id] = person;
-    return person;
+    // The real update never writes the stage: the stored one stays.
+    final stored = store[person.id]!;
+    final saved = Person(
+      id: person.id,
+      name: person.name,
+      stage: stored.stage,
+      stageSince: stored.stageSince,
+      prospectStatus: stored.stage == Stage.prospect
+          ? person.prospectStatus
+          : null,
+      phone: person.phone,
+      email: person.email,
+      instagram: person.instagram,
+      needs: person.needs,
+      products: person.products,
+      profession: person.profession,
+      address: person.address,
+      notes: person.notes,
+    );
+    store[person.id] = saved;
+    return saved;
   }
 
   @override

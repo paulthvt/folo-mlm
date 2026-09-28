@@ -117,10 +117,11 @@ Person personFromRow(Map<String, dynamic> row) {
   );
 }
 
-/// What an update writes: everything the user can edit.
+/// What an update writes: everything the user can edit, except the stage.
+/// Only [PeopleRepository.setStage] writes it, so a stale copy never moves
+/// someone back (and into the history).
 Map<String, dynamic> personToRow(Person person) => {
   'name': person.name.trim(),
-  'stage': person.stage.name,
   'prospect_status': _statusColumn[person.prospectStatus],
   'phone': _text(person.phone),
   'email': _text(person.email),
