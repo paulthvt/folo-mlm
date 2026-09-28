@@ -13,7 +13,7 @@ void main() {
   });
 
   test('strips combining marks from decomposed input', () {
-    expect(searchKey('Hélène'), 'helene');
+    expect(searchKey('He\u0301le\u0300ne'), 'helene');
   });
 
   test('trims', () {
