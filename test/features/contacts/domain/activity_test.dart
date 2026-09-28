@@ -44,4 +44,18 @@ void main() {
       throwsA(isA<AssertionError>()),
     );
   });
+
+  test('a non-stage entry with blank text is a bug', () {
+    expect(
+      () => Activity(
+        id: 'a4',
+        personId: 'p1',
+        kind: ActivityKind.note,
+        happenedOn: DateTime(2026, 9, 28),
+        text: '  ',
+        createdAt: DateTime.utc(2026, 9, 28),
+      ),
+      throwsA(isA<AssertionError>()),
+    );
+  });
 }

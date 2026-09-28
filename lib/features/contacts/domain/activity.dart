@@ -17,8 +17,8 @@ class Activity {
   }) : assert(
          kind == ActivityKind.stage
              ? stage != null && text == null
-             : stage == null && text != null,
-         'A stage entry has a stage and no text; any other has text and no stage',
+             : stage == null && text != null && text.trim().isNotEmpty,
+         'A stage entry has a stage and no text; any other has non-blank text and no stage',
        );
 
   final String id;
