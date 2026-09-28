@@ -3,10 +3,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/app.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/account.dart';
+import 'package:folo/features/contacts/data/activity_repository.dart';
 import 'package:folo/features/contacts/data/people_repository.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../features/auth/fake_auth_repository.dart';
+import '../features/contacts/fake_activity_repository.dart';
 import '../features/contacts/fake_people_repository.dart';
 
 /// The whole app, signed in as Pauline, at [size]. Returns the container so a
@@ -15,6 +17,7 @@ Future<ProviderContainer> pumpFolo(
   WidgetTester tester, {
   required Size size,
   FakePeopleRepository? people,
+  FakeActivityRepository? activities,
 }) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
@@ -29,6 +32,9 @@ Future<ProviderContainer> pumpFolo(
         authRepositoryProvider.overrideWithValue(auth),
         peopleRepositoryProvider.overrideWithValue(
           people ?? FakePeopleRepository(),
+        ),
+        activityRepositoryProvider.overrideWithValue(
+          activities ?? FakeActivityRepository(),
         ),
       ],
       child: const FoloApp(),
