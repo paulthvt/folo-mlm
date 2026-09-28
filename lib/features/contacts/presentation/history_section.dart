@@ -74,7 +74,8 @@ class _HistorySectionState extends ConsumerState<HistorySection> {
           onAction: widget.onAdd,
         ),
         if (entries == null)
-          history.hasError
+          // A retry keeps the error while it loads: the spinner wins.
+          history.hasError && !history.isLoading
               ? Row(
                   children: [
                     Expanded(child: muted(l10n.historyLoadError)),

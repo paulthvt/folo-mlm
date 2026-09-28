@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/router/app_router.dart';
@@ -8,6 +10,7 @@ import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/presentation/contact_details.dart';
 import 'package:folo/features/contacts/presentation/contact_list.dart';
 import 'package:folo/features/contacts/presentation/contact_page.dart';
+import 'package:folo/features/contacts/presentation/history_section.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../app/app_harness.dart';
@@ -267,6 +270,32 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text("Couldn't load the history."), findsNothing);
+    expect(find.text('Nothing logged yet.'), findsOneWidget);
+  });
+
+  testWidgets('Retry on the history shows the spinner, not the error', (
+    tester,
+  ) async {
+    activities.failWith = PeopleFailure.network;
+    await openMarie(tester);
+    await reveal(tester, find.text("Couldn't load the history."));
+
+    activities
+      ..failWith = null
+      ..gate = Completer<void>();
+    await tester.tap(find.text('Try again'));
+    await tester.pump();
+
+    expect(find.text("Couldn't load the history."), findsNothing);
+    expect(
+      find.descendant(
+        of: find.byType(HistorySection),
+        matching: find.byType(CircularProgressIndicator),
+      ),
+      findsOneWidget,
+    );
+    activities.gate!.complete();
+    await tester.pumpAndSettle();
     expect(find.text('Nothing logged yet.'), findsOneWidget);
   });
 
