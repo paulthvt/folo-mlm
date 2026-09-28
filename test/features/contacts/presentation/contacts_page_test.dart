@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/router/app_router.dart';
@@ -407,5 +408,24 @@ void main() {
     );
     expect(filter.selected, isTrue);
     expect(find.text('Marie Dupont'), findsNothing);
+  });
+
+  testWidgets('desktop: right-click deletes an entry in the split', (
+    tester,
+  ) async {
+    activities.store.add(_note('a1', 'Ordered the cream', 10));
+    await openContacts(tester, size: _desktop);
+    await tester.tap(find.text('Marie Dupont'));
+    await tester.pumpAndSettle();
+
+    await reveal(tester, find.text('Ordered the cream'));
+    await tester.tap(find.text('Ordered the cream'), buttons: kSecondaryButton);
+    await tester.pumpAndSettle();
+    expect(find.text('Delete this entry?'), findsOneWidget);
+    await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
+    await tester.pumpAndSettle();
+
+    expect(activities.calls, contains('delete(a1)'));
+    expect(find.text('Ordered the cream'), findsNothing);
   });
 }
