@@ -139,6 +139,13 @@ void main() {
       );
     });
 
+    test('a malformed row is unknown', () {
+      expect(
+        peopleFailureFrom(const FormatException('bad timestamp')),
+        PeopleFailure.unknown,
+      );
+    });
+
     test('a bug is unknown', () {
       expect(peopleFailureFrom(StateError('bad')), PeopleFailure.unknown);
     });

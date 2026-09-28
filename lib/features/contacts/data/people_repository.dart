@@ -64,6 +64,7 @@ final peopleRepositoryProvider = Provider<PeopleRepository>(
 PeopleFailure peopleFailureFrom(Object error) => switch (error) {
   final PeopleFailure failure => failure,
   PostgrestException() => PeopleFailure.unknown,
+  FormatException() => PeopleFailure.unknown,
   Exception() => PeopleFailure.network,
   _ => PeopleFailure.unknown,
 };
