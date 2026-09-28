@@ -18,8 +18,11 @@ String _dialable(String phone) => phone.replaceAll(RegExp(r'[^\d+]'), '');
 Uri? messageUri(Person person) {
   final phone = person.phone;
   if (phone != null) return Uri(scheme: 'sms', path: _dialable(phone));
-  final handle = person.instagram;
-  if (handle != null) return Uri.https('instagram.com', '/$handle');
+  var handle = person.instagram?.trim();
+  if (handle != null) {
+    if (handle.startsWith('@')) handle = handle.substring(1);
+    return Uri.https('instagram.com', '/$handle');
+  }
   return null;
 }
 

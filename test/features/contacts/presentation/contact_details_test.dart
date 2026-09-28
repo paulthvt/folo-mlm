@@ -113,6 +113,14 @@ void main() {
     expect(calls.launched, [Uri.https('instagram.com', '/marie.d')]);
   });
 
+  testWidgets('a typed @ is stripped from the Instagram link', (tester) async {
+    final calls = await _pump(tester, _person(instagram: '@marie.d'));
+
+    await tester.tap(find.text('Message'));
+
+    expect(calls.launched, [Uri.https('instagram.com', '/marie.d')]);
+  });
+
   testWidgets('an email opens the mail app', (tester) async {
     final calls = await _pump(tester, _person(email: 'marie@example.com'));
 
