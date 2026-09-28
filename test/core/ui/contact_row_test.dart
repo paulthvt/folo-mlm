@@ -40,11 +40,15 @@ void main() {
   ) async {
     await _pump(
       tester,
-      const SizedBox(
-        width: 200,
-        child: FactRow(
-          label: 'Needs',
-          value: 'Sleep, stress, dry skin, sore joints after running',
+      // A ListView stretches its children; Align lets the 200 px width hold.
+      const Align(
+        alignment: Alignment.centerLeft,
+        child: SizedBox(
+          width: 200,
+          child: FactRow(
+            label: 'Needs',
+            value: 'Sleep, stress, dry skin, sore joints after running',
+          ),
         ),
       ),
     );
