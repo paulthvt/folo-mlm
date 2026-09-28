@@ -136,7 +136,25 @@ The project itself is described by `supabase/` (#28), not by the dashboard:
   never values.
 - `supabase/migrations/` is the only way the schema changes. CI replays every
   migration onto an empty database, so a migration that does not apply cleanly
-  fails the PR.
+  fails the PR, then runs the pgTAP tests in `supabase/tests/`.
+
+Every table follows the same conventions (#48), first applied to `person`:
+
+- RLS enabled, with one policy per command checking
+  `owner_id = (select auth.uid())`. The `(select …)` form is evaluated once per
+  query. Team visibility is a later decision.
+- `id uuid primary key default gen_random_uuid()`.
+- `owner_id uuid not null default auth.uid() references auth.users on delete
+  cascade`, which is how `delete-account` removes everything a user owns.
+- `created_at` and `updated_at timestamptz not null default now()`;
+  `updated_at` is kept current by the shared `set_updated_at()` trigger.
+- Hard delete. A state such as "Not now" is a column, not a hidden row.
+- A calendar day is `date`, an instant is `timestamptz`. "Today" is computed
+  on the device, never on the server.
+- Default privileges are revoked from both `anon` and `authenticated`; only
+  SELECT, INSERT, UPDATE, DELETE are granted to `authenticated`.
+- Enums are Postgres enum types; a new value is a migration.
+- Each table's RLS gets a pgTAP test in `supabase/tests/`.
 
 Anything the client must not do with its own key runs in an Edge Function in
 `supabase/functions/` — so far only `delete-account`, which deletes the caller
@@ -149,7 +167,7 @@ migrations: a deploy job would be more secrets than it saves. Automate it when e
 
 ### Not yet present, by design
 
-Firebase Cloud Messaging, database tables (a `profiles` table included — the
-user's first name lives in auth `user_metadata` until something needs more),
+Firebase Cloud Messaging, a `profiles` table (the user's first name lives in
+auth `user_metadata` until something needs more),
 local persistence beyond the Supabase session, analytics.
 Each will be added when the feature that needs it is built.

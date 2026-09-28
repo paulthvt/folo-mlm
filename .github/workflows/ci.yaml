@@ -126,6 +126,9 @@ jobs:
 
       - run: supabase db lint --fail-on error
 
+      # pgTAP files in supabase/tests/: RLS and table checks.
+      - run: supabase test db
+
   # Compiling catches what analyze cannot: Gradle config, plugin mismatches,
   # tree-shaking failures. Artifacts are not kept — release.yaml publishes those.
   build:

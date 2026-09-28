@@ -7,7 +7,7 @@ import 'package:folo/features/auth/domain/account.dart';
 import 'package:folo/features/auth/domain/auth_change.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// The only file in the app that imports `supabase_flutter`.
+/// Auth's side of the `supabase_flutter` boundary: only `data/` files import it.
 ///
 /// Every method throws [AuthFailure] and nothing else, so screens never see a
 /// `supabase_flutter` type. Callers pass an already-normalised email
