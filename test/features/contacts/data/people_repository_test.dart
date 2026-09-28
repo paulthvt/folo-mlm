@@ -22,6 +22,7 @@ Map<String, dynamic> _row([Map<String, dynamic> changes = const {}]) => {
   'address': null,
   'notes': '',
   'created_at': '2026-03-04T10:00:00+00:00',
+  'stage_since': '2026-04-01T08:00:00+00:00',
   'updated_at': '2026-03-05T10:00:00+00:00',
   ...changes,
 };
@@ -38,7 +39,7 @@ void main() {
       expect(person.phone, '06 12 34 56 78');
       expect(person.needs, 'Sleep, stress');
       expect(person.profession, 'Nurse');
-      expect(person.createdAt, DateTime.utc(2026, 3, 4, 10));
+      expect(person.stageSince, DateTime.utc(2026, 4, 1, 8));
     });
 
     test('reads blank text as null', () {
@@ -76,7 +77,7 @@ void main() {
         id: 'p1',
         name: ' Marie Dupont ',
         stage: Stage.prospect,
-        createdAt: DateTime.utc(2026, 3, 4),
+        stageSince: DateTime.utc(2026, 3, 4),
         prospectStatus: ProspectStatus.noReply,
         phone: '',
         notes: 'Met at the market',

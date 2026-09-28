@@ -14,7 +14,7 @@ Person _person(String id, String name, Stage stage, {String? profession}) =>
       name: name,
       stage: stage,
       profession: profession,
-      createdAt: DateTime.utc(2026, 3, 4),
+      stageSince: DateTime.utc(2026, 3, 4),
     );
 
 final _book = [

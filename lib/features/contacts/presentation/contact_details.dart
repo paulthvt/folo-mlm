@@ -132,7 +132,7 @@ class ContactDetails extends StatelessWidget {
                     Text(
                       l10n.contactSince(
                         stageLabel(l10n, person.stage),
-                        person.createdAt.toLocal(),
+                        person.stageSince.toLocal(),
                       ),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: folo.textMuted,

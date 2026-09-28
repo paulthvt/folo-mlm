@@ -17,7 +17,7 @@ Person _person({
   id: 'p1',
   name: 'Marie Dupont',
   stage: stage,
-  createdAt: DateTime.utc(2026, 3, 4),
+  stageSince: DateTime.utc(2026, 3, 4),
   prospectStatus: status,
   phone: phone,
   email: email,

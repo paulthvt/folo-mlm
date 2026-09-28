@@ -6,7 +6,7 @@ void main() {
     id: 'p1',
     name: 'Marie Dupont',
     stage: Stage.prospect,
-    createdAt: DateTime.utc(2026, 3, 4),
+    stageSince: DateTime.utc(2026, 3, 4),
     phone: '06 12 34 56 78',
     needs: 'Sleep',
   );
@@ -19,7 +19,7 @@ void main() {
     expect(changed.name, 'Marie Dupont');
     expect(changed.phone, '06 12 34 56 78');
     expect(changed.needs, 'Sleep');
-    expect(changed.createdAt, DateTime.utc(2026, 3, 4));
+    expect(changed.stageSince, DateTime.utc(2026, 3, 4));
   });
 
   test('withStatus(null) clears it', () {

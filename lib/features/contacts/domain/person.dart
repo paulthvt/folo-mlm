@@ -1,5 +1,5 @@
 /// Where someone is in the relationship. One stage at a time; people move
-/// forward and sometimes back (#56).
+/// forward and sometimes back.
 enum Stage { prospect, customer, team }
 
 /// How a prospect conversation stands. Only prospects have one.
@@ -14,7 +14,7 @@ class Person {
     required this.id,
     required this.name,
     required this.stage,
-    required this.createdAt,
+    required this.stageSince,
     this.prospectStatus,
     this.phone,
     this.email,
@@ -33,9 +33,9 @@ class Person {
   final String name;
   final Stage stage;
 
-  /// When they were added, which is when their current stage began until
-  /// stage changes are recorded (#56).
-  final DateTime createdAt;
+  /// When their current stage began. The database sets it on every stage
+  /// change.
+  final DateTime stageSince;
   final ProspectStatus? prospectStatus;
   final String? phone;
   final String? email;
@@ -54,7 +54,7 @@ class Person {
     id: id,
     name: name,
     stage: stage,
-    createdAt: createdAt,
+    stageSince: stageSince,
     prospectStatus: status,
     phone: phone,
     email: email,

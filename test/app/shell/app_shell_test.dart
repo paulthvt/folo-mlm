@@ -13,7 +13,7 @@ final _marie = Person(
   id: 'p1',
   name: 'Marie Dupont',
   stage: Stage.prospect,
-  createdAt: DateTime.utc(2026, 3, 4),
+  stageSince: DateTime.utc(2026, 3, 4),
 );
 
 void main() {

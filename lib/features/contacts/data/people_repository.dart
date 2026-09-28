@@ -18,12 +18,12 @@ class PeopleRepository {
 
   /// Unordered: the controller sorts by `searchKey`, which Postgres collation
   /// does not match.
-  Future<List<Person>> list() => _guard(() async {
+  Future<List<Person>> list() => guardPeople(() async {
     final rows = await _client.from(_table).select();
     return rows.map(personFromRow).toList();
   });
 
-  Future<Person> add(PersonDraft draft) => _guard(() async {
+  Future<Person> add(PersonDraft draft) => guardPeople(() async {
     final row = await _client
         .from(_table)
         .insert(draftToRow(draft))
@@ -32,7 +32,7 @@ class PeopleRepository {
     return personFromRow(row);
   });
 
-  Future<Person> update(Person person) => _guard(() async {
+  Future<Person> update(Person person) => guardPeople(() async {
     final row = await _client
         .from(_table)
         .update(personToRow(person))
@@ -43,15 +43,20 @@ class PeopleRepository {
   });
 
   Future<void> delete(String id) =>
-      _guard(() => _client.from(_table).delete().eq('id', id));
+      guardPeople(() => _client.from(_table).delete().eq('id', id));
 
-  Future<T> _guard<T>(Future<T> Function() call) async {
-    try {
-      return await call();
-    } catch (error) {
-      throw peopleFailureFrom(error);
-    }
-  }
+  /// Writes only the stage. The database sets [Person.stageSince], clears a
+  /// leaving prospect's status and records the change in the history; the
+  /// returned person is the row as it left it.
+  Future<Person> setStage(String id, Stage stage) => guardPeople(() async {
+    final row = await _client
+        .from(_table)
+        .update({'stage': stage.name})
+        .eq('id', id)
+        .select()
+        .single();
+    return personFromRow(row);
+  });
 }
 
 final peopleRepositoryProvider = Provider<PeopleRepository>(
@@ -68,6 +73,16 @@ PeopleFailure peopleFailureFrom(Object error) => switch (error) {
   Exception() => PeopleFailure.network,
   _ => PeopleFailure.unknown,
 };
+
+/// Runs [call] and turns whatever it throws into a [PeopleFailure]. Every
+/// contacts repository goes through it.
+Future<T> guardPeople<T>(Future<T> Function() call) async {
+  try {
+    return await call();
+  } catch (error) {
+    throw peopleFailureFrom(error);
+  }
+}
 
 const Map<ProspectStatus, String> _statusColumn = {
   ProspectStatus.interested: 'interested',
@@ -98,7 +113,7 @@ Person personFromRow(Map<String, dynamic> row) {
     profession: _text(row['profession']),
     address: _text(row['address']),
     notes: _text(row['notes']),
-    createdAt: DateTime.parse(row['created_at'] as String),
+    stageSince: DateTime.parse(row['stage_since'] as String),
   );
 }
 

@@ -23,7 +23,7 @@ Person _person(
   name: name,
   stage: stage,
   prospectStatus: status,
-  createdAt: DateTime.utc(2026, 3, 4),
+  stageSince: DateTime.utc(2026, 3, 4),
 );
 
 typedef _World = ({

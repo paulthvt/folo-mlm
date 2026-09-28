@@ -46,7 +46,7 @@ class FakePeopleRepository implements PeopleRepository {
       id: 'new-${_next++}',
       name: draft.name.trim(),
       stage: draft.stage,
-      createdAt: DateTime.utc(2026, 9, 28),
+      stageSince: DateTime.utc(2026, 9, 28),
       phone: draft.phone,
       email: draft.email,
       instagram: draft.instagram,
@@ -66,5 +66,30 @@ class FakePeopleRepository implements PeopleRepository {
   Future<void> delete(String id) async {
     await _record('delete($id)');
     store.remove(id);
+  }
+
+  /// What the database does on a stage change: a new [Person.stageSince], no
+  /// status outside prospects, and an entry in the history.
+  @override
+  Future<Person> setStage(String id, Stage stage) async {
+    await _record('setStage($id, ${stage.name})');
+    final before = store[id]!;
+    final moved = Person(
+      id: id,
+      name: before.name,
+      stage: stage,
+      stageSince: DateTime.utc(2026, 9, 28),
+      prospectStatus: stage == Stage.prospect ? before.prospectStatus : null,
+      phone: before.phone,
+      email: before.email,
+      instagram: before.instagram,
+      needs: before.needs,
+      products: before.products,
+      profession: before.profession,
+      address: before.address,
+      notes: before.notes,
+    );
+    store[id] = moved;
+    return moved;
   }
 }

@@ -91,7 +91,7 @@ class _EditPersonFormState extends ConsumerState<_EditPersonForm> {
               name: _text(_Field.name)!,
               stage: p.stage,
               prospectStatus: p.prospectStatus,
-              createdAt: p.createdAt,
+              stageSince: p.stageSince,
               phone: _text(_Field.phone),
               email: _text(_Field.email),
               instagram: _text(_Field.instagram),
