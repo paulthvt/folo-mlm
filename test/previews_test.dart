@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/theme/theme_preview.dart';
 import 'package:folo/core/ui/ui_preview.dart';
+import 'package:folo/features/contacts/presentation/contacts_preview.dart';
 import 'package:folo/features/today/presentation/today_preview.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -25,8 +26,13 @@ void main() {
     'today_desktop_light': (const Size(1440, 900), todayDesktopLight),
     'today_desktop_dark': (const Size(1440, 900), todayDesktopDark),
     'today_empty_light': (const Size(390, 844), todayEmptyLight),
-    'components_light': (const Size(420, 1400), uiComponentsLight),
-    'components_dark': (const Size(420, 1400), uiComponentsDark),
+    'contacts_mobile_light': (const Size(390, 844), contactsMobileLight),
+    'contacts_mobile_dark': (const Size(390, 844), contactsMobileDark),
+    'contact_mobile_light': (const Size(390, 844), contactMobileLight),
+    'contact_mobile_dark': (const Size(390, 844), contactMobileDark),
+    'contacts_desktop_light': (const Size(1440, 900), contactsDesktopLight),
+    'components_light': (const Size(420, 1800), uiComponentsLight),
+    'components_dark': (const Size(420, 1800), uiComponentsDark),
     'tokens_colour_light': (const Size(420, 900), colourTokensLight),
     'tokens_colour_dark': (const Size(420, 900), colourTokensDark),
     'tokens_type_light': (const Size(420, 900), typeRampLight),

@@ -295,5 +295,238 @@
   "settingsDeleteConfirm": "Delete",
   "@settingsDeleteConfirm": {
     "description": "Destructive button in the account deletion confirmation dialog that deletes the account."
+  },
+  "navContacts": "Contacts",
+  "@navContacts": {
+    "description": "Navigation destination (bottom bar, sidebar) that opens the list of people."
+  },
+  "contactsTitle": "Contacts",
+  "@contactsTitle": {
+    "description": "Title of the list of people."
+  },
+  "contactsAdd": "Add someone",
+  "@contactsAdd": {
+    "description": "Button on the Contacts list, and on its empty state, that opens the form to add a person."
+  },
+  "contactsRefresh": "Refresh",
+  "@contactsRefresh": {
+    "description": "Tooltip of the icon button that reloads the Contacts list, shown where there is no pull to refresh (mouse)."
+  },
+  "contactsSearchHint": "Search by name",
+  "@contactsSearchHint": {
+    "description": "Placeholder of the search field above the Contacts list."
+  },
+  "contactsFilterEveryone": "Everyone",
+  "@contactsFilterEveryone": {
+    "description": "Filter chip on the Contacts list that shows every person, whatever their stage."
+  },
+  "contactsFilterProspects": "Prospects",
+  "@contactsFilterProspects": {
+    "description": "Filter chip on the Contacts list that shows only prospects: people who have not bought yet."
+  },
+  "contactsFilterCustomers": "Customers",
+  "@contactsFilterCustomers": {
+    "description": "Filter chip on the Contacts list that shows only customers."
+  },
+  "contactsFilterTeam": "Team",
+  "@contactsFilterTeam": {
+    "description": "Filter chip on the Contacts list that shows only people in the user's team."
+  },
+  "stageProspect": "Prospect",
+  "@stageProspect": {
+    "description": "Stage of a person who has not bought yet. Shown on a chip and in 'Prospect since March 2026'."
+  },
+  "stageCustomer": "Customer",
+  "@stageCustomer": {
+    "description": "Stage of a person who buys. Shown on a chip and in 'Customer since March 2026'."
+  },
+  "stageTeam": "Team",
+  "@stageTeam": {
+    "description": "Stage of a person who works with the user. Shown on a chip and in 'Team since March 2026'."
+  },
+  "contactsEmptyTitle": "No one here yet",
+  "@contactsEmptyTitle": {
+    "description": "Title of the Contacts list when the user has not added anyone."
+  },
+  "contactsEmptyBody": "Add the people you talk to, and Folo helps you keep in touch.",
+  "@contactsEmptyBody": {
+    "description": "Body of the Contacts list when the user has not added anyone."
+  },
+  "contactsNoMatch": "Nobody matches.",
+  "@contactsNoMatch": {
+    "description": "One line shown on the Contacts list when the search or the filter leaves no one."
+  },
+  "contactsLoadError": "Couldn't load your contacts.",
+  "@contactsLoadError": {
+    "description": "Message in place of the Contacts list when it could not be loaded."
+  },
+  "contactsLoadErrorBody": "Check your connection, then try again.",
+  "@contactsLoadErrorBody": {
+    "description": "Body under contactsLoadError."
+  },
+  "contactsRetry": "Try again",
+  "@contactsRetry": {
+    "description": "Button under contactsLoadError that loads the list again."
+  },
+  "contactsRefreshFailed": "Couldn't refresh. You're seeing the last loaded list.",
+  "@contactsRefreshFailed": {
+    "description": "Snackbar when pull to refresh fails; the list already on screen stays."
+  },
+  "peopleFailureNetwork": "Couldn't save. Check your connection and try again.",
+  "@peopleFailureNetwork": {
+    "description": "Error when a change to a person could not reach the server."
+  },
+  "peopleFailureUnknown": "Something went wrong. Try again.",
+  "@peopleFailureUnknown": {
+    "description": "Error when a change to a person failed for any other reason."
+  },
+  "contactSince": "{stage} since {date}",
+  "@contactSince": {
+    "description": "Under a person's name on their detail screen: their stage and the month it began, e.g. 'Prospect since March 2026'.",
+    "placeholders": {
+      "stage": { "type": "String" },
+      "date": { "type": "DateTime", "format": "yMMMM" }
+    }
+  },
+  "contactMessage": "Message",
+  "@contactMessage": {
+    "description": "Button on a person's detail screen that opens a text message (or Instagram) to them."
+  },
+  "contactCall": "Call",
+  "@contactCall": {
+    "description": "Button on a person's detail screen that opens the phone dialer with their number."
+  },
+  "contactMore": "More",
+  "@contactMore": {
+    "description": "Tooltip of the ⋯ button on a person's detail screen that opens more actions."
+  },
+  "contactSectionWhereItStands": "Where it stands",
+  "@contactSectionWhereItStands": {
+    "description": "Section header above a prospect's status chips (Interested, Thinking about it…)."
+  },
+  "statusInterested": "Interested",
+  "@statusInterested": {
+    "description": "Status of a prospect who wants to know more."
+  },
+  "statusThinking": "Thinking about it",
+  "@statusThinking": {
+    "description": "Status of a prospect who is deciding."
+  },
+  "statusNotNow": "Not now",
+  "@statusNotNow": {
+    "description": "Status of a prospect who said no for the moment. Neutral, never a judgement."
+  },
+  "statusNoReply": "No reply",
+  "@statusNoReply": {
+    "description": "Status of a prospect who has not answered."
+  },
+  "contactSectionWhatYouKnow": "What you know",
+  "@contactSectionWhatYouKnow": {
+    "description": "Section header above the facts about a person: needs, products, job, contact details, notes."
+  },
+  "contactEdit": "Edit",
+  "@contactEdit": {
+    "description": "Action of the 'What you know' section header that opens the edit form."
+  },
+  "contactNothingYet": "Nothing yet.",
+  "@contactNothingYet": {
+    "description": "Shown in 'What you know' when no fact about the person is filled in."
+  },
+  "factNeeds": "Needs",
+  "@factNeeds": {
+    "description": "Label of what a person is looking for (e.g. 'Sleep, stress'). Also the edit form field."
+  },
+  "factProducts": "Uses",
+  "@factProducts": {
+    "description": "Label of the products a person already uses. Also the edit form field."
+  },
+  "factProfession": "Works as",
+  "@factProfession": {
+    "description": "Label of a person's job. Also the edit form field."
+  },
+  "factPhone": "Phone",
+  "@factPhone": {
+    "description": "Label of a person's phone number. Also the edit form field."
+  },
+  "factEmail": "Email",
+  "@factEmail": {
+    "description": "Label of a person's email address. Also the edit form field."
+  },
+  "factInstagram": "Instagram",
+  "@factInstagram": {
+    "description": "Label of a person's Instagram handle. Also the edit form field."
+  },
+  "factAddress": "Address",
+  "@factAddress": {
+    "description": "Label of a person's postal address. Also the edit form field."
+  },
+  "factNotes": "Notes",
+  "@factNotes": {
+    "description": "Label of free notes about a person. Also the edit form field."
+  },
+  "contactEditDetails": "Edit details",
+  "@contactEditDetails": {
+    "description": "Item of the ⋯ menu on a person's detail screen that opens the edit form."
+  },
+  "contactDelete": "Delete",
+  "@contactDelete": {
+    "description": "Destructive item of the ⋯ menu on a person's detail screen."
+  },
+  "contactDeleteTitle": "Delete {name}?",
+  "@contactDeleteTitle": {
+    "description": "Title of the confirmation before deleting a person.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "contactDeleteBody": "Their details are removed for good.",
+  "@contactDeleteBody": {
+    "description": "Body of the confirmation before deleting a person. Gender-neutral."
+  },
+  "contactDeleteConfirm": "Delete",
+  "@contactDeleteConfirm": {
+    "description": "Destructive button of the confirmation that deletes the person."
+  },
+  "contactMissingTitle": "This person isn't here anymore",
+  "@contactMissingTitle": {
+    "description": "Title shown when a person's page is opened but they no longer exist (deleted elsewhere, or a bad link)."
+  },
+  "contactMissingBody": "They may have been deleted on another device.",
+  "@contactMissingBody": {
+    "description": "Body under contactMissingTitle. Gender-neutral."
+  },
+  "contactBackToContacts": "Back to contacts",
+  "@contactBackToContacts": {
+    "description": "Button under contactMissingTitle that returns to the list."
+  },
+  "contactLaunchFailed": "Couldn't open that app.",
+  "@contactLaunchFailed": {
+    "description": "Snackbar when Call, Message, an email address or Instagram could not be opened on the device."
+  },
+  "contactNoSelectionTitle": "Pick someone",
+  "@contactNoSelectionTitle": {
+    "description": "Desktop only: title of the pane beside the Contacts list when no one is selected."
+  },
+  "contactNoSelectionBody": "Their details open here.",
+  "@contactNoSelectionBody": {
+    "description": "Desktop only: body of the pane beside the Contacts list when no one is selected."
+  },
+  "addPersonTitle": "Add someone",
+  "@addPersonTitle": {
+    "description": "Title of the form that adds a person."
+  },
+  "addPersonName": "Name",
+  "@addPersonName": {
+    "description": "Label of the name field when adding or editing a person."
+  },
+  "addPersonNameRequired": "Enter a name.",
+  "@addPersonNameRequired": {
+    "description": "Validation error under the name field when it is empty."
+  },
+  "addPersonReach": "Phone, email or Instagram",
+  "@addPersonReach": {
+    "description": "Label of the single optional field in Add someone; the app recognises which one was typed."
+  },
+  "editPersonTitle": "Edit details",
+  "@editPersonTitle": {
+    "description": "Title of the form that edits a person's details."
   }
 }

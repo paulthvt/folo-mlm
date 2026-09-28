@@ -1,19 +1,31 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/data/people_repository.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/domain/search_key.dart';
 
-/// The whole book, loaded once and kept in memory; every contacts screen reads
-/// from it. Sorted by [searchKey] of the name.
+/// One account's whole book, loaded once and kept in memory; every contacts
+/// screen reads the signed-in one, `peopleProvider(account?.email)`. Sorted by
+/// [searchKey] of the name.
+///
+/// Keyed by account because a rebuild carries the previous value into its
+/// loading and error states: the next user must get a new instance, never the
+/// last one rebuilt.
 ///
 /// No automatic retry: a failed load shows its error with a Retry button.
-final peopleProvider = AsyncNotifierProvider<PeopleController, List<Person>>(
-  PeopleController.new,
-  retry: (error, _) => null,
-);
+// ponytail: a signed-out account's book stays in memory until the app
+// restarts; dispose it on sign-out if that ever matters.
+final peopleProvider =
+    AsyncNotifierProvider.family<PeopleController, List<Person>, String?>(
+      PeopleController.new,
+      retry: (error, _) => null,
+    );
 
 class PeopleController extends AsyncNotifier<List<Person>> {
+  PeopleController(this.owner);
+
+  /// The email of the account whose book this is; null when signed out.
+  final String? owner;
+
   /// How old the book may be before returning to the app reloads it. There is
   /// no realtime: this and pull to refresh are how other devices' changes
   /// arrive.
@@ -25,13 +37,8 @@ class PeopleController extends AsyncNotifier<List<Person>> {
 
   @override
   Future<List<Person>> build() async {
-    // A new account is a new book; signed out, there is none. Returning [] here
-    // also clears the previous user's list before the next one loads.
-    final email = ref.watch(
-      accountProvider.select((account) => account?.email),
-    );
     final repository = ref.watch(peopleRepositoryProvider);
-    if (email == null) {
+    if (owner == null) {
       _loadedAt = null;
       return const [];
     }

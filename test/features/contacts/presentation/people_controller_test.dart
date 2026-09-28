@@ -47,8 +47,13 @@ _World _world(List<Person> people) {
   return (container: container, people: repository, auth: auth);
 }
 
+/// The signed-in account's book, as the screens read it.
+AsyncNotifierProvider<PeopleController, List<Person>> _book(
+  ProviderContainer container,
+) => peopleProvider(container.read(accountProvider)?.email);
+
 List<String> _names(ProviderContainer container) => [
-  for (final person in container.read(peopleProvider).value!) person.name,
+  for (final person in container.read(_book(container)).value!) person.name,
 ];
 
 void main() {
@@ -59,22 +64,24 @@ void main() {
       _person('3', 'Anne'),
     ]);
 
-    await world.container.read(peopleProvider.future);
+    await world.container.read(_book(world.container).future);
 
     expect(_names(world.container), ['Anne', 'Bruno', 'élodie']);
   });
 
   test('add keeps the list sorted and returns the new person', () async {
     final world = _world([_person('1', 'Anne'), _person('2', 'Chloé')]);
-    await world.container.read(peopleProvider.future);
+    await world.container.read(_book(world.container).future);
 
-    final added = await world.container.read(peopleProvider.notifier).add((
-      name: 'Bruno',
-      stage: Stage.customer,
-      phone: null,
-      email: null,
-      instagram: null,
-    ));
+    final added = await world.container
+        .read(_book(world.container).notifier)
+        .add((
+          name: 'Bruno',
+          stage: Stage.customer,
+          phone: null,
+          email: null,
+          instagram: null,
+        ));
 
     expect(added.name, 'Bruno');
     expect(_names(world.container), ['Anne', 'Bruno', 'Chloé']);
@@ -82,10 +89,10 @@ void main() {
 
   test('save replaces the person', () async {
     final world = _world([_person('1', 'Anne')]);
-    await world.container.read(peopleProvider.future);
+    await world.container.read(_book(world.container).future);
 
     await world.container
-        .read(peopleProvider.notifier)
+        .read(_book(world.container).notifier)
         .save(_person('1', 'Anne Martin'));
 
     expect(_names(world.container), ['Anne Martin']);
@@ -93,26 +100,26 @@ void main() {
 
   test('remove drops the person', () async {
     final world = _world([_person('1', 'Anne'), _person('2', 'Bruno')]);
-    await world.container.read(peopleProvider.future);
+    await world.container.read(_book(world.container).future);
 
-    await world.container.read(peopleProvider.notifier).remove('1');
+    await world.container.read(_book(world.container).notifier).remove('1');
 
     expect(_names(world.container), ['Bruno']);
   });
 
   test('a failed save rethrows and keeps the list', () async {
     final world = _world([_person('1', 'Anne')]);
-    await world.container.read(peopleProvider.future);
+    await world.container.read(_book(world.container).future);
     world.people.failWith = PeopleFailure.network;
 
     await expectLater(
       world.container
-          .read(peopleProvider.notifier)
+          .read(_book(world.container).notifier)
           .save(_person('1', 'Changed')),
       throwsA(PeopleFailure.network),
     );
     await expectLater(
-      world.container.read(peopleProvider.notifier).remove('1'),
+      world.container.read(_book(world.container).notifier).remove('1'),
       throwsA(PeopleFailure.network),
     );
 
@@ -121,15 +128,15 @@ void main() {
 
   test('setStatus shows the change before the save returns', () async {
     final world = _world([_person('1', 'Anne')]);
-    await world.container.read(peopleProvider.future);
+    await world.container.read(_book(world.container).future);
     world.people.gate = Completer<void>();
 
     final saving = world.container
-        .read(peopleProvider.notifier)
+        .read(_book(world.container).notifier)
         .setStatus(_person('1', 'Anne'), ProspectStatus.thinking);
 
     expect(
-      world.container.read(peopleProvider).value!.single.prospectStatus,
+      world.container.read(_book(world.container)).value!.single.prospectStatus,
       ProspectStatus.thinking,
     );
     world.people.gate!.complete();
@@ -141,18 +148,18 @@ void main() {
     final world = _world([
       _person('1', 'Anne', status: ProspectStatus.interested),
     ]);
-    await world.container.read(peopleProvider.future);
+    await world.container.read(_book(world.container).future);
     world.people.failWith = PeopleFailure.network;
 
     await expectLater(
       world.container
-          .read(peopleProvider.notifier)
+          .read(_book(world.container).notifier)
           .setStatus(_person('1', 'Anne'), ProspectStatus.notNow),
       throwsA(PeopleFailure.network),
     );
 
     expect(
-      world.container.read(peopleProvider).value!.single.prospectStatus,
+      world.container.read(_book(world.container)).value!.single.prospectStatus,
       ProspectStatus.interested,
     );
   });
@@ -161,8 +168,8 @@ void main() {
     final world = _world([
       _person('1', 'Anne', status: ProspectStatus.interested),
     ]);
-    await world.container.read(peopleProvider.future);
-    final controller = world.container.read(peopleProvider.notifier);
+    await world.container.read(_book(world.container).future);
+    final controller = world.container.read(_book(world.container).notifier);
     final first = Completer<void>();
     final second = Completer<void>();
 
@@ -187,22 +194,22 @@ void main() {
     await succeeding;
 
     expect(
-      world.container.read(peopleProvider).value!.single.prospectStatus,
+      world.container.read(_book(world.container)).value!.single.prospectStatus,
       ProspectStatus.notNow,
     );
   });
 
   test('switching account reloads and never shows the previous book', () async {
     final world = _world([_person('1', 'Anne')]);
-    await world.container.read(peopleProvider.future);
+    await world.container.read(_book(world.container).future);
 
     world.auth
       ..session = false
       ..account = null
       ..emit(AuthChange.signedOut);
     await Future<void>.delayed(Duration.zero);
-    await world.container.read(peopleProvider.future);
-    expect(world.container.read(peopleProvider).value, isEmpty);
+    await world.container.read(_book(world.container).future);
+    expect(world.container.read(_book(world.container)).value, isEmpty);
 
     world.people.store
       ..clear()
@@ -215,16 +222,47 @@ void main() {
     await Future<void>.delayed(Duration.zero);
 
     // Loading the new book: the old one is not on screen meanwhile.
-    expect(world.container.read(peopleProvider).value, isEmpty);
+    expect(world.container.read(_book(world.container)).hasValue, isFalse);
     world.people.gate!.complete();
-    await world.container.read(peopleProvider.future);
+    await world.container.read(_book(world.container).future);
     expect(_names(world.container), ['Zoé']);
+  });
+
+  test('the next account never inherits the book, even unwatched', () async {
+    final world = _world([_person('1', 'Anne')]);
+    // Read, not listened: nothing is watching the book when the user signs out,
+    // as when they leave Contacts for Settings first.
+    await world.container.read(_book(world.container).future);
+
+    world.auth
+      ..session = false
+      ..account = null
+      ..emit(AuthChange.signedOut);
+    await Future<void>.delayed(Duration.zero);
+
+    world.people.store.clear();
+    world.people.failWith = PeopleFailure.network;
+    world.auth
+      ..session = true
+      ..account = const Account(firstName: 'Zoé', email: 'z@example.com')
+      ..emit(AuthChange.signedIn);
+    await Future<void>.delayed(Duration.zero);
+
+    final loading = world.container.read(_book(world.container));
+    expect(loading.hasValue, isFalse);
+    await expectLater(
+      world.container.read(_book(world.container).future),
+      throwsA(PeopleFailure.network),
+    );
+    final failed = world.container.read(_book(world.container));
+    expect(failed.hasError, isTrue);
+    expect(failed.hasValue, isFalse);
   });
 
   test('is stale a minute after the last load', () async {
     final world = _world([]);
-    await world.container.read(peopleProvider.future);
-    final controller = world.container.read(peopleProvider.notifier);
+    await world.container.read(_book(world.container).future);
+    final controller = world.container.read(_book(world.container).notifier);
     final now = DateTime.now();
 
     expect(controller.isStaleAt(now), isFalse);

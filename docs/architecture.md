@@ -72,13 +72,16 @@ those extension points inline.
 
 Signed-in screens sit in a `ShellRoute` whose `AppShell` (`lib/app/shell/`)
 picks its chrome from `context.screenSize`: a sidebar on desktop, the same
-sidebar as an icon rail on tablet, nothing on mobile. Settings is not a
-destination — it opens from the account block at the bottom of the sidebar, or
-from the avatar in the top bar on mobile. Its sections (`/settings/account`,
+sidebar as an icon rail on tablet, a bottom bar on mobile (hidden on
+Settings). Settings is not a destination — it opens from the account block at
+the bottom of the sidebar, or from the avatar in the top bar on mobile. Its sections (`/settings/account`,
 `/settings/language`, `/settings/appearance`) are nested routes: on desktop they fill a pane beside the
 Settings list without a transition; on mobile and tablet each is its own pushed
-screen. The mobile bottom bar and a
-`StatefulShellRoute` (one stack per tab) arrive with the second destination.
+screen.
+
+`/contacts` nests a second `ShellRoute` so that on desktop the list stays built
+beside a pane that follows the URL. There is no `StatefulShellRoute`: a tab does not
+keep its own stack, and nothing so far needs it to.
 
 ### Theming
 

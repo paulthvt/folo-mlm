@@ -112,7 +112,8 @@ abstract final class AppTheme {
       chipTheme: ChipThemeData(
         backgroundColor: folo.surfaceSunken,
         side: BorderSide.none,
-        labelStyle: AppTypography.caption,
+        // Without a colour the label paints white, invisible on light chips.
+        labelStyle: AppTypography.caption.copyWith(color: scheme.onSurface),
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.sm,
           vertical: AppSpacing.xs,
