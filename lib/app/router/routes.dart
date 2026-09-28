@@ -3,6 +3,16 @@ abstract final class Routes {
   static const String today = '/';
   static const String todayName = 'today';
 
+  static const String contacts = '/contacts';
+  static const String contactsName = 'contacts';
+
+  /// One person, nested under [contacts] so back returns to the list.
+  static const String contactSegment = ':id';
+  static const String contactName = 'contact';
+
+  static String contactLocation(String id) =>
+      '$contacts/${Uri.encodeComponent(id)}';
+
   static const String settings = '/settings';
   static const String settingsName = 'settings';
 

@@ -1,36 +1,26 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/app.dart';
 import 'package:folo/app/shell/app_shell.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/auth/domain/account.dart';
+import 'package:folo/features/contacts/domain/person.dart';
+import 'package:folo/features/contacts/presentation/contact_list.dart';
+import 'package:folo/features/contacts/presentation/contact_page.dart';
 import 'package:folo/features/settings/presentation/settings_page.dart';
 import 'package:material_ui/material_ui.dart';
 
-import '../../features/auth/fake_auth_repository.dart';
+import '../../features/contacts/fake_people_repository.dart';
+import '../app_harness.dart';
 
-Future<void> _launch(WidgetTester tester, Size size) async {
-  tester.view.physicalSize = size;
-  tester.view.devicePixelRatio = 1;
-  addTearDown(tester.view.reset);
-  final fake = FakeAuthRepository()
-    ..session = true
-    ..account = const Account(firstName: 'Pauline', email: 'p@example.com');
-  addTearDown(fake.dispose);
-  await tester.pumpWidget(
-    ProviderScope(
-      overrides: [authRepositoryProvider.overrideWithValue(fake)],
-      child: const FoloApp(),
-    ),
-  );
-  await tester.pumpAndSettle();
-}
+final _marie = Person(
+  id: 'p1',
+  name: 'Marie Dupont',
+  stage: Stage.prospect,
+  createdAt: DateTime.utc(2026, 3, 4),
+);
 
 void main() {
   testWidgets('mobile: no sidebar, Settings opens from the top bar', (
     tester,
   ) async {
-    await _launch(tester, const Size(390, 844));
+    await pumpFolo(tester, size: const Size(390, 844));
 
     expect(find.text('Folo'), findsNothing);
     await tester.tap(find.byType(AccountButton));
@@ -44,7 +34,7 @@ void main() {
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
-    await _launch(tester, const Size(800, 1000));
+    await pumpFolo(tester, size: const Size(800, 1000));
 
     expect(find.byType(AccountButton), findsNothing);
     expect(find.text('Folo'), findsNothing);
@@ -59,7 +49,7 @@ void main() {
   testWidgets('desktop: the sidebar, its account block opens Settings', (
     tester,
   ) async {
-    await _launch(tester, const Size(1440, 900));
+    await pumpFolo(tester, size: const Size(1440, 900));
 
     expect(find.text('Folo'), findsOneWidget);
     expect(find.byType(AccountButton), findsNothing);
@@ -68,5 +58,55 @@ void main() {
 
     expect(find.byType(SettingsPage), findsOneWidget);
     expect(find.byType(BackButton), findsNothing);
+  });
+
+  testWidgets('mobile: a bottom bar with Today and Contacts', (tester) async {
+    await pumpFolo(
+      tester,
+      size: const Size(390, 844),
+      people: FakePeopleRepository([_marie]),
+    );
+
+    expect(find.byType(NavigationBar), findsOneWidget);
+    await tester.tap(find.widgetWithText(NavigationDestination, 'Contacts'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ContactList), findsOneWidget);
+  });
+
+  testWidgets('mobile: the bar stays on a contact, not on Settings', (
+    tester,
+  ) async {
+    await pumpFolo(
+      tester,
+      size: const Size(390, 844),
+      people: FakePeopleRepository([_marie]),
+    );
+    await tester.tap(find.widgetWithText(NavigationDestination, 'Contacts'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Marie Dupont'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ContactPage), findsOneWidget);
+    expect(find.byType(NavigationBar), findsOneWidget);
+
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byType(AccountButton));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SettingsPage), findsOneWidget);
+    expect(find.byType(NavigationBar), findsNothing);
+  });
+
+  testWidgets('desktop: the sidebar has Contacts', (tester) async {
+    await pumpFolo(tester, size: const Size(1440, 900));
+
+    // On Today, the sidebar entry is the only "Contacts" on screen.
+    await tester.tap(find.text('Contacts'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ContactList), findsOneWidget);
+    expect(find.byType(NavigationBar), findsNothing);
   });
 }
