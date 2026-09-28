@@ -36,7 +36,7 @@ class FactRow extends StatelessWidget {
           Text(
             value,
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: onTap == null ? null : theme.colorScheme.primary,
+              color: onTap == null ? null : folo.primaryText,
             ),
           ),
         ],
