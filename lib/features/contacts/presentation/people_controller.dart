@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/features/contacts/data/people_repository.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/domain/search_key.dart';
+import 'package:folo/features/contacts/presentation/history_controller.dart';
 
 /// One account's whole book, loaded once and kept in memory; every contacts
 /// screen reads the signed-in one, `peopleProvider(account?.email)`. Sorted by
@@ -59,12 +60,15 @@ class PeopleController extends AsyncNotifier<List<Person>> {
   }
 
   Future<void> save(Person person) async {
-    final saved = await _repository.update(person);
-    _change(
-      (people) => [
-        for (final other in people) other.id == saved.id ? saved : other,
-      ],
-    );
+    _replace(await _repository.update(person));
+  }
+
+  /// Waits for the server, which decides [Person.stageSince] and the status,
+  /// and writes the history entry that is then reloaded. A failure rethrows
+  /// and changes nothing.
+  Future<void> moveTo(Person person, Stage stage) async {
+    _replace(await _repository.setStage(person.id, stage));
+    if (ref.mounted) ref.invalidate(historyProvider(person.id));
   }
 
   Future<void> remove(String id) async {
@@ -89,6 +93,12 @@ class PeopleController extends AsyncNotifier<List<Person>> {
 
   Person? _find(String id) =>
       state.value?.where((person) => person.id == id).firstOrNull;
+
+  void _replace(Person saved) => _change(
+    (people) => [
+      for (final other in people) other.id == saved.id ? saved : other,
+    ],
+  );
 
   void _setStatusLocally(String id, ProspectStatus? status) => _change(
     (people) => [

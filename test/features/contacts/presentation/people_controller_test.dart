@@ -5,12 +5,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/account.dart';
 import 'package:folo/features/auth/domain/auth_change.dart';
+import 'package:folo/features/contacts/data/activity_repository.dart';
 import 'package:folo/features/contacts/data/people_repository.dart';
+import 'package:folo/features/contacts/domain/activity.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
+import 'package:folo/features/contacts/presentation/history_controller.dart';
 import 'package:folo/features/contacts/presentation/people_controller.dart';
 
 import '../../auth/fake_auth_repository.dart';
+import '../fake_activity_repository.dart';
 import '../fake_people_repository.dart';
 
 Person _person(
@@ -29,6 +33,7 @@ Person _person(
 typedef _World = ({
   ProviderContainer container,
   FakePeopleRepository people,
+  FakeActivityRepository activities,
   FakeAuthRepository auth,
 });
 
@@ -37,14 +42,21 @@ _World _world(List<Person> people) {
     ..session = true
     ..account = const Account(firstName: 'Pauline', email: 'p@example.com');
   addTearDown(auth.dispose);
-  final repository = FakePeopleRepository(people);
+  final activities = FakeActivityRepository();
+  final repository = FakePeopleRepository(people)..activities = activities;
   final container = ProviderContainer.test(
     overrides: [
       authRepositoryProvider.overrideWithValue(auth),
       peopleRepositoryProvider.overrideWithValue(repository),
+      activityRepositoryProvider.overrideWithValue(activities),
     ],
   );
-  return (container: container, people: repository, auth: auth);
+  return (
+    container: container,
+    people: repository,
+    activities: activities,
+    auth: auth,
+  );
 }
 
 /// The signed-in account's book, as the screens read it.
@@ -272,5 +284,43 @@ void main() {
       ),
       isTrue,
     );
+  });
+
+  test(
+    'moveTo takes what the server returns and reloads the history',
+    () async {
+      final world = _world([
+        _person('p1', 'Marie', status: ProspectStatus.interested),
+      ]);
+      final book = _book(world.container);
+      await world.container.read(book.future);
+      world.container.listen(historyProvider('p1'), (_, _) {});
+      await world.container.read(historyProvider('p1').future);
+      final marie = world.container.read(book).value!.single;
+
+      await world.container.read(book.notifier).moveTo(marie, Stage.customer);
+
+      final moved = world.container.read(book).value!.single;
+      expect(moved.stage, Stage.customer);
+      expect(moved.prospectStatus, isNull);
+      expect(moved.stageSince, DateTime.utc(2026, 9, 28));
+      final history = await world.container.read(historyProvider('p1').future);
+      expect(history.single.kind, ActivityKind.stage);
+      expect(world.activities.calls, ['list(p1)', 'list(p1)']);
+    },
+  );
+
+  test('a failed moveTo rethrows and changes nothing', () async {
+    final world = _world([_person('p1', 'Marie')]);
+    final book = _book(world.container);
+    await world.container.read(book.future);
+    final marie = world.container.read(book).value!.single;
+    world.people.failWith = PeopleFailure.network;
+
+    await expectLater(
+      world.container.read(book.notifier).moveTo(marie, Stage.team),
+      throwsA(PeopleFailure.network),
+    );
+    expect(world.container.read(book).value!.single.stage, Stage.prospect);
   });
 }
