@@ -36,12 +36,10 @@ Person withServerFields(Person person, List<Workflow> workflows) {
   );
 }
 
-/// Where ticking [stepId] leads: the next step's position, or one past the
-/// last.
+/// Where ticking [stepId] leads: the next step's position, or 1e9 once done
+/// (far past any step, so a step moved or added at the end stays unmet).
 num positionAfter(Workflow workflow, String stepId) {
   final steps = workflow.steps;
   final index = steps.indexWhere((step) => step.id == stepId);
-  return index + 1 < steps.length
-      ? steps[index + 1].position
-      : steps[index].position + 1;
+  return index + 1 < steps.length ? steps[index + 1].position : 1e9;
 }
