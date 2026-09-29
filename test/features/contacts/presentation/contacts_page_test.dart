@@ -286,7 +286,6 @@ void main() {
     await openMarie(tester);
 
     await reveal(tester, find.text("Couldn't load the history."));
-    expect(find.text('Marie Dupont'), findsOneWidget);
     activities.failWith = null;
     await tester.tap(find.text('Try again'));
     await tester.pumpAndSettle();

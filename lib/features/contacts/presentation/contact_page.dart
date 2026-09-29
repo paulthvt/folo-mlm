@@ -128,10 +128,13 @@ class ContactPane extends ConsumerWidget {
         return refreshPeople(context, ref);
       },
       workflowName: workflowName,
-      nextStep: NextStepSection(key: ValueKey(person.id), person: person),
+      nextStep: NextStepSection(
+        key: ValueKey('next-${person.id}'),
+        person: person,
+      ),
       history: HistorySection(
         // A new person starts collapsed.
-        key: ValueKey(person.id),
+        key: ValueKey('history-${person.id}'),
         person: person,
         onAdd: () => unawaited(showLogActivity(context, person)),
       ),
