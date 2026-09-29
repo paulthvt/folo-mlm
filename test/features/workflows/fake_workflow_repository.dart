@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/workflows/data/workflow_repository.dart';
 import 'package:folo/features/workflows/domain/workflow.dart';
@@ -8,7 +9,12 @@ import 'package:folo/features/workflows/domain/workflow.dart';
 class FakeWorkflowRepository implements WorkflowRepository {
   FakeWorkflowRepository([Iterable<Workflow> workflows = const []]) {
     store.addAll(workflows);
+    // Started with workflows: already seeded, as the server would say.
+    _seeded = store.isNotEmpty;
   }
+
+  bool _seeded = false;
+  var _next = 0;
 
   final List<Workflow> store = [];
 
@@ -41,8 +47,9 @@ class FakeWorkflowRepository implements WorkflowRepository {
     return [...store];
   }
 
-  /// Like the RPC: a no-op once there are workflows. It does not start
-  /// people; tests that need a place set it on the person.
+  /// Like the RPC: seeds once, ever; a no-op afterwards, even with no
+  /// workflow left. It does not start people; tests that need a place set it
+  /// on the person.
   @override
   Future<void> seed(String lang, DateTime today) async {
     calls.add('seed($lang)');
@@ -50,8 +57,156 @@ class FakeWorkflowRepository implements WorkflowRepository {
     final wait = seedGate ?? gate;
     if (wait != null) await wait.future;
     if (failure != null) throw failure;
-    if (store.isEmpty) store.addAll(samples());
+    if (_seeded) return;
+    _seeded = true;
+    store.addAll(samples());
   }
+
+  @override
+  Future<Workflow> create(Stage stage, String name) async {
+    await _record('create(${stage.name}, $name)');
+    final workflow = Workflow(
+      id: 'new-${++_next}',
+      stage: stage,
+      name: name,
+      isDefault: false,
+      steps: const [],
+    );
+    store.add(workflow);
+    return workflow;
+  }
+
+  @override
+  Future<void> rename(String id, String name) async {
+    await _record('rename($id, $name)');
+    _change(id, (workflow) => _copy(workflow, name: name));
+  }
+
+  @override
+  Future<void> delete(String id) async {
+    await _record('delete($id)');
+    store.removeWhere((workflow) => workflow.id == id);
+  }
+
+  /// Like the RPC: on clears the stage's other default; unknown fails.
+  @override
+  Future<void> setDefault(String id, bool on) async {
+    await _record('setDefault($id, $on)');
+    final target = findWorkflow(store, id);
+    if (target == null) throw PeopleFailure.unknown;
+    for (final (index, workflow) in store.indexed.toList()) {
+      if (workflow.id == id) {
+        store[index] = _copy(workflow, isDefault: on);
+      } else if (on && workflow.stage == target.stage && workflow.isDefault) {
+        store[index] = _copy(workflow, isDefault: false);
+      }
+    }
+  }
+
+  @override
+  Future<void> addStep(
+    String workflowId, {
+    required String label,
+    required int days,
+    String? note,
+    required num position,
+  }) async {
+    await _record('addStep($workflowId, $label, $days, $position)');
+    _change(
+      workflowId,
+      (workflow) => _copy(
+        workflow,
+        steps: [
+          ...workflow.steps,
+          WorkflowStep(
+            id: 'step-${++_next}',
+            position: position,
+            label: label,
+            days: days,
+            note: note,
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Future<void> updateStep(
+    String stepId, {
+    required String label,
+    required int days,
+    String? note,
+  }) async {
+    await _record('updateStep($stepId, $label, $days)');
+    _changeStep(
+      stepId,
+      (step) => WorkflowStep(
+        id: step.id,
+        position: step.position,
+        label: label,
+        days: days,
+        note: note,
+      ),
+    );
+  }
+
+  @override
+  Future<void> moveStep(String stepId, num position) async {
+    await _record('moveStep($stepId, $position)');
+    _changeStep(
+      stepId,
+      (step) => WorkflowStep(
+        id: step.id,
+        position: position,
+        label: step.label,
+        days: step.days,
+        note: step.note,
+      ),
+    );
+  }
+
+  @override
+  Future<void> removeStep(String stepId) async {
+    await _record('removeStep($stepId)');
+    _changeStep(stepId, (_) => null);
+  }
+
+  void _change(String id, Workflow Function(Workflow workflow) change) {
+    final index = store.indexWhere((workflow) => workflow.id == id);
+    if (index >= 0) store[index] = change(store[index]);
+  }
+
+  /// A null from [change] removes the step.
+  void _changeStep(
+    String stepId,
+    WorkflowStep? Function(WorkflowStep step) change,
+  ) {
+    final index = store.indexWhere(
+      (workflow) => workflow.steps.any((step) => step.id == stepId),
+    );
+    if (index < 0) return;
+    final workflow = store[index];
+    store[index] = _copy(
+      workflow,
+      steps: [
+        for (final step in workflow.steps)
+          if (step.id != stepId) step else ?change(step),
+      ],
+    );
+  }
+
+  static Workflow _copy(
+    Workflow workflow, {
+    String? name,
+    bool? isDefault,
+    List<WorkflowStep>? steps,
+  }) => Workflow(
+    id: workflow.id,
+    stage: workflow.stage,
+    name: name ?? workflow.name,
+    isDefault: isDefault ?? workflow.isDefault,
+    steps: steps ?? workflow.steps,
+  );
 
   /// The English defaults of spec §2.1.
   static List<Workflow> samples() => [

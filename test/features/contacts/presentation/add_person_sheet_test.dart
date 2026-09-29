@@ -35,7 +35,8 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Enter a name.'), findsOneWidget);
-    expect(people.calls, ['list()']);
+    // Nothing was written; the book may have been reloaded.
+    expect(people.calls, everyElement('list()'));
   });
 
   testWidgets('saves a prospect by default, reading the channel', (
