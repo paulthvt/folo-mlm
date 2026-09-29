@@ -81,7 +81,14 @@ class FoloDialog extends StatelessWidget {
                   ),
                 ),
               if (child case final child?)
-                Flexible(child: SingleChildScrollView(child: child)),
+                Flexible(
+                  child: SingleChildScrollView(
+                    // Room for the first field's floating label, which sits
+                    // above the field and would be clipped.
+                    padding: const EdgeInsets.only(top: AppSpacing.sm),
+                    child: child,
+                  ),
+                ),
               const SizedBox(height: AppSpacing.xs),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,

@@ -8,6 +8,7 @@ import 'package:folo/core/ui/folo_dialog.dart';
 import 'package:folo/core/ui/section_header.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/presentation/people_copy.dart';
+import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -291,9 +292,9 @@ class ContactDetails extends StatelessWidget {
           if (person.stage == Stage.prospect) ...[
             const SizedBox(height: AppSpacing.lg),
             SectionHeader(title: l10n.contactSectionWhereItStands),
+            // Each chip already pads itself to the 48px tap target.
             Wrap(
               spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
               children: [
                 for (final option in ProspectStatus.values)
                   ChoiceChip(
@@ -315,20 +316,38 @@ class ContactDetails extends StatelessWidget {
             actionLabel: l10n.contactEdit,
             onAction: onEdit,
           ),
-          if (facts.isEmpty)
-            Text(
-              l10n.contactNothingYet,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: folo.textMuted,
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
               ),
-            )
-          else
-            for (final (label, value, link) in facts)
-              FactRow(
-                label: label,
-                value: value!,
-                onTap: link == null ? null : () => onLaunch(link),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  if (facts.isEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: AppSpacing.sm,
+                      ),
+                      child: Text(
+                        l10n.contactNothingYet,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: folo.textMuted,
+                        ),
+                      ),
+                    )
+                  else
+                    for (final (label, value, link) in facts)
+                      FactRow(
+                        label: label,
+                        value: value!,
+                        onTap: link == null ? null : () => onLaunch(link),
+                      ),
+                ],
               ),
+            ),
+          ),
           if (history case final history?) ...[
             const SizedBox(height: AppSpacing.lg),
             history,
@@ -382,13 +401,9 @@ class _MoreSheet extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: AppSpacing.sm,
           children: [
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: theme.textTheme.titleMedium,
-            ),
-            Card(child: Column(children: [for (final a in actions) tile(a)])),
-            Card(child: tile(delete, color: error)),
+            Text(title, style: theme.textTheme.titleMedium),
+            SettingsGroup(children: [for (final a in actions) tile(a)]),
+            SettingsGroup(children: [tile(delete, color: error)]),
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: Text(MaterialLocalizations.of(context).cancelButtonLabel),

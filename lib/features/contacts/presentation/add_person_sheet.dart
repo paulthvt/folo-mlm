@@ -130,7 +130,6 @@ class _AddPersonFormState extends ConsumerState<_AddPersonForm> {
             ),
             Wrap(
               spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
               children: [
                 for (final stage in Stage.values)
                   ChoiceChip(

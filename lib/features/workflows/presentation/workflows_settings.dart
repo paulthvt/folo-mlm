@@ -250,7 +250,6 @@ class _NewWorkflowFormState extends ConsumerState<_NewWorkflowForm> {
             SectionHeader(title: l10n.workflowsNewStage),
             Wrap(
               spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
               children: [
                 for (final stage in Stage.values)
                   ChoiceChip(

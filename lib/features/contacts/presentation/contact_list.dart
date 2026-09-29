@@ -110,7 +110,6 @@ class _ContactListState extends State<ContactList> {
             const SizedBox(height: AppSpacing.ms),
             Wrap(
               spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
               children: [
                 for (final (stage, label) in [
                   (null, l10n.contactsFilterEveryone),
