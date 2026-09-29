@@ -31,6 +31,17 @@ abstract final class Routes {
       '$settings/$settingsAppearanceSegment';
   static const String settingsAppearanceName = 'settingsAppearance';
 
+  static const String settingsWorkflowsSegment = 'workflows';
+  static const String settingsWorkflows = '$settings/$settingsWorkflowsSegment';
+  static const String settingsWorkflowsName = 'settingsWorkflows';
+
+  /// One workflow, nested under [settingsWorkflows] so back returns to it.
+  static const String settingsWorkflowSegment = ':id';
+  static const String settingsWorkflowName = 'settingsWorkflow';
+
+  static String settingsWorkflowLocation(String id) =>
+      '$settingsWorkflows/${Uri.encodeComponent(id)}';
+
   static const String welcome = '/welcome';
   static const String welcomeName = 'welcome';
 

@@ -172,6 +172,38 @@ the official flat `G` from developers.google.com/identity instead
 `Choose a new password` has no back button: it is reached by a deep link, so
 there is no previous screen to return to.
 
+## 7. Settings → Workflows
+
+A row "Workflows" in its own group above Preferences. On desktop the list and
+the editor open in the Settings pane (the editor replaces the list, and its
+back arrow returns to it); elsewhere each is pushed.
+
+**List** — top bar "Workflows" → intro ("What you usually do with someone,
+step by step. Folo puts the next step on Today when it comes due.") → one
+group per stage that has workflows (PROSPECTS, CUSTOMERS, TEAM), the default
+first, each row trailing "Default · 5 steps" or "4 steps" and a chevron → a
+tonal `New workflow` button. New workflow is a dialog (a bottom sheet on a
+phone): Name, STAGE chips with Prospect picked, Cancel / Create; Create opens
+the editor on it.
+
+**Editor** — the stage as eyebrow, the name as title → Name field, saved when
+it loses focus → STEPS with `Add a step`: a numbered row per step, "When you
+start" or "3 days after", a drag handle, Move up / Move down for screen
+readers → "Default for new prospects" switch → a footer on how steps come due
+→ a red "Delete workflow" row, which asks first and says how many people
+follow it. Opened after it was deleted elsewhere: "This workflow isn't here
+anymore" and `Back to workflows`.
+
+**Step** — "Step 2" or "New step": What to do, Days after the previous step
+("Days after starting" for step 1, 0 to 365) with a live "Comes due 3 days
+after you tick step 1." hint, an optional Note, and `Remove this step` without
+a confirmation: people on it move on and their history stays.
+
+Nothing is optimistic. A control is disabled while its write is in flight; a
+failure says "Couldn't save. Check your connection and try again." — inline
+in a dialog, which keeps what was typed, and as a snack bar in the editor,
+which shows the saved state again.
+
 ---
 
 ## Dark mode

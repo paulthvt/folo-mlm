@@ -65,3 +65,16 @@ List<Workflow> forStage(List<Workflow> workflows, Stage stage) =>
           ? (a.isDefault ? -1 : 1)
           : a.name.compareTo(b.name),
     );
+
+/// The position for a step dropped at [index] among [steps] (sorted, the
+/// moved step already taken out): the midpoint of its new neighbours, or one
+/// past either end. An empty list gives 1.
+// ponytail: halving runs out of double precision after ~50 drops into the
+// same gap; the unique (workflow_id, position) then refuses the move. Renumber
+// the workflow's steps if that ever happens for real.
+num positionAt(List<WorkflowStep> steps, int index) {
+  if (steps.isEmpty) return 1;
+  if (index <= 0) return steps.first.position - 1;
+  if (index >= steps.length) return steps.last.position + 1;
+  return (steps[index - 1].position + steps[index].position) / 2;
+}

@@ -5,7 +5,6 @@ import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/layout/breakpoints.dart';
 import 'package:folo/core/ui/folo_avatar.dart';
-import 'package:folo/core/ui/folo_top_bar.dart';
 import 'package:folo/core/ui/form_error.dart';
 import 'package:folo/core/ui/section_header.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
@@ -16,11 +15,14 @@ import 'package:folo/features/settings/presentation/appearance_settings.dart';
 import 'package:folo/features/settings/presentation/language_settings.dart';
 import 'package:folo/features/settings/presentation/settings_action.dart';
 import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
+import 'package:folo/features/settings/presentation/widgets/settings_scroll.dart';
+import 'package:folo/features/workflows/presentation/workflow_editor.dart';
+import 'package:folo/features/workflows/presentation/workflows_settings.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
-enum SettingsSection { account, language, appearance }
+enum SettingsSection { account, language, appearance, workflows }
 
 /// The Settings list, and one of its sections.
 ///
@@ -28,11 +30,14 @@ enum SettingsSection { account, language, appearance }
 /// none is — on the right. Mobile and tablet show one at a time, each section
 /// its own screen; a tablet's rail leaves too little room for two panes.
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({this.section, super.key});
+  const SettingsPage({this.section, this.workflowId, super.key});
 
   static const double _listWidth = 400;
 
   final SettingsSection? section;
+
+  /// The workflow open in [SettingsSection.workflows]; null shows the list.
+  final String? workflowId;
 
   /// Beside the list on desktop; elsewhere pushed, so back returns to it.
   static void open(BuildContext context, SettingsSection section) {
@@ -40,6 +45,7 @@ class SettingsPage extends StatelessWidget {
       SettingsSection.account => Routes.settingsAccount,
       SettingsSection.language => Routes.settingsLanguage,
       SettingsSection.appearance => Routes.settingsAppearance,
+      SettingsSection.workflows => Routes.settingsWorkflows,
     };
     if (context.screenSize.isDesktop) {
       context.go(location);
@@ -70,12 +76,14 @@ class SettingsPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                child: _Scroll(
+                child: SettingsScroll(
                   title: l10n.settingsTitle,
                   child: _SettingsList(selected: shown),
                 ),
               ),
-              Expanded(child: _Section(section: shown)),
+              Expanded(
+                child: _Section(section: shown, workflowId: workflowId),
+              ),
             ],
           ),
         ),
@@ -91,65 +99,81 @@ class SettingsPage extends StatelessWidget {
               leading: BackButton(
                 onPressed: () => backOr(
                   context,
-                  current == null ? Routes.today : Routes.settings,
+                  current == null
+                      ? Routes.today
+                      : workflowId == null
+                      ? Routes.settings
+                      : Routes.settingsWorkflows,
                 ),
               ),
             )
           : null,
       body: SafeArea(
         child: current == null
-            ? _Scroll(title: l10n.settingsTitle, child: const _SettingsList())
-            : _Section(section: current),
+            ? SettingsScroll(
+                title: l10n.settingsTitle,
+                child: const _SettingsList(),
+              )
+            : _Section(section: current, workflowId: workflowId),
       ),
     );
   }
 }
 
 class _Section extends StatelessWidget {
-  const _Section({required this.section});
+  const _Section({required this.section, this.workflowId});
 
   final SettingsSection section;
+  final String? workflowId;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     return switch (section) {
-      SettingsSection.account => _Scroll(
+      SettingsSection.account => SettingsScroll(
         title: l10n.settingsSectionAccount,
         child: const AccountSettings(),
       ),
-      SettingsSection.language => _Scroll(
+      SettingsSection.language => SettingsScroll(
         title: l10n.settingsSectionLanguage,
         child: const LanguageSettings(),
       ),
-      SettingsSection.appearance => _Scroll(
+      SettingsSection.appearance => SettingsScroll(
         title: l10n.settingsSectionAppearance,
         child: const AppearanceSettings(),
       ),
+      SettingsSection.workflows => switch (workflowId) {
+        null => SettingsScroll(
+          title: l10n.settingsSectionWorkflows,
+          child: const WorkflowsSettings(),
+        ),
+        // A new id is a new editor: nothing typed carries over.
+        final id => _WorkflowPane(
+          child: WorkflowEditor(key: ValueKey(id), id: id),
+        ),
+      },
     };
   }
 }
 
-class _Scroll extends StatelessWidget {
-  const _Scroll({required this.title, required this.child});
+/// On desktop the editor replaces the list in the pane, where the page has
+/// no app bar: this one's back returns to the list. Elsewhere the page's
+/// own app bar does.
+class _WorkflowPane extends StatelessWidget {
+  const _WorkflowPane({required this.child});
 
-  final String title;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
-    final desktop = context.screenSize.isDesktop;
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 600),
-        child: ListView(
-          padding: EdgeInsets.all(desktop ? AppSpacing.xl : AppSpacing.md),
-          children: [
-            FoloTopBar(title: title, large: desktop),
-            child,
-          ],
+    if (!context.screenSize.isDesktop) return child;
+    return Scaffold(
+      appBar: AppBar(
+        leading: BackButton(
+          onPressed: () => backOr(context, Routes.settingsWorkflows),
         ),
       ),
+      body: child,
     );
   }
 }
@@ -211,6 +235,19 @@ class _SettingsListState extends ConsumerState<_SettingsList>
           ),
           const SizedBox(height: AppSpacing.lg),
         ],
+        SettingsGroup(
+          children: [
+            ListTile(
+              selected: selected == SettingsSection.workflows,
+              leading: const Icon(Icons.route_rounded),
+              title: Text(l10n.settingsSectionWorkflows),
+              trailing: const Icon(Icons.chevron_right_rounded),
+              onTap: () =>
+                  SettingsPage.open(context, SettingsSection.workflows),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.lg),
         SectionHeader(title: l10n.settingsSectionPreferences),
         SettingsGroup(
           children: [

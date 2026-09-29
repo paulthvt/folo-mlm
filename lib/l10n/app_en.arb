@@ -900,5 +900,166 @@
     "placeholders": {
       "month": { "type": "DateTime", "format": "MMMM" }
     }
+  },
+  "settingsSectionWorkflows": "Workflows",
+  "@settingsSectionWorkflows": {
+    "description": "Settings row, and the title of the screen listing the user's workflows: what they do with someone, step by step."
+  },
+  "workflowsIntro": "What you usually do with someone, step by step. Folo puts the next step on Today when it comes due.",
+  "@workflowsIntro": {
+    "description": "Intro at the top of Settings → Workflows."
+  },
+  "workflowsDefaultSteps": "Default · {steps}",
+  "@workflowsDefaultSteps": {
+    "description": "Trailing text on the row of a stage's default workflow: 'Default · 5 steps'. {steps} is the step count text (followWithSteps).",
+    "placeholders": {
+      "steps": { "type": "String" }
+    }
+  },
+  "workflowsNew": "New workflow",
+  "@workflowsNew": {
+    "description": "Button under the workflows, and the title of the dialog it opens."
+  },
+  "workflowName": "Name",
+  "@workflowName": {
+    "description": "Label of a workflow's name field, in New workflow and in the editor."
+  },
+  "workflowNameRequired": "Enter a name.",
+  "@workflowNameRequired": {
+    "description": "Error under the name field of New workflow when it is empty."
+  },
+  "workflowsNewStage": "Stage",
+  "@workflowsNewStage": {
+    "description": "Header above the stage choice in New workflow; shown in capitals."
+  },
+  "workflowsCreate": "Create",
+  "@workflowsCreate": {
+    "description": "Confirms New workflow."
+  },
+  "workflowMissingTitle": "This workflow isn't here anymore",
+  "@workflowMissingTitle": {
+    "description": "Shown when an open workflow no longer exists (deleted elsewhere, or a bad link)."
+  },
+  "workflowMissingBody": "It may have been deleted on another device.",
+  "@workflowMissingBody": {
+    "description": "Body under workflowMissingTitle."
+  },
+  "workflowBackToList": "Back to workflows",
+  "@workflowBackToList": {
+    "description": "Button under workflowMissingTitle that returns to the list."
+  },
+  "stepTitle": "Step {number}",
+  "@stepTitle": {
+    "description": "Title of the sheet editing one step of a workflow.",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "stepNew": "New step",
+  "@stepNew": {
+    "description": "Title of the sheet adding a step at the end of a workflow."
+  },
+  "stepLabel": "What to do",
+  "@stepLabel": {
+    "description": "Label of a step's text field: the action, e.g. 'Send the samples'."
+  },
+  "stepLabelRequired": "Enter what to do.",
+  "@stepLabelRequired": {
+    "description": "Error under stepLabel when it is empty."
+  },
+  "stepDaysAfterPrevious": "Days after the previous step",
+  "@stepDaysAfterPrevious": {
+    "description": "Label of the days field, for every step but the first."
+  },
+  "stepDaysAfterStart": "Days after starting",
+  "@stepDaysAfterStart": {
+    "description": "Label of the days field for step 1, which counts from the day the person starts the workflow."
+  },
+  "stepDaysInvalid": "Enter a number from 0 to 365.",
+  "@stepDaysInvalid": {
+    "description": "Error under the days field when it is empty or above 365."
+  },
+  "stepDueAfterPrevious": "{days, plural, =0{Comes due the same day you tick step {previous}.} =1{Comes due 1 day after you tick step {previous}.} other{Comes due {days} days after you tick step {previous}.}}",
+  "@stepDueAfterPrevious": {
+    "description": "Live hint under the days field: when this step comes due. {previous} is the number of the step before.",
+    "placeholders": {
+      "days": { "type": "int" },
+      "previous": { "type": "int" }
+    }
+  },
+  "stepDueAfterStart": "{days, plural, =0{Comes due the same day you start.} =1{Comes due 1 day after you start.} other{Comes due {days} days after you start.}}",
+  "@stepDueAfterStart": {
+    "description": "Live hint under the days field of step 1.",
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "stepNote": "Note",
+  "@stepNote": {
+    "description": "Label of a step's optional note field."
+  },
+  "stepRemove": "Remove this step",
+  "@stepRemove": {
+    "description": "Button in the step sheet. No confirmation: people on the step move on, and their history stays."
+  },
+  "workflowSteps": "Steps",
+  "@workflowSteps": {
+    "description": "Header above a workflow's steps in the editor; shown in capitals."
+  },
+  "workflowAddStep": "Add a step",
+  "@workflowAddStep": {
+    "description": "Action beside workflowSteps: adds a step at the end."
+  },
+  "workflowStepWhenYouStart": "When you start",
+  "@workflowStepWhenYouStart": {
+    "description": "Under step 1 when it is due the day the person starts the workflow."
+  },
+  "workflowStepDaysAfter": "{days, plural, =0{Same day} =1{1 day after} other{{days} days after}}",
+  "@workflowStepDaysAfter": {
+    "description": "Under a step: how long after the step before (after the start, for step 1) it comes due.",
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "workflowNoSteps": "No steps yet.",
+  "@workflowNoSteps": {
+    "description": "In place of the steps when a workflow has none."
+  },
+  "workflowDefaultFor": "{stage, select, prospect{Default for new prospects} customer{Default for new customers} other{Default for new team members}}",
+  "@workflowDefaultFor": {
+    "description": "Switch in the editor: someone new at this stage starts this workflow. {stage} is prospect, customer or team.",
+    "placeholders": {
+      "stage": { "type": "String" }
+    }
+  },
+  "workflowFooter": "Each step comes due a number of days after you tick the one before. Changes apply to everyone on this workflow — steps already done stay in their history.",
+  "@workflowFooter": {
+    "description": "Explanation under the default switch in the editor."
+  },
+  "workflowDelete": "Delete workflow",
+  "@workflowDelete": {
+    "description": "Danger row at the bottom of the editor."
+  },
+  "workflowDeleteTitle": "Delete {name}?",
+  "@workflowDeleteTitle": {
+    "description": "Title of the confirmation before deleting a workflow. {name} is the workflow's name.",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "workflowDeleteBody": "{count, plural, =0{No one follows it.} =1{1 person follows it. They'll have nothing planned; their history stays.} other{{count} people follow it. They'll have nothing planned; their history stays.}}",
+  "@workflowDeleteBody": {
+    "description": "Body of the confirmation before deleting a workflow: how many people are on it now.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workflowDeleteBodyUnknown": "They'll have nothing planned; their history stays.",
+  "@workflowDeleteBodyUnknown": {
+    "description": "Body of the confirmation before deleting a workflow, when the people could not be loaded to count who is on it."
+  },
+  "workflowDeleteConfirm": "Delete",
+  "@workflowDeleteConfirm": {
+    "description": "Confirms deleting a workflow."
   }
 }
