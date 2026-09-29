@@ -122,6 +122,8 @@ void main() {
           atPosition: 2,
           lastTick: DateTime(2026, 9, 28),
         ),
+        currentStepId: 'samples-2',
+        dueOn: DateTime(2026, 9, 29),
       ),
       Stage.customer,
     );

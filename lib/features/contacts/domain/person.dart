@@ -35,6 +35,8 @@ class Person {
     this.notes,
     this.place,
     this.pausedAt,
+    this.currentStepId,
+    this.dueOn,
   }) : assert(
          prospectStatus == null || stage == Stage.prospect,
          'Only prospects have a status',
@@ -67,6 +69,14 @@ class Person {
   /// Set while paused: the NEXT STEP card rests, the place is kept.
   final DateTime? pausedAt;
 
+  /// The server's answer (`current_step_id`): the step they are on. Null with
+  /// no workflow or once done. Read-only: never written back.
+  final String? currentStepId;
+
+  /// The server's answer (`due_on`): the day that step is due, local midnight.
+  /// Null while paused, with no workflow, or done. Read-only.
+  final DateTime? dueOn;
+
   Person withStatus(ProspectStatus? status) => Person(
     id: id,
     name: name,
@@ -83,6 +93,8 @@ class Person {
     notes: notes,
     place: place,
     pausedAt: pausedAt,
+    currentStepId: currentStepId,
+    dueOn: dueOn,
   );
 }
 

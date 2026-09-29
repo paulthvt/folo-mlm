@@ -16,10 +16,13 @@ class PeopleRepository {
 
   static const String _table = 'person';
 
+  /// Every column, plus the server's computed step and due day.
+  static const String _columns = '*, current_step_id, due_on';
+
   /// Unordered: the controller sorts by `searchKey`, which Postgres collation
   /// does not match.
   Future<List<Person>> list() => guardPeople(() async {
-    final rows = await _client.from(_table).select();
+    final rows = await _client.from(_table).select(_columns);
     return rows.map(personFromRow).toList();
   });
 
@@ -28,7 +31,7 @@ class PeopleRepository {
         final row = await _client
             .from(_table)
             .insert({...draftToRow(draft), ...placeToRow(place)})
-            .select()
+            .select(_columns)
             .single();
         return personFromRow(row);
       });
@@ -61,24 +64,24 @@ class PeopleRepository {
   Future<Person> resume(String id, DateTime today) =>
       _write(id, {'paused_at': null, 'last_tick': dayColumn(today)});
 
-  /// The history entry and the move, in one transaction on the server.
-  Future<Person> completeStep(
-    String personId,
-    String stepId,
-    num nextPosition,
-    DateTime on,
-  ) => guardPeople(() async {
-    final row = await _client.rpc<Map<String, dynamic>>(
-      'complete_step',
-      params: {
-        'p_person': personId,
-        'p_step': stepId,
-        'p_next_position': nextPosition,
-        'p_on': dayColumn(on),
-      },
-    );
-    return personFromRow(row);
-  });
+  /// Ticks [stepId], which must be the person's current step: the history
+  /// entry and the move, in one transaction on the server, which also finds
+  /// the next step. Any other step (a stale tick) is refused.
+  Future<Person> completeStep(String personId, String stepId, DateTime on) =>
+      guardPeople(() async {
+        final row = await _client
+            .rpc<Object?>(
+              'complete_step',
+              params: {
+                'p_person': personId,
+                'p_step': stepId,
+                'p_on': dayColumn(on),
+              },
+            )
+            .select(_columns)
+            .single();
+        return personFromRow(row);
+      });
 
   Future<Person> _write(String id, Map<String, dynamic> values) =>
       guardPeople(() async {
@@ -86,7 +89,7 @@ class PeopleRepository {
             .from(_table)
             .update(values)
             .eq('id', id)
-            .select()
+            .select(_columns)
             .single();
         return personFromRow(row);
       });
@@ -158,6 +161,12 @@ Person personFromRow(Map<String, dynamic> row) {
     },
     pausedAt: switch (row['paused_at']) {
       final String at => DateTime.parse(at),
+      _ => null,
+    },
+    currentStepId: row['current_step_id'] as String?,
+    dueOn: switch (row['due_on']) {
+      // A bare date parses as local midnight, like last_tick.
+      final String day => DateTime.parse(day),
       _ => null,
     },
   );

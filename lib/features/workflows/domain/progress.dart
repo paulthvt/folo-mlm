@@ -36,38 +36,32 @@ final class OnStep extends WorkflowProgress {
   final DateTime due;
 }
 
-/// Found by position, not by step id, so edits apply at once: changed days
-/// move the due date, a removed current step hands over to the next, a step
-/// inserted before the current one is skipped.
+/// The server decides the step and its day (`current_step_id`, `due_on`, in
+/// supabase/migrations/*_today_due_steps.sql); this only finds that step in
+/// [workflow] for its label, note and "3 of 5".
 ///
-/// Null when the person follows no workflow, or one missing from the list
-/// (deleted elsewhere). Paused wins over everything.
+/// Null when the person follows no workflow, one missing from the list
+/// (deleted elsewhere), or a step the list does not have yet (loaded before
+/// an edit), until the next load. Paused wins over everything.
 WorkflowProgress? progressOf(Person person, Workflow? workflow) {
   if (person.pausedAt case final since?) return Paused(since);
   final place = person.place;
   if (place == null || workflow == null || workflow.id != place.workflowId) {
     return null;
   }
+  final stepId = person.currentStepId;
+  if (stepId == null) return Done(workflow);
   final steps = workflow.steps;
-  final index = steps.indexWhere((step) => step.position >= place.atPosition);
-  if (index == -1) return Done(workflow);
-  final step = steps[index];
+  final index = steps.indexWhere((step) => step.id == stepId);
+  final due = person.dueOn;
+  if (index == -1 || due == null) return null;
   return OnStep(
     workflow: workflow,
-    step: step,
+    step: steps[index],
     index: index + 1,
     total: steps.length,
-    due: addDays(place.lastTick, step.days),
+    due: due,
   );
-}
-
-/// Where ticking [current] leads: the next step, or one past the last (done).
-num nextPosition(Workflow workflow, WorkflowStep current) {
-  final steps = workflow.steps;
-  final index = steps.indexWhere((step) => step.id == current.id);
-  return index + 1 < steps.length
-      ? steps[index + 1].position
-      : current.position + 1;
 }
 
 /// Starts [workflow] with its first step due on [firstDue].

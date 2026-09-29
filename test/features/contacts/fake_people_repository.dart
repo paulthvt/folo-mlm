@@ -1,8 +1,12 @@
 import 'dart:async';
 
 import 'package:folo/features/contacts/data/people_repository.dart';
+import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
+import 'package:folo/features/workflows/domain/workflow.dart';
 
+import '../workflows/fake_workflow_repository.dart';
+import '../workflows/server_rule.dart';
 import 'fake_activity_repository.dart';
 
 /// An in-memory book that records calls, and fails or stalls on demand.
@@ -28,6 +32,12 @@ class FakePeopleRepository implements PeopleRepository {
   /// stage changes leave no entry.
   FakeActivityRepository? activities;
 
+  /// What the server's computed fields read. Tests may store people without
+  /// them: every person returned gets them from here, as the database would.
+  List<Workflow> workflows = FakeWorkflowRepository.samples();
+
+  Person _served(Person person) => withServerFields(person, workflows);
+
   var _next = 0;
 
   Future<void> _record(String call) async {
@@ -42,7 +52,7 @@ class FakePeopleRepository implements PeopleRepository {
   @override
   Future<List<Person>> list() async {
     await _record('list()');
-    return store.values.toList();
+    return store.values.map(_served).toList();
   }
 
   @override
@@ -59,7 +69,7 @@ class FakePeopleRepository implements PeopleRepository {
       place: place,
     );
     store[person.id] = person;
-    return person;
+    return _served(person);
   }
 
   @override
@@ -87,7 +97,7 @@ class FakePeopleRepository implements PeopleRepository {
       pausedAt: stored.pausedAt,
     );
     store[person.id] = saved;
-    return saved;
+    return _served(saved);
   }
 
   @override
@@ -159,16 +169,21 @@ class FakePeopleRepository implements PeopleRepository {
   Future<Person> completeStep(
     String personId,
     String stepId,
-    num nextPosition,
     DateTime on,
   ) async {
     await _record('completeStep($personId, $stepId)');
-    final before = store[personId]!;
+    final before = _served(store[personId]!);
+    // The database refuses anything but the current step (a stale tick).
+    if (before.currentStepId != stepId) throw PeopleFailure.unknown;
+    final place = before.place!;
     return _with(
       before,
       place: (
-        workflowId: before.place!.workflowId,
-        atPosition: nextPosition,
+        workflowId: place.workflowId,
+        atPosition: positionAfter(
+          findWorkflow(workflows, place.workflowId)!,
+          stepId,
+        ),
         lastTick: on,
       ),
       pausedAt: before.pausedAt,
@@ -206,6 +221,6 @@ class FakePeopleRepository implements PeopleRepository {
       pausedAt: pausedAt,
     );
     store[person.id] = person;
-    return person;
+    return _served(person);
   }
 }

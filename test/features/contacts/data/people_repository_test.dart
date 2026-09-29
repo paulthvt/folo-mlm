@@ -177,6 +177,28 @@ void main() {
       expect(person.pausedAt, DateTime.utc(2026, 9, 29, 8));
     });
 
+    test("reads the server's step and day, due_on as a local day", () {
+      final person = personFromRow(
+        row({
+          'workflow_id': 'w1',
+          'at_position': 2,
+          'last_tick': '2026-09-28',
+          'current_step_id': 's2',
+          'due_on': '2026-09-29',
+        }),
+      );
+
+      expect(person.currentStepId, 's2');
+      expect(person.dueOn, DateTime(2026, 9, 29));
+    });
+
+    test('nothing due reads as null', () {
+      final person = personFromRow(row());
+
+      expect(person.currentStepId, isNull);
+      expect(person.dueOn, isNull);
+    });
+
     test('no workflow is no place, and a half-written one too', () {
       expect(personFromRow(row()).place, isNull);
       expect(
