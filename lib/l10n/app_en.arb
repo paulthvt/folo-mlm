@@ -679,5 +679,176 @@
   "historyDeleteConfirm": "Delete",
   "@historyDeleteConfirm": {
     "description": "Destructive button that deletes a history entry; also the screen-reader action on an entry."
+  },
+  "nextStepTitle": "Next step",
+  "@nextStepTitle": {
+    "description": "Header of the card on a contact that shows the next thing to do with them in their workflow. Shown uppercased."
+  },
+  "nextStepProgress": "{workflow} · {index} of {total}",
+  "@nextStepProgress": {
+    "description": "Trailing text of the Next step header: the workflow's name and which step this is, e.g. 'Samples · 3 of 5'.",
+    "placeholders": {
+      "workflow": { "type": "String" },
+      "index": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "nextStepDueToday": "Due today",
+  "@nextStepDueToday": {
+    "description": "When the next step is due: today."
+  },
+  "nextStepDueTomorrow": "Due tomorrow",
+  "@nextStepDueTomorrow": {
+    "description": "When the next step is due: tomorrow."
+  },
+  "nextStepDueInDays": "Due in {days} days",
+  "@nextStepDueInDays": {
+    "description": "When the next step is due, 2 to 6 days from now.",
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "nextStepDueOn": "Due {day}",
+  "@nextStepDueOn": {
+    "description": "When the next step is due, a week or more from now, e.g. 'Due October 2'.",
+    "placeholders": {
+      "day": { "type": "DateTime", "format": "MMMMd" }
+    }
+  },
+  "nextStepLate": "{days, plural, =1{1 day late} other{{days} days late}}",
+  "@nextStepLate": {
+    "description": "The next step's due day has passed, by this many days.",
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "nextStepWithNote": "{due} — {note}",
+  "@nextStepWithNote": {
+    "description": "Second line of the next step: when it is due, then the note the user wrote on the step.",
+    "placeholders": {
+      "due": { "type": "String" },
+      "note": { "type": "String" }
+    }
+  },
+  "nextStepMarkDone": "Mark \"{step}\" done",
+  "@nextStepMarkDone": {
+    "description": "Screen-reader label of the round button that marks the next step as done.",
+    "placeholders": {
+      "step": { "type": "String" }
+    }
+  },
+  "nextStepDoneTitle": "{workflow} — done",
+  "@nextStepDoneTitle": {
+    "description": "Header of the card once every step of the workflow is done. Shown uppercased.",
+    "placeholders": {
+      "workflow": { "type": "String" }
+    }
+  },
+  "nextStepHowDidItEnd": "How did it end with {name}?",
+  "@nextStepHowDidItEnd": {
+    "description": "Title of the card once a prospect's workflow is done: asks what came of it. The name is the person's first name.",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "nextStepAllDoneProspect": "{count, plural, =1{The step is done. Their notes and history stay whatever you pick.} other{All {count} steps are done. Their notes and history stay whatever you pick.}}",
+  "@nextStepAllDoneProspect": {
+    "description": "Body of the card once a prospect's workflow is done, above 'Became a customer' and 'Not now'. 'Their' is the person; never a gendered pronoun.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "nextStepBecameCustomer": "Became a customer",
+  "@nextStepBecameCustomer": {
+    "description": "Button on the done card of a prospect: opens the move to customers."
+  },
+  "nextStepAllDoneWith": "{count, plural, =1{The step is done with {name}.} other{All {count} steps are done with {name}.}}",
+  "@nextStepAllDoneWith": {
+    "description": "Body of the card once a customer's or team member's workflow is done. The name is the person's first name.",
+    "placeholders": {
+      "count": { "type": "int" },
+      "name": { "type": "String" }
+    }
+  },
+  "nextStepFollowWith": "Follow with…",
+  "@nextStepFollowWith": {
+    "description": "Button that opens the choice of the workflow to follow next."
+  },
+  "nextStepPausedSince": "Paused since {day}",
+  "@nextStepPausedSince": {
+    "description": "Card on a paused contact: the day it was paused, e.g. 'Paused since July 12'. Above a Resume button.",
+    "placeholders": {
+      "day": { "type": "DateTime", "format": "MMMMd" }
+    }
+  },
+  "nextStepNothingPlanned": "Nothing planned",
+  "@nextStepNothingPlanned": {
+    "description": "Card on a contact who follows no workflow."
+  },
+  "nextStepLoadFailed": "Couldn't load the workflows",
+  "@nextStepLoadFailed": {
+    "description": "Error inside the Next step card when the workflows failed to load; a Try again button follows."
+  },
+  "followWithTitle": "Follow with",
+  "@followWithTitle": {
+    "description": "Label above the choice of the workflow to follow, in Change stage and Change workflow."
+  },
+  "followWithSteps": "{count, plural, =1{1 step} other{{count} steps}}",
+  "@followWithSteps": {
+    "description": "How many steps a workflow has, under its name in the choice.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "followWithSuggestedSteps": "Suggested · {steps}",
+  "@followWithSuggestedSteps": {
+    "description": "Under the stage's default workflow in the choice: 'Suggested · 4 steps'. {steps} is the step count text.",
+    "placeholders": {
+      "steps": { "type": "String" }
+    }
+  },
+  "followWithNothing": "Nothing for now",
+  "@followWithNothing": {
+    "description": "Last option of the choice: follow no workflow."
+  },
+  "changeStageWorkflowEnds": "The {workflow} workflow ends here.",
+  "@changeStageWorkflowEnds": {
+    "description": "Added to the Change stage body when the person was following a workflow.",
+    "placeholders": {
+      "workflow": { "type": "String" }
+    }
+  },
+  "changeWorkflowTitle": "Change {name}'s workflow",
+  "@changeWorkflowTitle": {
+    "description": "Title of the sheet that picks another workflow for a person. The name is their first name.",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "contactChangeWorkflow": "Change workflow",
+  "@contactChangeWorkflow": {
+    "description": "Row in a contact's More menu; the current workflow's name follows it."
+  },
+  "contactPause": "Pause — not now",
+  "@contactPause": {
+    "description": "Row in a contact's More menu: hides their next step until resumed."
+  },
+  "contactResume": "Resume",
+  "@contactResume": {
+    "description": "Row in a paused contact's More menu, and button on their Paused card: brings the next step back."
+  },
+  "contactPaused": "Paused in {month}",
+  "@contactPaused": {
+    "description": "Second line of a paused person in the contacts list, e.g. 'Paused in July'.",
+    "placeholders": {
+      "month": { "type": "DateTime", "format": "MMMM" }
+    }
+  },
+  "contactPausedNotNow": "Not now · paused in {month}",
+  "@contactPausedNotNow": {
+    "description": "Second line of a paused prospect whose status is Not now, e.g. 'Not now · paused in July'.",
+    "placeholders": {
+      "month": { "type": "DateTime", "format": "MMMM" }
+    }
   }
 }

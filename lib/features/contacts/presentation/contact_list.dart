@@ -140,7 +140,7 @@ class _ContactListState extends State<ContactList> {
               for (final person in shown)
                 ContactRow(
                   name: person.name,
-                  subtitle: contactSubtitle(person),
+                  subtitle: contactSubtitle(l10n, person),
                   trailing: FoloChip(label: stageLabel(l10n, person.stage)),
                   selected: person.id == widget.selectedId,
                   onTap: () => widget.onOpen(person),
