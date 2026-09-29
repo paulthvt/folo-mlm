@@ -120,8 +120,9 @@ touched.
 bar and its padding):
 
 - Top bar — eyebrow: the localized date ("MONDAY 29 SEPTEMBER"); title:
-  "Good morning" / "Good afternoon" / "Good evening" from the device clock (no
-  name: the account has none). Mobile keeps the account button.
+  "Good morning, Pauline" / "Good afternoon, …" / "Good evening, …" from the
+  device clock and `Account.firstName`; without a first name, "Good morning"
+  alone. Mobile keeps the account button.
 - Loading (either provider) — a centred spinner.
 - Failed — "Couldn't load today." + `Try again`, which invalidates whichever
   failed.
@@ -172,5 +173,5 @@ bar and its padding):
 - Push notifications: will add a user timezone, FCM tokens and a scheduled job
   that runs `due_on <= <user's local date>` — the same fields, no new rule.
 - Offline ticks (#46): ticks already wait for the server.
-- Goals, stats, recent activity, a name on the account.
+- Goals, stats, recent activity.
 - A collapse animation on tick.
