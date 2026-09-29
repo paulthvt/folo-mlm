@@ -103,7 +103,6 @@ class _LogActivityFormState extends ConsumerState<_LogActivityForm> {
             if (failure != null) FormError(peopleFailureCopy(l10n, failure)),
             Wrap(
               spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
               children: [
                 for (final kind in ActivityKind.values)
                   if (kind.byUser)

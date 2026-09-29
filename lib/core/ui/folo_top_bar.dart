@@ -15,6 +15,7 @@ class FoloTopBar extends StatelessWidget {
     this.eyebrow,
     this.large = false,
     this.action,
+    this.gap = AppSpacing.lg,
     super.key,
   });
 
@@ -29,6 +30,9 @@ class FoloTopBar extends StatelessWidget {
   /// One trailing ghost action, at most.
   final Widget? action;
 
+  /// Space below: less on Today, where the hero continues the greeting.
+  final double gap;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -37,7 +41,7 @@ class FoloTopBar extends StatelessWidget {
     final trailing = action;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+      padding: EdgeInsets.only(bottom: gap),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [

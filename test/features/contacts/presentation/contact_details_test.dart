@@ -301,4 +301,22 @@ void main() {
 
     expect(calls.resumes, 1);
   });
+
+  testWidgets('large text: Message and Call stack, one line each', (
+    tester,
+  ) async {
+    tester.platformDispatcher.textScaleFactorTestValue = 2;
+    addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
+    await _pump(
+      tester,
+      _person(phone: '06 12 34 56 78'),
+      size: const Size(390, 844),
+    );
+
+    final message = tester.getRect(find.text('Message'));
+    final call = tester.getRect(find.text('Call'));
+    expect(message.height, call.height, reason: 'no label wraps');
+    expect(call.top, greaterThan(message.bottom));
+    expect(tester.takeException(), isNull);
+  });
 }

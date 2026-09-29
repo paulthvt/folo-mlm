@@ -1,5 +1,7 @@
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
+import 'package:folo/app/theme/app_theme.dart';
+import 'package:folo/core/layout/breakpoints.dart';
 import 'package:folo/core/ui/contact_row.dart';
 import 'package:folo/core/ui/empty_state.dart';
 import 'package:folo/core/ui/folo_chip.dart';
@@ -62,13 +64,14 @@ class _ContactListState extends State<ContactList> {
           person,
     ];
     final account = widget.accountAction;
+    final desktop = context.screenSize.isDesktop;
 
     return RefreshIndicator(
       onRefresh: widget.onRefresh,
       child: ListView(
         // Pull to refresh works on a short list too.
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(AppSpacing.md),
+        padding: EdgeInsets.all(desktop ? AppSpacing.lg : AppSpacing.md),
         children: [
           FoloTopBar(
             title: l10n.contactsTitle,
@@ -81,11 +84,18 @@ class _ContactListState extends State<ContactList> {
                     tooltip: l10n.contactsRefresh,
                     icon: const Icon(Icons.refresh_rounded),
                   ),
-                IconButton.filledTonal(
-                  onPressed: widget.onAdd,
-                  tooltip: l10n.contactsAdd,
-                  icon: const Icon(Icons.person_add_alt_1_outlined),
-                ),
+                if (desktop)
+                  FilledButton.icon(
+                    onPressed: widget.onAdd,
+                    icon: const Icon(Icons.person_add_alt_1_outlined),
+                    label: Text(l10n.contactsAddShort),
+                  )
+                else
+                  IconButton.filledTonal(
+                    onPressed: widget.onAdd,
+                    tooltip: l10n.contactsAdd,
+                    icon: const Icon(Icons.person_add_alt_1_outlined),
+                  ),
                 ?account,
               ],
             ),
@@ -102,7 +112,7 @@ class _ContactListState extends State<ContactList> {
             TextField(
               onChanged: (value) => setState(() => _query = value),
               textInputAction: TextInputAction.search,
-              decoration: InputDecoration(
+              decoration: AppTheme.search(context).copyWith(
                 hintText: l10n.contactsSearchHint,
                 prefixIcon: const Icon(Icons.search_rounded),
               ),
@@ -110,7 +120,6 @@ class _ContactListState extends State<ContactList> {
             const SizedBox(height: AppSpacing.ms),
             Wrap(
               spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
               children: [
                 for (final (stage, label) in [
                   (null, l10n.contactsFilterEveryone),

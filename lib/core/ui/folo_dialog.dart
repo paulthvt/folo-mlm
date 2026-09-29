@@ -10,6 +10,7 @@ class FoloDialog extends StatelessWidget {
     required this.actions,
     this.body,
     this.child,
+    this.footer,
     super.key,
   });
 
@@ -25,6 +26,9 @@ class FoloDialog extends StatelessWidget {
   /// The safe action first, then the primary one, read left to right. In a
   /// sheet they share the width, so the keyboard leaves room for the form.
   final List<Widget> actions;
+
+  /// A secondary action, centred under [actions].
+  final Widget? footer;
 
   static Future<T?> show<T>(BuildContext context, WidgetBuilder builder) =>
       context.screenSize.isMobile
@@ -81,7 +85,14 @@ class FoloDialog extends StatelessWidget {
                   ),
                 ),
               if (child case final child?)
-                Flexible(child: SingleChildScrollView(child: child)),
+                Flexible(
+                  child: SingleChildScrollView(
+                    // Room for the first field's floating label, which sits
+                    // above the field and would be clipped.
+                    padding: const EdgeInsets.only(top: AppSpacing.sm),
+                    child: child,
+                  ),
+                ),
               const SizedBox(height: AppSpacing.xs),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -91,6 +102,7 @@ class FoloDialog extends StatelessWidget {
                     mobile ? Expanded(child: action) : action,
                 ],
               ),
+              if (footer case final footer?) Center(child: footer),
             ],
           ),
         ),

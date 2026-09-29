@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/app/theme/app_spacing.dart';
+import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/core/layout/breakpoints.dart';
 import 'package:folo/core/ui/empty_state.dart';
 import 'package:folo/core/ui/folo_dialog.dart';
@@ -70,7 +71,7 @@ class WorkflowsView extends StatelessWidget {
       children: [
         Text(
           l10n.workflowsIntro,
-          style: theme.textTheme.bodyLarge?.copyWith(
+          style: theme.textTheme.bodySmall?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,
           ),
         ),
@@ -98,13 +99,11 @@ class WorkflowsView extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.lg),
           ],
-        Align(
-          alignment: AlignmentDirectional.centerStart,
-          child: FilledButton.tonalIcon(
-            onPressed: onNew,
-            icon: const Icon(Icons.add_rounded),
-            label: Text(l10n.workflowsNew),
-          ),
+        FilledButton.tonalIcon(
+          onPressed: onNew,
+          style: AppTheme.tonal(context),
+          icon: const Icon(Icons.add_rounded),
+          label: Text(l10n.workflowsNew),
         ),
       ],
     );
@@ -250,7 +249,6 @@ class _NewWorkflowFormState extends ConsumerState<_NewWorkflowForm> {
             SectionHeader(title: l10n.workflowsNewStage),
             Wrap(
               spacing: AppSpacing.sm,
-              runSpacing: AppSpacing.sm,
               children: [
                 for (final stage in Stage.values)
                   ChoiceChip(

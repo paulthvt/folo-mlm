@@ -26,7 +26,12 @@ class SectionHeader extends StatelessWidget {
     final label = actionLabel;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.ms),
+      // The action's own height stands in for part of the gap.
+      padding: EdgeInsets.only(
+        bottom: label != null && onAction != null
+            ? AppSpacing.xs
+            : AppSpacing.ms,
+      ),
       child: Row(
         children: [
           Expanded(
@@ -42,8 +47,17 @@ class SectionHeader extends StatelessWidget {
                 style: AppTypography.caption.copyWith(color: folo.textMuted),
               )
             else
+              // 32px, not the theme's 44: the header sits 16px tall in Figma,
+              // and 32 still clears the 24px minimum target.
               TextButton(
                 onPressed: onAction,
+                style: TextButton.styleFrom(
+                  minimumSize: const Size(0, 32),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                  ),
+                ),
                 child: Text(label, style: AppTypography.label),
               ),
         ],

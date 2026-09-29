@@ -9,6 +9,17 @@ abstract final class AppTheme {
   static ThemeData get light => _build(AppColors.light, FoloColors.light);
   static ThemeData get dark => _build(AppColors.dark, FoloColors.dark);
 
+  /// The Tonal button (`docs/design/components.md` #2), for
+  /// `FilledButton.tonal`. Material's tonal reads `secondaryContainer`; ours is
+  /// `primary/container`, which a theme cannot tell apart from Primary.
+  static ButtonStyle tonal(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return FilledButton.styleFrom(
+      backgroundColor: scheme.primaryContainer,
+      foregroundColor: scheme.onPrimaryContainer,
+    );
+  }
+
   static ThemeData _build(ColorScheme scheme, FoloColors folo) {
     final text = AppTypography.textTheme(scheme);
     final pill = RoundedRectangleBorder(
@@ -51,9 +62,9 @@ abstract final class AppTheme {
       ),
 
       filledButtonTheme: FilledButtonThemeData(
+        // No fill colours: Material's defaults are Primary's, and setting them
+        // here would paint the tonal variant primary too.
         style: FilledButton.styleFrom(
-          backgroundColor: scheme.primary,
-          foregroundColor: scheme.onPrimary,
           disabledBackgroundColor: folo.surfaceDisabled,
           disabledForegroundColor: folo.textDisabled,
           textStyle: AppTypography.labelLarge,
@@ -112,6 +123,8 @@ abstract final class AppTheme {
       chipTheme: ChipThemeData(
         backgroundColor: folo.surfaceSunken,
         side: BorderSide.none,
+        showCheckmark: false,
+        labelPadding: EdgeInsets.zero,
         // Without a colour the label paints white, invisible on light chips.
         labelStyle: AppTypography.caption.copyWith(color: scheme.onSurface),
         padding: const EdgeInsets.symmetric(
@@ -214,6 +227,21 @@ abstract final class AppTheme {
           color: scheme.inverseSurface,
           borderRadius: BorderRadius.circular(AppRadii.sm),
         ),
+      ),
+    );
+  }
+
+  /// A search field: a pill with no hairline, the focus ring kept.
+  static InputDecoration search(BuildContext context) {
+    final pill = BorderRadius.circular(AppRadii.pill);
+    return InputDecoration(
+      enabledBorder: OutlineInputBorder(
+        borderRadius: pill,
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: pill,
+        borderSide: BorderSide(color: FoloColors.of(context).focus, width: 2),
       ),
     );
   }
