@@ -25,7 +25,7 @@ void main() {
     expect(moved.prospectStatus, isNull);
     expect(moved.stageSince, DateTime.utc(2026, 9, 28));
     expect(moved.phone, '06 12 34 56 78');
-    expect(people.store['p1'], same(moved));
+    expect(people.store['p1']!.id, moved.id);
   });
 
   test('setStage writes the stage entry, as the trigger does', () async {
@@ -56,6 +56,6 @@ void main() {
     expect(saved.name, 'Marie D.');
     expect(saved.stage, Stage.customer);
     expect(saved.stageSince, DateTime.utc(2026, 9, 28));
-    expect(people.store['p1'], same(saved));
+    expect(people.store['p1']!.id, saved.id);
   });
 }

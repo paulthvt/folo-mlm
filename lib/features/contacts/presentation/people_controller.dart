@@ -99,12 +99,7 @@ class PeopleController extends AsyncNotifier<List<Person>> {
     DateTime today,
   ) async {
     _replace(
-      await _repository.completeStep(
-        person.id,
-        progress.step.id,
-        nextPosition(progress.workflow, progress.step),
-        today,
-      ),
+      await _repository.completeStep(person.id, progress.step.id, today),
     );
     if (ref.mounted) ref.invalidate(historyProvider(person.id));
   }

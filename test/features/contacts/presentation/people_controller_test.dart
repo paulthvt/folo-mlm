@@ -466,6 +466,24 @@ void main() {
     expect(world.activities.calls, ['list(p1)', 'list(p1)']);
   });
 
+  test('a stale tick is refused and changes nothing', () async {
+    final world = _world([onSamples(2)]);
+    final book = _book(world.container);
+    await world.container.read(book.future);
+    final marie = world.container.read(book).value!.single;
+    final progress = progressOf(marie, samples)! as OnStep;
+    // Ticked on another device in the meantime.
+    world.people.store['p1'] = onSamples(3);
+
+    await expectLater(
+      world.container
+          .read(book.notifier)
+          .completeStep(marie, progress, DateTime(2026, 9, 30)),
+      throwsA(PeopleFailure.unknown),
+    );
+    expect(world.container.read(book).value!.single.place?.atPosition, 2);
+  });
+
   test('pause marks a prospect Not now; resume counts from today', () async {
     final world = _world([onSamples(2)]);
     final book = _book(world.container);

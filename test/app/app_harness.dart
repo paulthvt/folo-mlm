@@ -14,13 +14,15 @@ import '../features/contacts/fake_people_repository.dart';
 import '../features/workflows/fake_workflow_repository.dart';
 
 /// The whole app, signed in as Pauline, at [size]. Returns the container so a
-/// test can drive `routerProvider` the way a URL would.
+/// test can drive `routerProvider` the way a URL would. With [settle] false it
+/// pumps one frame, for a load gated on purpose.
 Future<ProviderContainer> pumpFolo(
   WidgetTester tester, {
   required Size size,
   FakePeopleRepository? people,
   FakeActivityRepository? activities,
   FakeWorkflowRepository? workflows,
+  bool settle = true,
 }) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
@@ -46,6 +48,10 @@ Future<ProviderContainer> pumpFolo(
       child: const FoloApp(),
     ),
   );
-  await tester.pumpAndSettle();
+  if (settle) {
+    await tester.pumpAndSettle();
+  } else {
+    await tester.pump();
+  }
   return ProviderScope.containerOf(tester.element(find.byType(FoloApp)));
 }
