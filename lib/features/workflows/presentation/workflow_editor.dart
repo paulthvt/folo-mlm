@@ -7,6 +7,7 @@ import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/presentation/people_copy.dart';
 import 'package:folo/features/settings/presentation/widgets/settings_scroll.dart';
+import 'package:folo/features/workflows/data/workflow_repository.dart';
 import 'package:folo/features/workflows/domain/workflow.dart';
 import 'package:folo/features/workflows/presentation/workflows_controller.dart';
 import 'package:folo/features/workflows/presentation/workflows_settings.dart';
@@ -88,6 +89,11 @@ class _WorkflowEditorViewState extends State<WorkflowEditorView> {
   late final _name = TextEditingController(text: widget.workflow.name);
   final _nameFocus = FocusNode();
   final Set<_Control> _busy = {};
+  String? _lastSaved;
+  String? _saveInProgress;
+  bool _deactivateSaved = false;
+  ProviderContainer? _container;
+  String? _email;
 
   @override
   void initState() {
@@ -95,6 +101,15 @@ class _WorkflowEditorViewState extends State<WorkflowEditorView> {
     _nameFocus.addListener(() {
       if (!_nameFocus.hasFocus) unawaited(_saveName());
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_container == null) {
+      _container = ProviderScope.containerOf(context);
+      _email = _container!.read(accountProvider)?.email;
+    }
   }
 
   @override
@@ -109,9 +124,23 @@ class _WorkflowEditorViewState extends State<WorkflowEditorView> {
 
   @override
   void deactivate() {
-    // Unfocus before leaving so the focus listener fires and saves. If we
-    // don't, dispose() removes the listener first and a typed name is lost.
-    _nameFocus.unfocus();
+    // Save before dispose() clears the focus listener: the user typed a name
+    // and is leaving. Empty or unchanged names write nothing.
+    final saved = widget.workflow.name;
+    final name = _name.text.trim();
+    final container = _container;
+    if (name.isNotEmpty &&
+        name != saved &&
+        name != _lastSaved &&
+        name != _saveInProgress &&
+        !_busy.contains(_Control.name) &&
+        _email != null &&
+        container != null) {
+      // ponytail: silent failure after leaving (no context for SnackBar)
+      final repository = container.read(workflowRepositoryProvider);
+      unawaited(repository.rename(widget.workflow.id, name));
+      _deactivateSaved = true;
+    }
     super.deactivate();
   }
 
@@ -146,13 +175,19 @@ class _WorkflowEditorViewState extends State<WorkflowEditorView> {
     final saved = widget.workflow.name;
     final name = _name.text.trim();
     // Empty or unchanged: put the saved name back, write nothing.
-    if (name.isEmpty || name == saved) {
+    if (name.isEmpty || name == saved || _deactivateSaved) {
       _name.text = saved;
       return;
     }
     _name.text = name;
+    _saveInProgress = name;
     final ok = await _run(_Control.name, () => widget.onRename(name));
-    if (!ok && mounted) _name.text = widget.workflow.name;
+    if (ok) {
+      _lastSaved = name;
+    } else if (mounted) {
+      _name.text = widget.workflow.name;
+    }
+    _saveInProgress = null;
   }
 
   @override

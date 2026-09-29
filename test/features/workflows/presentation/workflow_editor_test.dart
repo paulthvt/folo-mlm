@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:folo/app/router/app_router.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/core/ui/folo_top_bar.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
@@ -114,41 +115,37 @@ void main() {
     expect(find.text('Samples'), findsNothing);
   });
 
-  testWidgets('a name typed without Done is saved when leaving', (
+  testWidgets('desktop: typed name saved when go() tears down the editor', (
     tester,
   ) async {
     final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples());
-    await openWorkflows(
+    final container = await openWorkflows(
+      tester,
+      Routes.settingsWorkflowLocation('samples'),
+      workflows: workflows,
+      size: const Size(1440, 900),
+    );
+
+    await tester.enterText(find.byType(TextField).first, 'Tasters');
+    // While focused, navigate away: the field is torn down with the typed name.
+    container.read(routerProvider).go(Routes.settings);
+    await tester.pumpAndSettle();
+
+    expect(_renames(workflows), ['rename(samples, Tasters)']);
+  });
+
+  testWidgets('mobile: typed name saved when go() tears down the editor', (
+    tester,
+  ) async {
+    final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples());
+    final container = await openWorkflows(
       tester,
       Routes.settingsWorkflowLocation('samples'),
       workflows: workflows,
     );
 
     await tester.enterText(find.byType(TextField).first, 'Tasters');
-    await tester.tap(find.byType(BackButton));
-    await tester.pumpAndSettle();
-
-    expect(_renames(workflows), ['rename(samples, Tasters)']);
-  });
-
-  testWidgets('desktop: typed name saved when leaving via sidebar', (
-    tester,
-  ) async {
-    final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples());
-    await openWorkflows(
-      tester,
-      Routes.settings,
-      workflows: workflows,
-      size: const Size(1440, 900),
-    );
-
-    await tester.tap(find.text('Workflows'));
-    await tester.pumpAndSettle();
-    await tester.tap(find.text('Samples'));
-    await tester.pumpAndSettle();
-
-    await tester.enterText(find.byType(TextField).first, 'Tasters');
-    await tester.tap(find.text('Language'));
+    container.read(routerProvider).go(Routes.today);
     await tester.pumpAndSettle();
 
     expect(_renames(workflows), ['rename(samples, Tasters)']);
