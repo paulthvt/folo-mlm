@@ -1001,5 +1001,61 @@
   "stepRemove": "Remove this step",
   "@stepRemove": {
     "description": "Button in the step sheet. No confirmation: people on the step move on, and their history stays."
+  },
+  "workflowSteps": "Steps",
+  "@workflowSteps": {
+    "description": "Header above a workflow's steps in the editor; shown in capitals."
+  },
+  "workflowAddStep": "Add a step",
+  "@workflowAddStep": {
+    "description": "Action beside workflowSteps: adds a step at the end."
+  },
+  "workflowStepWhenYouStart": "When you start",
+  "@workflowStepWhenYouStart": {
+    "description": "Under step 1 when it is due the day the person starts the workflow."
+  },
+  "workflowStepDaysAfter": "{days, plural, =0{Same day} =1{1 day after} other{{days} days after}}",
+  "@workflowStepDaysAfter": {
+    "description": "Under a step: how long after the step before (after the start, for step 1) it comes due.",
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "workflowNoSteps": "No steps yet.",
+  "@workflowNoSteps": {
+    "description": "In place of the steps when a workflow has none."
+  },
+  "workflowDefaultFor": "{stage, select, prospect{Default for new prospects} customer{Default for new customers} other{Default for new team members}}",
+  "@workflowDefaultFor": {
+    "description": "Switch in the editor: someone new at this stage starts this workflow. {stage} is prospect, customer or team.",
+    "placeholders": {
+      "stage": { "type": "String" }
+    }
+  },
+  "workflowFooter": "Each step comes due a number of days after you tick the one before. Changes apply to everyone on this workflow — steps already done stay in their history.",
+  "@workflowFooter": {
+    "description": "Explanation under the default switch in the editor."
+  },
+  "workflowDelete": "Delete workflow",
+  "@workflowDelete": {
+    "description": "Danger row at the bottom of the editor."
+  },
+  "workflowDeleteTitle": "Delete {name}?",
+  "@workflowDeleteTitle": {
+    "description": "Title of the confirmation before deleting a workflow. {name} is the workflow's name.",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "workflowDeleteBody": "{count, plural, =0{No one follows it.} =1{1 person follows it. They'll have nothing planned; their history stays.} other{{count} people follow it. They'll have nothing planned; their history stays.}}",
+  "@workflowDeleteBody": {
+    "description": "Body of the confirmation before deleting a workflow: how many people are on it now.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workflowDeleteConfirm": "Delete",
+  "@workflowDeleteConfirm": {
+    "description": "Confirms deleting a workflow."
   }
 }
