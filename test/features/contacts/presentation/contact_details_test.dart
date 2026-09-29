@@ -13,6 +13,8 @@ Person _person({
   String? email,
   String? instagram,
   String? needs,
+  String? ownGoal,
+  String? stuckOn,
   DateTime? pausedAt,
 }) => Person(
   id: 'p1',
@@ -24,6 +26,8 @@ Person _person({
   email: email,
   instagram: instagram,
   needs: needs,
+  ownGoal: ownGoal,
+  stuckOn: stuckOn,
   pausedAt: pausedAt,
 );
 
@@ -159,6 +163,51 @@ void main() {
     expect(find.text('Needs'), findsOneWidget);
     expect(find.text('Sleep, stress'), findsOneWidget);
     expect(find.text('Phone'), findsNothing);
+  });
+
+  testWidgets('a team member: what they are aiming for, filled facts only', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      _person(
+        stage: Stage.team,
+        ownGoal: 'Pay for the holidays',
+        stuckOn: 'Talking about it',
+      ),
+    );
+
+    expect(find.text('WHAT THEY ARE AIMING FOR'), findsOneWidget);
+    expect(find.text('Their own goal'), findsOneWidget);
+    expect(find.text('Pay for the holidays'), findsOneWidget);
+    expect(find.text('Where they are stuck'), findsOneWidget);
+    expect(find.text('Their why'), findsNothing);
+    // Above what you know.
+    expect(
+      tester.getTopLeft(find.text('WHAT THEY ARE AIMING FOR')).dy,
+      lessThan(tester.getTopLeft(find.text('WHAT YOU KNOW')).dy),
+    );
+  });
+
+  testWidgets('a team member with no profile yet still gets the section', (
+    tester,
+  ) async {
+    final calls = await _pump(tester, _person(stage: Stage.team));
+
+    expect(find.text('WHAT THEY ARE AIMING FOR'), findsOneWidget);
+    expect(find.text('Nothing yet.'), findsNWidgets(2));
+    await tester.tap(find.text('Edit').first);
+    expect(calls.edits, 1);
+  });
+
+  testWidgets('not on the team: no aims, even if saved', (tester) async {
+    await _pump(
+      tester,
+      _person(stage: Stage.customer, ownGoal: 'Pay for the holidays'),
+    );
+
+    expect(find.text('WHAT THEY ARE AIMING FOR'), findsNothing);
+    expect(find.text('Pay for the holidays'), findsNothing);
   });
 
   testWidgets('Edit in the section header and in ⋯ both edit', (tester) async {

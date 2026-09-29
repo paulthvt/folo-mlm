@@ -149,6 +149,12 @@ Person personFromRow(Map<String, dynamic> row) {
     profession: _text(row['profession']),
     address: _text(row['address']),
     notes: _text(row['notes']),
+    why: _text(row['why']),
+    ownGoal: _text(row['own_goal']),
+    timeAvailable: _text(row['time_available']),
+    wouldLoveTo: _text(row['would_love_to']),
+    strengths: _text(row['strengths']),
+    stuckOn: _text(row['stuck_on']),
     stageSince: DateTime.parse(row['stage_since'] as String),
     place: switch ((row['workflow_id'], row['at_position'], row['last_tick'])) {
       (final String id, final num at, final String tick) => (
@@ -186,6 +192,12 @@ Map<String, dynamic> personToRow(Person person) => {
   'profession': _text(person.profession),
   'address': _text(person.address),
   'notes': _text(person.notes),
+  'why': _text(person.why),
+  'own_goal': _text(person.ownGoal),
+  'time_available': _text(person.timeAvailable),
+  'would_love_to': _text(person.wouldLoveTo),
+  'strengths': _text(person.strengths),
+  'stuck_on': _text(person.stuckOn),
 };
 
 Map<String, dynamic> draftToRow(PersonDraft draft) => {

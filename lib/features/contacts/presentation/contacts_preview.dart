@@ -27,6 +27,10 @@ Widget contactMobileLight() => _app(AppTheme.light, _details());
 @Preview(group: 'Contacts', name: 'Person — dark', size: Size(390, 844))
 Widget contactMobileDark() => _app(AppTheme.dark, _details());
 
+@Preview(group: 'Contacts', name: 'Team member — light', size: Size(390, 844))
+Widget teamMemberMobileLight() =>
+    _app(AppTheme.light, _details(person: _sample[2]));
+
 @Preview(group: 'Contacts', name: 'Desktop — light', size: Size(1440, 900))
 Widget contactsDesktopLight() => _app(
   AppTheme.light,
@@ -101,6 +105,12 @@ final _sample = [
     stage: Stage.team,
     instagram: 'helene.b',
     profession: 'Yoga teacher',
+    why: 'More time with my kids, on my own hours',
+    ownGoal: 'Cover the family holidays by next summer',
+    timeAvailable: 'Two evenings a week',
+    wouldLoveTo: 'Run a workshop at the studio',
+    strengths: 'Warm, great with beginners',
+    stuckOn: 'Talking about it without feeling pushy',
     stageSince: DateTime.utc(2025, 11, 12),
   ),
   Person(
@@ -120,8 +130,9 @@ Widget _list({String? selectedId, bool showRefresh = false}) => ContactList(
   showRefresh: showRefresh,
 );
 
-Widget _details() => ContactDetails(
-  person: _sample.first,
+/// The person, with no next step unless it is Marie's.
+Widget _details({Person? person}) => ContactDetails(
+  person: person ?? _sample.first,
   onStatus: (_) {},
   onEdit: () {},
   onDelete: () {},
@@ -133,22 +144,24 @@ Widget _details() => ContactDetails(
   onLaunch: (_) {},
   onRefresh: () async {},
   workflowName: _samples.name,
-  nextStep: NextStepCard(
-    person: _sample.first,
-    progress: OnStep(
-      workflow: _samples,
-      step: _samples.steps[3],
-      index: 4,
-      total: 5,
-      due: _previewToday,
-    ),
-    today: _previewToday,
-    onTick: (_) {},
-    onResume: () {},
-    onNotNow: () {},
-    onFollowWith: () {},
-    onBecameCustomer: () {},
-  ),
+  nextStep: person != null
+      ? null
+      : NextStepCard(
+          person: _sample.first,
+          progress: OnStep(
+            workflow: _samples,
+            step: _samples.steps[3],
+            index: 4,
+            total: 5,
+            due: _previewToday,
+          ),
+          today: _previewToday,
+          onTick: (_) {},
+          onResume: () {},
+          onNotNow: () {},
+          onFollowWith: () {},
+          onBecameCustomer: () {},
+        ),
 );
 
 Widget _app(ThemeData theme, Widget body) {

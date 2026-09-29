@@ -27,7 +27,26 @@ enum _Field {
   profession,
   address,
   notes,
+  why,
+  ownGoal,
+  timeAvailable,
+  wouldLoveTo,
+  strengths,
+  stuckOn,
 }
+
+/// A team member's own profile: only asked while they are on the team.
+const _teamFields = {
+  _Field.why,
+  _Field.ownGoal,
+  _Field.timeAvailable,
+  _Field.wouldLoveTo,
+  _Field.strengths,
+  _Field.stuckOn,
+};
+
+/// Sentences in their words, not a single value.
+const _multiline = {_Field.address, _Field.notes, ..._teamFields};
 
 class _EditPersonForm extends ConsumerStatefulWidget {
   const _EditPersonForm(this.person);
@@ -59,6 +78,12 @@ class _EditPersonFormState extends ConsumerState<_EditPersonForm> {
       _Field.profession => p.profession,
       _Field.address => p.address,
       _Field.notes => p.notes,
+      _Field.why => p.why,
+      _Field.ownGoal => p.ownGoal,
+      _Field.timeAvailable => p.timeAvailable,
+      _Field.wouldLoveTo => p.wouldLoveTo,
+      _Field.strengths => p.strengths,
+      _Field.stuckOn => p.stuckOn,
     };
   }
 
@@ -101,6 +126,12 @@ class _EditPersonFormState extends ConsumerState<_EditPersonForm> {
               profession: _text(_Field.profession),
               address: _text(_Field.address),
               notes: _text(_Field.notes),
+              why: _text(_Field.why),
+              ownGoal: _text(_Field.ownGoal),
+              timeAvailable: _text(_Field.timeAvailable),
+              wouldLoveTo: _text(_Field.wouldLoveTo),
+              strengths: _text(_Field.strengths),
+              stuckOn: _text(_Field.stuckOn),
             ),
           );
       if (mounted) Navigator.pop(context);
@@ -129,6 +160,12 @@ class _EditPersonFormState extends ConsumerState<_EditPersonForm> {
       _Field.profession: l10n.factProfession,
       _Field.address: l10n.factAddress,
       _Field.notes: l10n.factNotes,
+      _Field.why: l10n.factWhy,
+      _Field.ownGoal: l10n.factOwnGoal,
+      _Field.timeAvailable: l10n.factTimeAvailable,
+      _Field.wouldLoveTo: l10n.factWouldLoveTo,
+      _Field.strengths: l10n.factStrengths,
+      _Field.stuckOn: l10n.factStuckOn,
     };
 
     return Form(
@@ -157,29 +194,30 @@ class _EditPersonFormState extends ConsumerState<_EditPersonForm> {
           children: [
             if (failure != null) FormError(peopleFailureCopy(l10n, failure)),
             for (final field in _Field.values)
-              LabeledField(
-                label: labels[field]!,
-                child: TextFormField(
-                  controller: _controllers[field],
-                  textCapitalization: field == _Field.name
-                      ? TextCapitalization.words
-                      : TextCapitalization.sentences,
-                  keyboardType: switch (field) {
-                    _Field.phone => TextInputType.phone,
-                    _Field.email => TextInputType.emailAddress,
-                    _Field.address || _Field.notes => TextInputType.multiline,
-                    _ => TextInputType.text,
-                  },
-                  maxLines: field == _Field.notes || field == _Field.address
-                      ? null
-                      : 1,
-                  validator: field == _Field.name
-                      ? (value) => (value ?? '').trim().isEmpty
-                            ? l10n.addPersonNameRequired
-                            : null
-                      : null,
+              if (widget.person.stage == Stage.team ||
+                  !_teamFields.contains(field))
+                LabeledField(
+                  label: labels[field]!,
+                  child: TextFormField(
+                    controller: _controllers[field],
+                    textCapitalization: field == _Field.name
+                        ? TextCapitalization.words
+                        : TextCapitalization.sentences,
+                    keyboardType: switch (field) {
+                      _Field.phone => TextInputType.phone,
+                      _Field.email => TextInputType.emailAddress,
+                      _ when _multiline.contains(field) =>
+                        TextInputType.multiline,
+                      _ => TextInputType.text,
+                    },
+                    maxLines: _multiline.contains(field) ? null : 1,
+                    validator: field == _Field.name
+                        ? (value) => (value ?? '').trim().isEmpty
+                              ? l10n.addPersonNameRequired
+                              : null
+                        : null,
+                  ),
                 ),
-              ),
           ],
         ),
       ),

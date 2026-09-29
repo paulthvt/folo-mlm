@@ -518,6 +518,34 @@
   "@factNotes": {
     "description": "Label of free notes about a person. Also the edit form field."
   },
+  "contactSectionAimingFor": "What they are aiming for",
+  "@contactSectionAimingFor": {
+    "description": "Section header on a team member's detail, above what you know: their own goal and profile, in their words."
+  },
+  "factWhy": "Their why",
+  "@factWhy": {
+    "description": "Label of why a team member started, in their words. Also the edit form field."
+  },
+  "factOwnGoal": "Their own goal",
+  "@factOwnGoal": {
+    "description": "Label of the goal a team member set for themselves, not one set for them. Also the edit form field."
+  },
+  "factTimeAvailable": "Time they have",
+  "@factTimeAvailable": {
+    "description": "Label of how much time a team member has for it, e.g. 3 evenings a week. Also the edit form field."
+  },
+  "factWouldLoveTo": "Would love to",
+  "@factWouldLoveTo": {
+    "description": "Label of what a team member would love to do, e.g. host a workshop. Also the edit form field."
+  },
+  "factStrengths": "Strengths",
+  "@factStrengths": {
+    "description": "Label of a team member's strengths. Also the edit form field."
+  },
+  "factStuckOn": "Where they are stuck",
+  "@factStuckOn": {
+    "description": "Label of what a team member is stuck on right now. Also the edit form field."
+  },
   "contactEditDetails": "Edit details",
   "@contactEditDetails": {
     "description": "Item of the ⋯ menu on a person's detail screen that opens the edit form."

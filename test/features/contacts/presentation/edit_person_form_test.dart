@@ -31,9 +31,9 @@ void main() {
   );
 
   Finder field(String label) => find.descendant(
-        of: find.widgetWithText(LabeledField, label),
-        matching: find.byType(TextFormField),
-      );
+    of: find.widgetWithText(LabeledField, label),
+    matching: find.byType(TextFormField),
+  );
 
   testWidgets('starts from what is saved', (tester) async {
     await open(tester);
@@ -59,6 +59,64 @@ void main() {
     expect(saved.stage, Stage.prospect);
     expect(saved.prospectStatus, ProspectStatus.thinking);
     expect(find.text('Save'), findsNothing);
+  });
+
+  testWidgets("a team member's own profile is edited with the rest", (
+    tester,
+  ) async {
+    final member = Person(
+      id: 'p2',
+      name: 'Léa Martin',
+      stage: Stage.team,
+      stageSince: DateTime.utc(2026, 3, 4),
+      why: 'More time with my kids',
+    );
+    people = FakePeopleRepository([member]);
+    await pumpFormHarness(
+      tester,
+      people: people,
+      open: (context) => showEditPerson(context, member),
+      result: (_) {},
+    );
+
+    expect(find.text('More time with my kids'), findsOneWidget);
+    await tester.ensureVisible(field('Their own goal'));
+    await tester.enterText(field('Their own goal'), 'Pay for the holidays');
+    await tester.ensureVisible(field('Where they are stuck'));
+    await tester.enterText(field('Where they are stuck'), 'Talking about it');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    final saved = people.store['p2']!;
+    expect(saved.why, 'More time with my kids');
+    expect(saved.ownGoal, 'Pay for the holidays');
+    expect(saved.stuckOn, 'Talking about it');
+    expect(saved.stage, Stage.team);
+  });
+
+  testWidgets('not on the team: no profile fields, and a saved one is kept', (
+    tester,
+  ) async {
+    final former = Person(
+      id: 'p3',
+      name: 'Paul Roux',
+      stage: Stage.customer,
+      stageSince: DateTime.utc(2026, 3, 4),
+      ownGoal: 'Pay for the holidays',
+    );
+    people = FakePeopleRepository([former]);
+    await pumpFormHarness(
+      tester,
+      people: people,
+      open: (context) => showEditPerson(context, former),
+      result: (_) {},
+    );
+
+    expect(find.text('Their own goal'), findsNothing);
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(people.store['p3']!.ownGoal, 'Pay for the holidays');
   });
 
   testWidgets('a name is still required', (tester) async {
