@@ -62,7 +62,7 @@ select lives_ok(
        (select s.id from public.workflow_step s
           join public.workflow w on w.id = s.workflow_id
           where w.name = 'Samples' and s.position = 1),
-       2, '2026-09-30') $$,
+       '2026-09-30') $$,
   'complete_step runs'
 );
 select is(
@@ -82,7 +82,7 @@ select throws_ok(
        (select s.id from public.workflow_step s
           join public.workflow w on w.id = s.workflow_id
           where w.name = 'Health professionals' and s.position = 1),
-       2, '2026-09-30') $$,
+       '2026-09-30') $$,
   'P0002', null,
   'complete_step refuses a step of another workflow'
 );
