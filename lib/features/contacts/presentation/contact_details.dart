@@ -401,8 +401,16 @@ class ContactDetails extends StatelessWidget {
                   Row(
                     spacing: AppSpacing.sm,
                     children: [
-                      for (final button in buttons) Expanded(child: button),
-                      if (buttons.isEmpty) const Spacer(),
+                      // Side by side at their own width; stacked when a large
+                      // text size or a longer translation would not fit, so
+                      // a label never breaks mid-word.
+                      Expanded(
+                        child: OverflowBar(
+                          spacing: AppSpacing.sm,
+                          overflowSpacing: AppSpacing.sm,
+                          children: buttons,
+                        ),
+                      ),
                       more,
                     ],
                   ),
