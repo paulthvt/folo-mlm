@@ -5,6 +5,7 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/router/app_router.dart';
 import 'package:folo/app/router/routes.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/core/ui/pick_day.dart';
 import 'package:folo/features/contacts/domain/activity.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
@@ -141,7 +142,13 @@ void main() {
 
     await tester.tap(find.byTooltip('Add someone'));
     await tester.pumpAndSettle();
-    await tester.enterText(find.widgetWithText(TextFormField, 'Name'), 'Chloé');
+    await tester.enterText(
+      find.descendant(
+        of: find.widgetWithText(LabeledField, 'Name'),
+        matching: find.byType(TextFormField),
+      ),
+      'Chloé',
+    );
     await tester.tap(find.text('Save'));
     await tester.pumpAndSettle();
 
@@ -400,7 +407,10 @@ void main() {
     await tester.tap(find.text('Log something'));
     await tester.pumpAndSettle();
     await tester.enterText(
-      find.widgetWithText(TextFormField, 'What happened'),
+      find.descendant(
+        of: find.widgetWithText(LabeledField, 'What happened'),
+        matching: find.byType(TextFormField),
+      ),
       'Met at the market',
     );
     await tester.tap(find.widgetWithText(FilledButton, 'Save'));

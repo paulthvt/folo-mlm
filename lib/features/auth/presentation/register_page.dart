@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/ui/form_error.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/auth_failure.dart';
 import 'package:folo/features/auth/domain/auth_validation.dart';
@@ -89,23 +90,27 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: AppSpacing.md,
             children: [
-              TextFormField(
-                controller: _firstName,
-                enabled: !_busy,
-                validator: (value) => firstNameFieldError(l10n, value),
-                textCapitalization: TextCapitalization.words,
-                autofillHints: const [AutofillHints.givenName],
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(labelText: l10n.authFirstNameLabel),
+              LabeledField(
+                label: l10n.authFirstNameLabel,
+                child: TextFormField(
+                  controller: _firstName,
+                  enabled: !_busy,
+                  validator: (value) => firstNameFieldError(l10n, value),
+                  textCapitalization: TextCapitalization.words,
+                  autofillHints: const [AutofillHints.givenName],
+                  textInputAction: TextInputAction.next,
+                ),
               ),
-              TextFormField(
-                controller: _email,
-                enabled: !_busy,
-                validator: (value) => emailFieldError(l10n, value),
-                keyboardType: TextInputType.emailAddress,
-                autofillHints: const [AutofillHints.email],
-                textInputAction: TextInputAction.next,
-                decoration: InputDecoration(labelText: l10n.authEmailLabel),
+              LabeledField(
+                label: l10n.authEmailLabel,
+                child: TextFormField(
+                  controller: _email,
+                  enabled: !_busy,
+                  validator: (value) => emailFieldError(l10n, value),
+                  keyboardType: TextInputType.emailAddress,
+                  autofillHints: const [AutofillHints.email],
+                  textInputAction: TextInputAction.next,
+                ),
               ),
               PasswordField(
                 controller: _password,

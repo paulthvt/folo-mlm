@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/core/ui/action_item.dart';
 import 'package:folo/core/ui/folo_avatar.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:folo/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
@@ -74,5 +75,21 @@ void main() {
     final button = tester.getSize(find.byType(IconButton));
     expect(button.width, greaterThanOrEqualTo(44));
     expect(button.height, greaterThanOrEqualTo(44));
+  });
+
+  testWidgets('a field is named by the label above it', (tester) async {
+    final semantics = tester.ensureSemantics();
+    await pump(tester, const LabeledField(label: 'Name', child: TextField()));
+
+    // Above the box, not inside it.
+    expect(
+      tester.getBottomLeft(find.text('Name')).dy,
+      lessThanOrEqualTo(tester.getTopLeft(find.byType(InputDecorator)).dy),
+    );
+    expect(
+      tester.getSemantics(find.byType(TextField)),
+      isSemantics(label: 'Name', isTextField: true),
+    );
+    semantics.dispose();
   });
 }

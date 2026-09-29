@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/ui/folo_dialog.dart';
 import 'package:folo/core/ui/form_error.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/core/ui/pick_day.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/domain/contact_channel.dart';
@@ -111,22 +112,26 @@ class _AddPersonFormState extends ConsumerState<_AddPersonForm> {
           spacing: AppSpacing.ms,
           children: [
             if (failure != null) FormError(peopleFailureCopy(l10n, failure)),
-            TextFormField(
-              controller: _name,
-              autofocus: true,
-              textCapitalization: TextCapitalization.words,
-              textInputAction: TextInputAction.next,
-              validator: (value) => (value ?? '').trim().isEmpty
-                  ? l10n.addPersonNameRequired
-                  : null,
-              decoration: InputDecoration(labelText: l10n.addPersonName),
+            LabeledField(
+              label: l10n.addPersonName,
+              child: TextFormField(
+                controller: _name,
+                autofocus: true,
+                textCapitalization: TextCapitalization.words,
+                textInputAction: TextInputAction.next,
+                validator: (value) => (value ?? '').trim().isEmpty
+                    ? l10n.addPersonNameRequired
+                    : null,
+              ),
             ),
-            TextFormField(
-              controller: _reach,
-              keyboardType: TextInputType.emailAddress,
-              textInputAction: TextInputAction.done,
-              onFieldSubmitted: (_) => _submit(),
-              decoration: InputDecoration(labelText: l10n.addPersonReach),
+            LabeledField(
+              label: l10n.addPersonReach,
+              child: TextFormField(
+                controller: _reach,
+                keyboardType: TextInputType.emailAddress,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) => _submit(),
+              ),
             ),
             Wrap(
               spacing: AppSpacing.sm,

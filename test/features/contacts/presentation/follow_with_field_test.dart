@@ -92,7 +92,7 @@ void main() {
   testWidgets('the first step can\'t be put in the past', (tester) async {
     await pump(tester, initial: (workflow: samples, firstDue: today()));
 
-    await tester.tap(find.text('Send a first message'));
+    await tester.tap(find.byType(InputDecorator));
     await tester.pumpAndSettle();
 
     final picker = tester.widget<DatePickerDialog>(
@@ -108,7 +108,7 @@ void main() {
     );
     final later = addDays(today(), 1);
 
-    await tester.tap(find.text('Send a first message'));
+    await tester.tap(find.byType(InputDecorator));
     await tester.pumpAndSettle();
     // Past the end of the month the day is on the next page: go there first.
     if (later.month != today().month) {

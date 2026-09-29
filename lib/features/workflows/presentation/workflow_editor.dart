@@ -8,6 +8,7 @@ import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/app/theme/app_typography.dart';
 import 'package:folo/core/ui/empty_state.dart';
 import 'package:folo/core/ui/folo_dialog.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/core/ui/section_header.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
@@ -298,13 +299,15 @@ class _WorkflowEditorViewState extends State<WorkflowEditorView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        TextField(
-          controller: _name,
-          focusNode: _nameFocus,
-          readOnly: _busy.contains(_Control.name),
-          textCapitalization: TextCapitalization.sentences,
-          textInputAction: TextInputAction.done,
-          decoration: InputDecoration(labelText: l10n.workflowName),
+        LabeledField(
+          label: l10n.workflowName,
+          child: TextField(
+            controller: _name,
+            focusNode: _nameFocus,
+            readOnly: _busy.contains(_Control.name),
+            textCapitalization: TextCapitalization.sentences,
+            textInputAction: TextInputAction.done,
+          ),
         ),
         const SizedBox(height: AppSpacing.lg),
         SectionHeader(
