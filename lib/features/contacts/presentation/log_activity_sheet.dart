@@ -16,11 +16,6 @@ import 'package:material_ui/material_ui.dart';
 Future<void> showLogActivity(BuildContext context, Person person) =>
     FoloDialog.show<void>(context, (_) => _LogActivityForm(person));
 
-DateTime _today() {
-  final now = DateTime.now();
-  return DateTime(now.year, now.month, now.day);
-}
-
 class _LogActivityForm extends ConsumerStatefulWidget {
   const _LogActivityForm(this.person);
 
@@ -34,7 +29,7 @@ class _LogActivityFormState extends ConsumerState<_LogActivityForm> {
   final _form = GlobalKey<FormState>();
   final _text = TextEditingController();
   ActivityKind _kind = ActivityKind.note;
-  DateTime _day = _today();
+  DateTime _day = today();
   bool _saving = false;
   PeopleFailure? _failure;
 
@@ -45,7 +40,7 @@ class _LogActivityFormState extends ConsumerState<_LogActivityForm> {
   }
 
   Future<void> _pickDay() async {
-    final day = await pickDay(context, initial: _day, last: _today());
+    final day = await pickDay(context, initial: _day, last: today());
     if (day != null && mounted) setState(() => _day = day);
   }
 
@@ -79,7 +74,7 @@ class _LogActivityFormState extends ConsumerState<_LogActivityForm> {
     final l10n = AppLocalizations.of(context);
     final material = MaterialLocalizations.of(context);
     final failure = _failure;
-    final today = _today();
+    final currentDay = today();
 
     return Form(
       key: _form,
@@ -127,9 +122,9 @@ class _LogActivityFormState extends ConsumerState<_LogActivityForm> {
                   suffixIcon: const Icon(Icons.calendar_today_outlined),
                 ),
                 child: Text(
-                  _day == today
+                  _day == currentDay
                       ? l10n.logWhenToday(_day)
-                      : dayLabel(l10n, _day, today),
+                      : dayLabel(l10n, _day, currentDay),
                 ),
               ),
             ),

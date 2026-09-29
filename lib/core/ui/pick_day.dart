@@ -3,6 +3,13 @@ import 'package:cupertino_ui/cupertino_ui.dart'
 import 'package:flutter/foundation.dart';
 import 'package:material_ui/material_ui.dart';
 
+/// The device's today, as local midnight: "today" is decided on the device,
+/// never by the server (#48).
+DateTime today() {
+  final now = DateTime.now();
+  return DateTime(now.year, now.month, now.day);
+}
+
 /// A calendar day no later than [last], as local midnight; null when
 /// dismissed. The platform's own picker (docs/architecture.md → Design
 /// packages): a wheel on iOS, the Material calendar elsewhere.

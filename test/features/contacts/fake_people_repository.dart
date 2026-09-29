@@ -46,7 +46,7 @@ class FakePeopleRepository implements PeopleRepository {
   }
 
   @override
-  Future<Person> add(PersonDraft draft) async {
+  Future<Person> add(PersonDraft draft, {WorkflowPlace? place}) async {
     await _record('add(${draft.name})');
     final person = Person(
       id: 'new-${_next++}',
@@ -56,6 +56,7 @@ class FakePeopleRepository implements PeopleRepository {
       phone: draft.phone,
       email: draft.email,
       instagram: draft.instagram,
+      place: place,
     );
     store[person.id] = person;
     return person;
@@ -64,7 +65,7 @@ class FakePeopleRepository implements PeopleRepository {
   @override
   Future<Person> update(Person person) async {
     await _record('update(${person.id})');
-    // The real update never writes the stage: the stored one stays.
+    // The real update writes neither the stage nor the workflow fields.
     final stored = store[person.id]!;
     final saved = Person(
       id: person.id,
@@ -82,6 +83,8 @@ class FakePeopleRepository implements PeopleRepository {
       profession: person.profession,
       address: person.address,
       notes: person.notes,
+      place: stored.place,
+      pausedAt: stored.pausedAt,
     );
     store[person.id] = saved;
     return saved;
@@ -94,17 +97,103 @@ class FakePeopleRepository implements PeopleRepository {
   }
 
   /// What the database does on a stage change: a new [Person.stageSince], no
-  /// status outside prospects, and an entry in the history.
+  /// status outside prospects, no pause, and an entry in the history.
   @override
-  Future<Person> setStage(String id, Stage stage) async {
+  Future<Person> setStage(
+    String id,
+    Stage stage, {
+    WorkflowPlace? place,
+  }) async {
     await _record('setStage($id, ${stage.name})');
     final before = store[id]!;
-    final moved = Person(
-      id: id,
-      name: before.name,
+    final moved = _with(
+      before,
       stage: stage,
       stageSince: DateTime.utc(2026, 9, 28),
-      prospectStatus: stage == Stage.prospect ? before.prospectStatus : null,
+      status: before.prospectStatus,
+      place: place,
+      pausedAt: null,
+    );
+    activities?.recordStage(id, stage);
+    return moved;
+  }
+
+  @override
+  Future<Person> setPlace(String id, WorkflowPlace? place) async {
+    await _record('setPlace($id, ${place?.workflowId ?? 'none'})');
+    final before = store[id]!;
+    return _with(before, place: place, pausedAt: null);
+  }
+
+  @override
+  Future<Person> pause(String id, DateTime at, {required bool notNow}) async {
+    await _record('pause($id)');
+    final before = store[id]!;
+    return _with(
+      before,
+      status: notNow ? ProspectStatus.notNow : before.prospectStatus,
+      place: before.place,
+      pausedAt: at,
+    );
+  }
+
+  @override
+  Future<Person> resume(String id, DateTime today) async {
+    await _record('resume($id)');
+    final before = store[id]!;
+    final place = before.place;
+    return _with(
+      before,
+      place: place == null
+          ? null
+          : (
+              workflowId: place.workflowId,
+              atPosition: place.atPosition,
+              lastTick: today,
+            ),
+      pausedAt: null,
+    );
+  }
+
+  @override
+  Future<Person> completeStep(
+    String personId,
+    String stepId,
+    num nextPosition,
+    DateTime on,
+  ) async {
+    await _record('completeStep($personId, $stepId)');
+    final before = store[personId]!;
+    return _with(
+      before,
+      place: (
+        workflowId: before.place!.workflowId,
+        atPosition: nextPosition,
+        lastTick: on,
+      ),
+      pausedAt: before.pausedAt,
+    );
+  }
+
+  /// [before] with the given fields replaced, stored and returned. Stage and
+  /// status default to [before]'s; a status never survives outside prospects.
+  Person _with(
+    Person before, {
+    Stage? stage,
+    DateTime? stageSince,
+    ProspectStatus? status,
+    required WorkflowPlace? place,
+    required DateTime? pausedAt,
+  }) {
+    final newStage = stage ?? before.stage;
+    final person = Person(
+      id: before.id,
+      name: before.name,
+      stage: newStage,
+      stageSince: stageSince ?? before.stageSince,
+      prospectStatus: newStage == Stage.prospect
+          ? status ?? before.prospectStatus
+          : null,
       phone: before.phone,
       email: before.email,
       instagram: before.instagram,
@@ -113,9 +202,10 @@ class FakePeopleRepository implements PeopleRepository {
       profession: before.profession,
       address: before.address,
       notes: before.notes,
+      place: place,
+      pausedAt: pausedAt,
     );
-    store[id] = moved;
-    activities?.recordStage(id, stage);
-    return moved;
+    store[person.id] = person;
+    return person;
   }
 }

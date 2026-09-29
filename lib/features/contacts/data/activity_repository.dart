@@ -70,13 +70,7 @@ Map<String, dynamic> activityDraftToRow(String personId, ActivityDraft draft) {
   return {
     'person_id': personId,
     'kind': draft.kind.name,
-    'happened_on': _dayColumn(draft.happenedOn),
+    'happened_on': dayColumn(draft.happenedOn),
     'text': draft.text.trim(),
   };
-}
-
-/// `yyyy-MM-dd`, what a `date` column takes; no locale involved.
-String _dayColumn(DateTime day) {
-  String two(int value) => value.toString().padLeft(2, '0');
-  return '${day.year}-${two(day.month)}-${two(day.day)}';
 }

@@ -151,4 +151,69 @@ void main() {
       expect(peopleFailureFrom(StateError('bad')), PeopleFailure.unknown);
     });
   });
+
+  group('a person\'s place', () {
+    Map<String, dynamic> row([Map<String, dynamic> extra = const {}]) => {
+      'id': 'p1',
+      'name': 'Sarah',
+      'stage': 'prospect',
+      'stage_since': '2026-09-01T10:00:00Z',
+      ...extra,
+    };
+
+    test('reads the workflow fields, last_tick as a local day', () {
+      final person = personFromRow(
+        row({
+          'workflow_id': 'w1',
+          'at_position': 2.5,
+          'last_tick': '2026-09-28',
+          'paused_at': '2026-09-29T08:00:00Z',
+        }),
+      );
+
+      expect(person.place?.workflowId, 'w1');
+      expect(person.place?.atPosition, 2.5);
+      expect(person.place?.lastTick, DateTime(2026, 9, 28));
+      expect(person.pausedAt, DateTime.utc(2026, 9, 29, 8));
+    });
+
+    test('no workflow is no place, and a half-written one too', () {
+      expect(personFromRow(row()).place, isNull);
+      expect(
+        personFromRow(row({'workflow_id': null, 'at_position': 1})).place,
+        isNull,
+      );
+      expect(personFromRow(row()).pausedAt, isNull);
+    });
+
+    test('writes a place as three columns, and null as three nulls', () {
+      expect(
+        placeToRow((
+          workflowId: 'w1',
+          atPosition: 3,
+          lastTick: DateTime(2026, 1, 5),
+        )),
+        {'workflow_id': 'w1', 'at_position': 3, 'last_tick': '2026-01-05'},
+      );
+      expect(placeToRow(null), {
+        'workflow_id': null,
+        'at_position': null,
+        'last_tick': null,
+      });
+    });
+
+    test('withStatus keeps the place and the pause', () {
+      final person = personFromRow(
+        row({
+          'workflow_id': 'w1',
+          'at_position': 1,
+          'last_tick': '2026-09-28',
+          'paused_at': '2026-09-29T08:00:00Z',
+        }),
+      ).withStatus(ProspectStatus.thinking);
+
+      expect(person.place?.workflowId, 'w1');
+      expect(person.pausedAt, isNotNull);
+    });
+  });
 }
