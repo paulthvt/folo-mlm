@@ -29,8 +29,9 @@ class WorkflowsController extends AsyncNotifier<List<Workflow>> {
     final repository = ref.watch(workflowRepositoryProvider);
     if (owner == null) return const [];
     // The server seeds an account once, ever, and no-ops after, even when
-    // every workflow has since been deleted. A notifier does not outlive a
-    // rebuild, so the device cannot remember having asked.
+    // every workflow has since been deleted. Asking is cheap and the server
+    // is the one place that knows: a notifier survives rebuilds, but not a
+    // restart, and another device has its own.
     await repository.seed(
       seedLanguage(ref.read(accountProvider)?.locale),
       today(),
@@ -65,7 +66,7 @@ String seedLanguage(String? accountLocale) =>
     : 'en';
 
 /// [WorkflowsController.edit] on the signed-in account's workflows, read at
-/// call time: a notifier does not outlive a rebuild.
+/// call time, so it is the account signed in now, not one captured earlier.
 Future<T> editWorkflows<T>(
   WidgetRef ref,
   Future<T> Function(WorkflowRepository repository) write,
