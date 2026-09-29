@@ -600,9 +600,9 @@
   },
   "logWhenToday": "Today, {date}",
   "@logWhenToday": {
-    "description": "Value of the day field in Log something when it is today, e.g. 'Today, 28 September'.",
+    "description": "Value of the day field in Log something when it is today, e.g. 'Today, September 28'; the day format follows the locale.",
     "placeholders": {
-      "date": { "type": "DateTime", "format": "d MMMM", "isCustomDateFormat": "true" }
+      "date": { "type": "DateTime", "format": "MMMMd" }
     }
   },
   "logWhat": "What happened",
@@ -648,21 +648,21 @@
   },
   "historyDay": "{day}",
   "@historyDay": {
-    "description": "Day of a history entry in the current year, e.g. '13 October'.",
+    "description": "Day of a history entry in the current year, e.g. 'October 13'; the format follows the locale.",
     "placeholders": {
-      "day": { "type": "DateTime", "format": "d MMMM", "isCustomDateFormat": "true" }
+      "day": { "type": "DateTime", "format": "MMMMd" }
     }
   },
   "historyDayWithYear": "{day}",
   "@historyDayWithYear": {
-    "description": "Day of a history entry in an earlier year, e.g. '13 October 2024'.",
+    "description": "Day of a history entry in an earlier year, e.g. 'October 13, 2024'; the format follows the locale.",
     "placeholders": {
-      "day": { "type": "DateTime", "format": "d MMMM y", "isCustomDateFormat": "true" }
+      "day": { "type": "DateTime", "format": "yMMMMd" }
     }
   },
   "historyMeta": "{day} · {kind}",
   "@historyMeta": {
-    "description": "Line under a history entry: its day, then its kind, e.g. '13 October · Call'.",
+    "description": "Line under a history entry: its day, then its kind, e.g. 'October 13 · Call'.",
     "placeholders": {
       "day": { "type": "String" },
       "kind": { "type": "String" }

@@ -12,6 +12,7 @@ void main() {
 
   setUpAll(() async {
     await initializeDateFormatting('en');
+    await initializeDateFormatting('fr');
     l10n = lookupAppLocalizations(const Locale('en'));
   });
 
@@ -38,19 +39,25 @@ void main() {
   });
 
   test('a day drops the year only in the current year', () {
-    expect(dayLabel(l10n, DateTime(2026, 10, 13), today), '13 October');
-    expect(dayLabel(l10n, DateTime(2024, 10, 13), today), '13 October 2024');
+    expect(dayLabel(l10n, DateTime(2026, 10, 13), today), 'October 13');
+    expect(dayLabel(l10n, DateTime(2024, 10, 13), today), 'October 13, 2024');
+  });
+
+  test('a day is written the way the locale writes it', () {
+    final fr = lookupAppLocalizations(const Locale('fr'));
+    expect(dayLabel(fr, DateTime(2026, 10, 13), today), '13 octobre');
+    expect(dayLabel(fr, DateTime(2024, 10, 13), today), '13 octobre 2024');
   });
 
   test('an entry reads its text, then day · kind', () {
     expect(activityTitle(l10n, entry()), 'Asked about the cream');
-    expect(activityMeta(l10n, entry(), today), '13 October · Call');
+    expect(activityMeta(l10n, entry(), today), 'October 13 · Call');
   });
 
   test('a stage entry says what changed, with the day alone', () {
     final moved = entry(kind: ActivityKind.stage, stage: Stage.customer);
     expect(activityTitle(l10n, moved), 'Became a customer');
-    expect(activityMeta(l10n, moved, today), '13 October');
+    expect(activityMeta(l10n, moved, today), 'October 13');
     expect(
       activityTitle(l10n, entry(kind: ActivityKind.stage, stage: Stage.team)),
       'Joined your team',

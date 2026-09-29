@@ -217,7 +217,7 @@ and from `HISTORY` → Add.
 - The title is "Log something with Claire".
 - Kind is a row of `ChoiceChip`s: Note / Call / Message / Order / Meeting.
   Note is selected by default.
-- When: a field showing "Today, 28 September". Tapping it opens the date
+- When: a field showing "Today, September 28". Tapping it opens the date
   picker, Cupertino on iOS and Material elsewhere. Future days can't be picked.
 - What happened: required, with the usual field error when empty.
 - Save and Cancel. On failure it shows a `FormError` and keeps the input.
@@ -228,11 +228,11 @@ The section sits below `WHAT YOU KNOW`, on mobile and in the desktop pane. The
 header action is Add.
 
 - Entries use the existing `ActivityItem`, with the rail.
-  - Ordinary entry: the text as title, "13 October · Call" as meta.
+  - Ordinary entry: the text as title, "October 13 · Call" as meta.
   - Stage entry: "Became a customer", "Joined your team" or "Back to
     prospects" as title, the date alone as meta.
-  - Dates drop the year when it is the current year: "13 October", but
-    "13 October 2024".
+  - Dates drop the year when it is the current year: "October 13", but
+    "October 13, 2024". The order follows the locale ("13 octobre" in French).
 - It shows the latest 3 entries. "See all 18" expands the rest in place, through
   local `setState`. There is no route.
 - Empty: "Nothing logged yet", plus Add.
