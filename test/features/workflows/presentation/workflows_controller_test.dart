@@ -83,7 +83,7 @@ void main() {
 
   test('a failed seed is an error, and a retry seeds again', () async {
     final workflows = FakeWorkflowRepository()
-      ..failWith = PeopleFailure.network;
+      ..seedFailWith = PeopleFailure.network;
     final world = _world(workflows);
     final provider = workflowsProvider('p@example.com');
     world.container.listen(provider, (_, _) {});
@@ -92,7 +92,9 @@ void main() {
       world.container.read(provider.future),
       throwsA(PeopleFailure.network),
     );
-    workflows.failWith = null;
+    expect(world.workflows.calls, ['list()', 'seed(en)']);
+
+    workflows.seedFailWith = null;
     world.container.invalidate(provider);
 
     expect(await world.container.read(provider.future), hasLength(5));
@@ -105,8 +107,13 @@ void main() {
   });
 
   test('disposed while seeding: no throw', () async {
-    final workflows = FakeWorkflowRepository()..gate = Completer<void>();
+    final workflows = FakeWorkflowRepository()..seedGate = Completer<void>();
     final world = _world(workflows);
+    final book = peopleProvider('p@example.com');
+    world.container.listen(book, (_, _) {});
+    await world.container.read(book.future);
+    expect(world.people.calls, ['list()']);
+
     final sub = world.container.listen(
       workflowsProvider('p@example.com'),
       (_, _) {},
@@ -115,7 +122,10 @@ void main() {
 
     sub.close();
     world.container.dispose();
-    workflows.gate!.complete();
+    workflows.seedGate!.complete();
     await Future<void>.delayed(Duration.zero);
+
+    // The seed's invalidate never ran: people was not fetched again.
+    expect(world.people.calls, ['list()']);
   });
 }

@@ -29,6 +29,7 @@ class WorkflowsController extends AsyncNotifier<List<Workflow>> {
     final repository = ref.watch(workflowRepositoryProvider);
     if (owner == null) return const [];
     final workflows = await repository.list();
+    if (!ref.mounted) return workflows;
     if (workflows.isNotEmpty) return workflows;
 
     await repository.seed(

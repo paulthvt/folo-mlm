@@ -21,6 +21,12 @@ class FakeWorkflowRepository implements WorkflowRepository {
   /// Calls started while set wait on it.
   Completer<void>? gate;
 
+  /// Thrown by seed() only.
+  Object? seedFailWith;
+
+  /// seed() waits on it.
+  Completer<void>? seedGate;
+
   Future<void> _record(String call) async {
     calls.add(call);
     final failure = failWith;
@@ -39,7 +45,11 @@ class FakeWorkflowRepository implements WorkflowRepository {
   /// people; tests that need a place set it on the person.
   @override
   Future<void> seed(String lang, DateTime today) async {
-    await _record('seed($lang)');
+    calls.add('seed($lang)');
+    final failure = seedFailWith ?? failWith;
+    final wait = seedGate ?? gate;
+    if (wait != null) await wait.future;
+    if (failure != null) throw failure;
     if (store.isEmpty) store.addAll(samples());
   }
 
