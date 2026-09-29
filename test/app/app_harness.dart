@@ -5,11 +5,13 @@ import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/account.dart';
 import 'package:folo/features/contacts/data/activity_repository.dart';
 import 'package:folo/features/contacts/data/people_repository.dart';
+import 'package:folo/features/workflows/data/workflow_repository.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../features/auth/fake_auth_repository.dart';
 import '../features/contacts/fake_activity_repository.dart';
 import '../features/contacts/fake_people_repository.dart';
+import '../features/workflows/fake_workflow_repository.dart';
 
 /// The whole app, signed in as Pauline, at [size]. Returns the container so a
 /// test can drive `routerProvider` the way a URL would.
@@ -18,6 +20,7 @@ Future<ProviderContainer> pumpFolo(
   required Size size,
   FakePeopleRepository? people,
   FakeActivityRepository? activities,
+  FakeWorkflowRepository? workflows,
 }) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
@@ -35,6 +38,9 @@ Future<ProviderContainer> pumpFolo(
         ),
         activityRepositoryProvider.overrideWithValue(
           activities ?? FakeActivityRepository(),
+        ),
+        workflowRepositoryProvider.overrideWithValue(
+          workflows ?? FakeWorkflowRepository(FakeWorkflowRepository.samples()),
         ),
       ],
       child: const FoloApp(),

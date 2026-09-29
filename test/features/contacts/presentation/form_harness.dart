@@ -6,11 +6,13 @@ import 'package:folo/features/auth/domain/account.dart';
 import 'package:folo/features/contacts/data/activity_repository.dart';
 import 'package:folo/features/contacts/data/people_repository.dart';
 import 'package:folo/features/contacts/presentation/people_controller.dart';
+import 'package:folo/features/workflows/data/workflow_repository.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:folo/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../auth/fake_auth_repository.dart';
+import '../../workflows/fake_workflow_repository.dart';
 import '../fake_activity_repository.dart';
 import '../fake_people_repository.dart';
 
@@ -20,6 +22,7 @@ Future<void> pumpFormHarness(
   WidgetTester tester, {
   required FakePeopleRepository people,
   FakeActivityRepository? activities,
+  FakeWorkflowRepository? workflows,
   required Future<Object?> Function(BuildContext context) open,
   required void Function(Object? value) result,
 }) async {
@@ -34,6 +37,9 @@ Future<void> pumpFormHarness(
         peopleRepositoryProvider.overrideWithValue(people),
         activityRepositoryProvider.overrideWithValue(
           activities ?? FakeActivityRepository(),
+        ),
+        workflowRepositoryProvider.overrideWithValue(
+          workflows ?? FakeWorkflowRepository(FakeWorkflowRepository.samples()),
         ),
       ],
       child: MaterialApp(
