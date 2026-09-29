@@ -900,5 +900,52 @@
     "placeholders": {
       "month": { "type": "DateTime", "format": "MMMM" }
     }
+  },
+  "settingsSectionWorkflows": "Workflows",
+  "@settingsSectionWorkflows": {
+    "description": "Settings row, and the title of the screen listing the user's workflows: what they do with someone, step by step."
+  },
+  "workflowsIntro": "What you usually do with someone, step by step. Folo puts the next step on Today when it comes due.",
+  "@workflowsIntro": {
+    "description": "Intro at the top of Settings → Workflows."
+  },
+  "workflowsDefaultSteps": "Default · {steps}",
+  "@workflowsDefaultSteps": {
+    "description": "Trailing text on the row of a stage's default workflow: 'Default · 5 steps'. {steps} is the step count text (followWithSteps).",
+    "placeholders": {
+      "steps": { "type": "String" }
+    }
+  },
+  "workflowsNew": "New workflow",
+  "@workflowsNew": {
+    "description": "Button under the workflows, and the title of the dialog it opens."
+  },
+  "workflowName": "Name",
+  "@workflowName": {
+    "description": "Label of a workflow's name field, in New workflow and in the editor."
+  },
+  "workflowNameRequired": "Enter a name.",
+  "@workflowNameRequired": {
+    "description": "Error under the name field of New workflow when it is empty."
+  },
+  "workflowsNewStage": "Stage",
+  "@workflowsNewStage": {
+    "description": "Header above the stage choice in New workflow; shown in capitals."
+  },
+  "workflowsCreate": "Create",
+  "@workflowsCreate": {
+    "description": "Confirms New workflow."
+  },
+  "workflowMissingTitle": "This workflow isn't here anymore",
+  "@workflowMissingTitle": {
+    "description": "Shown when an open workflow no longer exists (deleted elsewhere, or a bad link)."
+  },
+  "workflowMissingBody": "It may have been deleted on another device.",
+  "@workflowMissingBody": {
+    "description": "Body under workflowMissingTitle."
+  },
+  "workflowBackToList": "Back to workflows",
+  "@workflowBackToList": {
+    "description": "Button under workflowMissingTitle that returns to the list."
   }
 }

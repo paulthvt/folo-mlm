@@ -99,6 +99,24 @@ final routerProvider = Provider<GoRouter>((ref) {
                 pageBuilder: (context, state) =>
                     _settingsPage(context, state, SettingsSection.appearance),
               ),
+              GoRoute(
+                path: Routes.settingsWorkflowsSegment,
+                name: Routes.settingsWorkflowsName,
+                pageBuilder: (context, state) =>
+                    _settingsPage(context, state, SettingsSection.workflows),
+                routes: [
+                  GoRoute(
+                    path: Routes.settingsWorkflowSegment,
+                    name: Routes.settingsWorkflowName,
+                    pageBuilder: (context, state) => _settingsPage(
+                      context,
+                      state,
+                      SettingsSection.workflows,
+                      workflowId: state.pathParameters['id'],
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ],
@@ -149,9 +167,10 @@ final routerProvider = Provider<GoRouter>((ref) {
 Page<void> _settingsPage(
   BuildContext context,
   GoRouterState state,
-  SettingsSection section,
-) {
-  final child = SettingsPage(section: section);
+  SettingsSection section, {
+  String? workflowId,
+}) {
+  final child = SettingsPage(section: section, workflowId: workflowId);
   return context.screenSize.isDesktop
       ? NoTransitionPage<void>(
           key: state.pageKey,
