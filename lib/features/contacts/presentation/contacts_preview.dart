@@ -4,6 +4,9 @@ import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/presentation/contact_details.dart';
 import 'package:folo/features/contacts/presentation/contact_list.dart';
+import 'package:folo/features/contacts/presentation/next_step_section.dart';
+import 'package:folo/features/workflows/domain/progress.dart';
+import 'package:folo/features/workflows/domain/workflow.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:folo/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
@@ -45,6 +48,31 @@ Widget contactsDesktopLight() => _app(
     ),
   ),
 );
+
+final _samples = Workflow(
+  id: 'w1',
+  stage: Stage.prospect,
+  name: 'Samples',
+  isDefault: true,
+  steps: [
+    for (final (index, (label, days)) in [
+      ('Send a first message', 0),
+      ('Send the samples', 1),
+      ('Samples arrived', 4),
+      ('Ask how the samples went', 3),
+      ('Follow up', 7),
+    ].indexed)
+      WorkflowStep(
+        id: 's${index + 1}',
+        position: index + 1,
+        label: label,
+        days: days,
+      ),
+  ],
+);
+
+// A fixed day, so the golden never changes with the calendar.
+final _previewToday = DateTime(2026, 9, 29);
 
 final _sample = [
   Person(
@@ -99,8 +127,28 @@ Widget _details() => ContactDetails(
   onDelete: () {},
   onLog: () {},
   onMove: (_) {},
+  onChangeWorkflow: () {},
+  onPause: () {},
+  onResume: () {},
   onLaunch: (_) {},
   onRefresh: () async {},
+  workflowName: _samples.name,
+  nextStep: NextStepCard(
+    person: _sample.first,
+    progress: OnStep(
+      workflow: _samples,
+      step: _samples.steps[3],
+      index: 4,
+      total: 5,
+      due: _previewToday,
+    ),
+    today: _previewToday,
+    onTick: (_) {},
+    onResume: () {},
+    onNotNow: () {},
+    onFollowWith: () {},
+    onBecameCustomer: () {},
+  ),
 );
 
 Widget _app(ThemeData theme, Widget body) {

@@ -12,8 +12,10 @@ import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/presentation/history_controller.dart';
 import 'package:folo/features/contacts/presentation/people_controller.dart';
+import 'package:folo/features/workflows/domain/progress.dart';
 
 import '../../auth/fake_auth_repository.dart';
+import '../../workflows/fake_workflow_repository.dart';
 import '../fake_activity_repository.dart';
 import '../fake_people_repository.dart';
 
@@ -93,7 +95,7 @@ void main() {
           phone: null,
           email: null,
           instagram: null,
-        ));
+        ), today: DateTime(2026, 9, 28));
 
     expect(added.name, 'Bruno');
     expect(_names(world.container), ['Anne', 'Bruno', 'Chloé']);
@@ -322,5 +324,238 @@ void main() {
       throwsA(PeopleFailure.network),
     );
     expect(world.container.read(book).value!.single.stage, Stage.prospect);
+  });
+
+  final samples = FakeWorkflowRepository.samples().first;
+  final customer = FakeWorkflowRepository.samples()[2];
+  final day = DateTime(2026, 9, 28);
+  WorkflowPlace at(num position, {String workflowId = 'samples'}) =>
+      (workflowId: workflowId, atPosition: position, lastTick: day);
+  Person onSamples(num position, {DateTime? pausedAt}) => Person(
+    id: 'p1',
+    name: 'Marie',
+    stage: Stage.prospect,
+    stageSince: DateTime.utc(2026, 3, 4),
+    place: at(position),
+    pausedAt: pausedAt,
+  );
+
+  test('add starts the given workflow, due its first step today', () async {
+    final world = _world([]);
+    final book = _book(world.container);
+    await world.container.read(book.future);
+
+    final added = await world.container
+        .read(book.notifier)
+        .add(
+          (
+            name: 'Bruno',
+            stage: Stage.prospect,
+            phone: null,
+            email: null,
+            instagram: null,
+          ),
+          workflow: samples,
+          today: day,
+        );
+
+    expect(added.place, at(1));
+  });
+
+  test('add with no workflow starts none', () async {
+    final world = _world([]);
+    final book = _book(world.container);
+    await world.container.read(book.future);
+
+    final added = await world.container.read(book.notifier).add((
+      name: 'Bruno',
+      stage: Stage.prospect,
+      phone: null,
+      email: null,
+      instagram: null,
+    ), today: day);
+
+    expect(added.place, isNull);
+  });
+
+  test('moveTo writes the stage and what follows in one call', () async {
+    final world = _world([onSamples(3)]);
+    final book = _book(world.container);
+    await world.container.read(book.future);
+    final marie = world.container.read(book).value!.single;
+
+    await world.container
+        .read(book.notifier)
+        .moveTo(
+          marie,
+          Stage.customer,
+          follow: (workflow: customer, firstDue: DateTime(2026, 10, 1)),
+        );
+
+    final moved = world.container.read(book).value!.single;
+    expect(moved.stage, Stage.customer);
+    expect(moved.place, (
+      workflowId: 'new-customer',
+      atPosition: 1,
+      lastTick: DateTime(2026, 10, 1),
+    ));
+    expect(world.people.calls.last, 'setStage(p1, customer)');
+  });
+
+  test('moveTo with nothing to follow ends the workflow', () async {
+    final world = _world([onSamples(3)]);
+    final book = _book(world.container);
+    await world.container.read(book.future);
+    final marie = world.container.read(book).value!.single;
+
+    await world.container.read(book.notifier).moveTo(marie, Stage.team);
+
+    expect(world.container.read(book).value!.single.place, isNull);
+  });
+
+  test('setWorkflow changes the workflow and ends a pause', () async {
+    final world = _world([onSamples(3, pausedAt: DateTime.utc(2026, 7, 12))]);
+    final book = _book(world.container);
+    await world.container.read(book.future);
+    final marie = world.container.read(book).value!.single;
+    final health = FakeWorkflowRepository.samples()[1];
+
+    await world.container.read(book.notifier).setWorkflow(marie, (
+      workflow: health,
+      firstDue: day,
+    ));
+
+    final changed = world.container.read(book).value!.single;
+    expect(changed.place?.workflowId, 'health');
+    expect(changed.pausedAt, isNull);
+  });
+
+  test('setWorkflow to nothing clears the place', () async {
+    final world = _world([onSamples(3)]);
+    final book = _book(world.container);
+    await world.container.read(book.future);
+    final marie = world.container.read(book).value!.single;
+
+    await world.container.read(book.notifier).setWorkflow(marie, null);
+
+    expect(world.container.read(book).value!.single.place, isNull);
+    expect(world.people.calls.last, 'setPlace(p1, none)');
+  });
+
+  test('completeStep moves to the next step and reloads the history', () async {
+    final world = _world([onSamples(2)]);
+    final book = _book(world.container);
+    await world.container.read(book.future);
+    world.container.listen(historyProvider('p1'), (_, _) {});
+    await world.container.read(historyProvider('p1').future);
+    final marie = world.container.read(book).value!.single;
+    final progress = progressOf(marie, samples)! as OnStep;
+
+    await world.container
+        .read(book.notifier)
+        .completeStep(marie, progress, DateTime(2026, 9, 30));
+
+    final moved = world.container.read(book).value!.single;
+    expect(moved.place, (
+      workflowId: 'samples',
+      atPosition: 3,
+      lastTick: DateTime(2026, 9, 30),
+    ));
+    expect(world.people.calls.last, 'completeStep(p1, samples-2)');
+    await world.container.read(historyProvider('p1').future);
+    expect(world.activities.calls, ['list(p1)', 'list(p1)']);
+  });
+
+  test('pause marks a prospect Not now; resume counts from today', () async {
+    final world = _world([onSamples(2)]);
+    final book = _book(world.container);
+    await world.container.read(book.future);
+    final notifier = world.container.read(book.notifier);
+
+    await notifier.pause(world.container.read(book).value!.single);
+    final paused = world.container.read(book).value!.single;
+    expect(paused.pausedAt, isNotNull);
+    expect(paused.prospectStatus, ProspectStatus.notNow);
+
+    await notifier.resume(paused, DateTime(2026, 10, 5));
+    final resumed = world.container.read(book).value!.single;
+    expect(resumed.pausedAt, isNull);
+    expect(resumed.place?.atPosition, 2);
+    expect(resumed.place?.lastTick, DateTime(2026, 10, 5));
+  });
+
+  test('pause leaves a customer with no status', () async {
+    final world = _world([
+      Person(
+        id: 'c1',
+        name: 'Claire',
+        stage: Stage.customer,
+        stageSince: DateTime.utc(2026, 3, 4),
+        place: at(1, workflowId: 'new-customer'),
+      ),
+    ]);
+    final book = _book(world.container);
+    await world.container.read(book.future);
+
+    await world.container
+        .read(book.notifier)
+        .pause(world.container.read(book).value!.single);
+
+    final paused = world.container.read(book).value!.single;
+    expect(paused.pausedAt, isNotNull);
+    expect(paused.prospectStatus, isNull);
+  });
+
+  test('a failed write rethrows and changes nothing', () async {
+    final world = _world([onSamples(2)]);
+    final book = _book(world.container);
+    await world.container.read(book.future);
+    final notifier = world.container.read(book.notifier);
+    final marie = world.container.read(book).value!.single;
+    final progress = progressOf(marie, samples)! as OnStep;
+    world.people.failWith = PeopleFailure.network;
+
+    for (final write in <Future<void> Function()>[
+      () => notifier.completeStep(marie, progress, day),
+      () => notifier.pause(marie),
+      () => notifier.resume(marie, day),
+      () => notifier.setWorkflow(marie, null),
+      () => notifier.moveTo(marie, Stage.customer),
+      () => notifier.add(
+        (
+          name: 'Bruno',
+          stage: Stage.prospect,
+          phone: null,
+          email: null,
+          instagram: null,
+        ),
+        workflow: samples,
+        today: day,
+      ),
+    ]) {
+      await expectLater(write(), throwsA(PeopleFailure.network));
+    }
+    // Person has no ==: the very same instance is still there.
+    expect(world.container.read(book).value!.single, same(marie));
+  });
+
+  test('the book rebuilt while a step completes: no throw', () async {
+    final world = _world([onSamples(2)]);
+    final book = _book(world.container);
+    world.container.listen(book, (_, _) {});
+    await world.container.read(book.future);
+    final marie = world.container.read(book).value!.single;
+    final progress = progressOf(marie, samples)! as OnStep;
+    world.people.gate = Completer<void>();
+
+    final ticking = world.container
+        .read(book.notifier)
+        .completeStep(marie, progress, day);
+    world.container.invalidate(book);
+    world.people.gate!.complete();
+
+    await ticking;
+    final reloaded = await world.container.read(book.future);
+    expect(reloaded.single.id, 'p1');
   });
 }

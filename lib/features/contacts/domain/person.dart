@@ -5,6 +5,15 @@ enum Stage { prospect, customer, team }
 /// How a prospect conversation stands. Only prospects have one.
 enum ProspectStatus { interested, thinking, notNow, noReply }
 
+/// Where someone is in a workflow (#57). The current step is the first whose
+/// position is at least [atPosition], due its days after [lastTick]. All three
+/// are set together or not at all.
+typedef WorkflowPlace = ({
+  String workflowId,
+  num atPosition,
+  DateTime lastTick,
+});
+
 /// Someone in the user's book.
 ///
 /// Every text field is optional except [name]. A blank value is stored as null,
@@ -24,6 +33,8 @@ class Person {
     this.profession,
     this.address,
     this.notes,
+    this.place,
+    this.pausedAt,
   }) : assert(
          prospectStatus == null || stage == Stage.prospect,
          'Only prospects have a status',
@@ -50,6 +61,12 @@ class Person {
   final String? address;
   final String? notes;
 
+  /// Null when they follow no workflow.
+  final WorkflowPlace? place;
+
+  /// Set while paused: the NEXT STEP card rests, the place is kept.
+  final DateTime? pausedAt;
+
   Person withStatus(ProspectStatus? status) => Person(
     id: id,
     name: name,
@@ -64,6 +81,8 @@ class Person {
     profession: profession,
     address: address,
     notes: notes,
+    place: place,
+    pausedAt: pausedAt,
   );
 }
 

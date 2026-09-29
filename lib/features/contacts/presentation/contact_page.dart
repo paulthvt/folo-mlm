@@ -5,18 +5,22 @@ import 'package:folo/app/router/back.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/core/layout/breakpoints.dart';
 import 'package:folo/core/ui/empty_state.dart';
+import 'package:folo/core/ui/pick_day.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/presentation/change_stage_sheet.dart';
+import 'package:folo/features/contacts/presentation/change_workflow_sheet.dart';
 import 'package:folo/features/contacts/presentation/contact_details.dart';
 import 'package:folo/features/contacts/presentation/contacts_page.dart';
 import 'package:folo/features/contacts/presentation/edit_person_form.dart';
 import 'package:folo/features/contacts/presentation/history_controller.dart';
 import 'package:folo/features/contacts/presentation/history_section.dart';
 import 'package:folo/features/contacts/presentation/log_activity_sheet.dart';
+import 'package:folo/features/contacts/presentation/next_step_section.dart';
 import 'package:folo/features/contacts/presentation/people_controller.dart';
 import 'package:folo/features/contacts/presentation/people_copy.dart';
+import 'package:folo/features/workflows/domain/workflow.dart';
+import 'package:folo/features/workflows/presentation/workflows_controller.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -90,49 +94,51 @@ class ContactPane extends ConsumerWidget {
       );
     }
 
+    final owner = ref.watch(accountProvider)?.email;
+    final workflows = workflowsProvider(owner);
+    final workflowName = findWorkflow(
+      ref.watch(workflows).value ?? const [],
+      person.place?.workflowId,
+    )?.name;
+
     // Loads the history as the page opens, and keeps it while the section
     // scrolls out of the lazy list.
     ref.listen(historyProvider(person.id), (_, _) {});
 
     return ContactDetails(
       person: person,
-      onStatus: (status) => unawaited(_setStatus(context, ref, person, status)),
+      onStatus: (status) => unawaited(
+        writePeople(context, ref, (people) => people.setStatus(person, status)),
+      ),
       onEdit: () => unawaited(showEditPerson(context, person)),
       onDelete: () => unawaited(_delete(context, ref)),
       onLog: () => unawaited(showLogActivity(context, person)),
       onMove: (stage) => unawaited(showChangeStage(context, person, stage)),
+      onChangeWorkflow: () => unawaited(showChangeWorkflow(context, person)),
+      onPause: () => unawaited(
+        writePeople(context, ref, (people) => people.pause(person)),
+      ),
+      onResume: () => unawaited(
+        writePeople(context, ref, (people) => people.resume(person, today())),
+      ),
       onLaunch: (uri) => unawaited(_launch(context, uri)),
       onRefresh: () {
         ref.invalidate(historyProvider(person.id));
+        ref.invalidate(workflows);
         return refreshPeople(context, ref);
       },
+      workflowName: workflowName,
+      nextStep: NextStepSection(
+        key: ValueKey('next-${person.id}'),
+        person: person,
+      ),
       history: HistorySection(
         // A new person starts collapsed.
-        key: ValueKey(person.id),
+        key: ValueKey('history-${person.id}'),
         person: person,
         onAdd: () => unawaited(showLogActivity(context, person)),
       ),
     );
-  }
-
-  Future<void> _setStatus(
-    BuildContext context,
-    WidgetRef ref,
-    Person person,
-    ProspectStatus? status,
-  ) async {
-    final messenger = ScaffoldMessenger.of(context);
-    final l10n = AppLocalizations.of(context);
-    try {
-      await ref
-          .read(peopleProvider(ref.read(accountProvider)?.email).notifier)
-          .setStatus(person, status);
-    } on PeopleFailure catch (failure) {
-      // The controller has already put the chip back.
-      messenger.showSnackBar(
-        SnackBar(content: Text(peopleFailureCopy(l10n, failure))),
-      );
-    }
   }
 
   /// Leaves the screen first, so it never shows the missing state for the

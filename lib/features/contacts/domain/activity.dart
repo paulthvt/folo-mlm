@@ -1,8 +1,20 @@
 import 'package:folo/features/contacts/domain/person.dart';
 
 /// What an entry records. [stage] entries are written by the database when a
-/// person changes stage, never by the app.
-enum ActivityKind { note, call, message, order, meeting, stage }
+/// person changes stage, [step] entries when a workflow step is ticked; the
+/// user writes the others.
+enum ActivityKind {
+  note,
+  call,
+  message,
+  order,
+  meeting,
+  stage,
+  step;
+
+  /// Offered in Log something.
+  bool get byUser => this != stage && this != step;
+}
 
 /// One thing in a person's history. Never edited, only deleted.
 class Activity {

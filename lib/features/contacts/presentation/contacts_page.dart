@@ -11,6 +11,8 @@ import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/presentation/add_person_sheet.dart';
 import 'package:folo/features/contacts/presentation/contact_list.dart';
 import 'package:folo/features/contacts/presentation/people_controller.dart';
+import 'package:folo/features/contacts/presentation/people_copy.dart';
+import 'package:folo/features/workflows/presentation/workflows_controller.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
@@ -37,6 +39,26 @@ Future<void> refreshPeople(BuildContext context, WidgetRef ref) async {
     await ref.read(people.future);
   } on PeopleFailure {
     messenger.showSnackBar(SnackBar(content: Text(l10n.contactsRefreshFailed)));
+  }
+}
+
+/// Runs a write on the signed-in book; a failure is a SnackBar, and the book
+/// stays as it was.
+Future<void> writePeople(
+  BuildContext context,
+  WidgetRef ref,
+  Future<void> Function(PeopleController people) write,
+) async {
+  final messenger = ScaffoldMessenger.of(context);
+  final l10n = AppLocalizations.of(context);
+  try {
+    await write(
+      ref.read(peopleProvider(ref.read(accountProvider)?.email).notifier),
+    );
+  } on PeopleFailure catch (failure) {
+    messenger.showSnackBar(
+      SnackBar(content: Text(peopleFailureCopy(l10n, failure))),
+    );
   }
 }
 
@@ -89,6 +111,9 @@ class _ContactsPageState extends ConsumerState<ContactsPage> {
     final book = peopleProvider(ref.watch(accountProvider)?.email);
     final people = ref.watch(book);
     final list = people.value;
+    // Starts loading the workflows (and seeds them the first time) as soon
+    // as Contacts opens, so a person's card rarely waits.
+    ref.listen(workflowsProvider(ref.watch(accountProvider)?.email), (_, _) {});
     final sideNavigation = context.screenSize.usesSideNavigation;
     final pane = widget.pane;
 

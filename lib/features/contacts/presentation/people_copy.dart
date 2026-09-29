@@ -1,6 +1,7 @@
 import 'package:folo/features/contacts/domain/activity.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
+import 'package:folo/features/workflows/domain/progress.dart';
 import 'package:folo/l10n/app_localizations.dart';
 
 /// User-facing words for the contacts domain. Copy, so it lives in
@@ -25,8 +26,25 @@ String peopleFailureCopy(AppLocalizations l10n, PeopleFailure failure) =>
       PeopleFailure.unknown => l10n.peopleFailureUnknown,
     };
 
-/// The second line of a person's row: what they do, else what they need.
-String? contactSubtitle(Person person) => person.profession ?? person.needs;
+/// The second line of a person's row: paused, else what they do, else what
+/// they need.
+String? contactSubtitle(AppLocalizations l10n, Person person) =>
+    switch (person.pausedAt?.toLocal()) {
+      final since? when person.prospectStatus == ProspectStatus.notNow =>
+        l10n.contactPausedNotNow(since),
+      final since? => l10n.contactPaused(since),
+      null => person.profession ?? person.needs,
+    };
+
+/// When a step is due, counted in calendar days from [today].
+String dueLabel(AppLocalizations l10n, DateTime due, DateTime today) =>
+    switch (daysBetween(today, due)) {
+      < 0 && final late => l10n.nextStepLate(-late),
+      0 => l10n.nextStepDueToday,
+      1 => l10n.nextStepDueTomorrow,
+      <= 6 && final days => l10n.nextStepDueInDays(days),
+      _ => l10n.nextStepDueOn(due),
+    };
 
 /// The first word of a name, for titles that speak about the person.
 String firstName(Person person) =>
@@ -54,6 +72,7 @@ String? kindLabel(AppLocalizations l10n, ActivityKind kind) => switch (kind) {
   ActivityKind.order => l10n.activityKindOrder,
   ActivityKind.meeting => l10n.activityKindMeeting,
   ActivityKind.stage => null,
+  ActivityKind.step => l10n.activityKindStep,
 };
 
 /// What the user wrote; for a stage entry, what changed. A person is never

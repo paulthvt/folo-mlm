@@ -102,4 +102,15 @@ void main() {
     await tester.pumpAndSettle();
     expect(people.calls.where((call) => call.startsWith('add')), hasLength(1));
   });
+
+  testWidgets('someone new starts their stage\'s default workflow', (
+    tester,
+  ) async {
+    await open(tester);
+    await tester.enterText(field('Name'), 'Bruno Petit');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    expect(people.store.values.single.place?.workflowId, 'samples');
+  });
 }

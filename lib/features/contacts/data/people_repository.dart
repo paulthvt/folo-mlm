@@ -23,40 +23,73 @@ class PeopleRepository {
     return rows.map(personFromRow).toList();
   });
 
-  Future<Person> add(PersonDraft draft) => guardPeople(() async {
-    final row = await _client
-        .from(_table)
-        .insert(draftToRow(draft))
-        .select()
-        .single();
-    return personFromRow(row);
-  });
+  Future<Person> add(PersonDraft draft, {WorkflowPlace? place}) =>
+      guardPeople(() async {
+        final row = await _client
+            .from(_table)
+            .insert({...draftToRow(draft), ...placeToRow(place)})
+            .select()
+            .single();
+        return personFromRow(row);
+      });
 
-  Future<Person> update(Person person) => guardPeople(() async {
-    final row = await _client
-        .from(_table)
-        .update(personToRow(person))
-        .eq('id', person.id)
-        .select()
-        .single();
-    return personFromRow(row);
-  });
+  Future<Person> update(Person person) =>
+      _write(person.id, personToRow(person));
 
   Future<void> delete(String id) =>
       guardPeople(() => _client.from(_table).delete().eq('id', id));
 
-  /// Writes only the stage. The database sets [Person.stageSince], clears a
-  /// leaving prospect's status and records the change in the history; the
-  /// returned person is the row as it left it.
-  Future<Person> setStage(String id, Stage stage) => guardPeople(() async {
-    final row = await _client
-        .from(_table)
-        .update({'stage': stage.name})
-        .eq('id', id)
-        .select()
-        .single();
+  /// Writes the stage and the workflow that follows it, in one update; a null
+  /// [place] is "nothing for now". The database sets [Person.stageSince],
+  /// clears a leaving prospect's status and any pause, and records the change
+  /// in the history; the returned person is the row as it left it.
+  Future<Person> setStage(String id, Stage stage, {WorkflowPlace? place}) =>
+      _write(id, {'stage': stage.name, ...placeToRow(place)});
+
+  /// Change workflow. Picking what comes next also ends a pause.
+  Future<Person> setPlace(String id, WorkflowPlace? place) =>
+      _write(id, {...placeToRow(place), 'paused_at': null});
+
+  /// [notNow] also sets a prospect's status to Not now.
+  Future<Person> pause(String id, DateTime at, {required bool notNow}) =>
+      _write(id, {
+        'paused_at': at.toUtc().toIso8601String(),
+        if (notNow) 'prospect_status': _statusColumn[ProspectStatus.notNow],
+      });
+
+  /// The same step comes back, due counted from [today].
+  Future<Person> resume(String id, DateTime today) =>
+      _write(id, {'paused_at': null, 'last_tick': dayColumn(today)});
+
+  /// The history entry and the move, in one transaction on the server.
+  Future<Person> completeStep(
+    String personId,
+    String stepId,
+    num nextPosition,
+    DateTime on,
+  ) => guardPeople(() async {
+    final row = await _client.rpc<Map<String, dynamic>>(
+      'complete_step',
+      params: {
+        'p_person': personId,
+        'p_step': stepId,
+        'p_next_position': nextPosition,
+        'p_on': dayColumn(on),
+      },
+    );
     return personFromRow(row);
   });
+
+  Future<Person> _write(String id, Map<String, dynamic> values) =>
+      guardPeople(() async {
+        final row = await _client
+            .from(_table)
+            .update(values)
+            .eq('id', id)
+            .select()
+            .single();
+        return personFromRow(row);
+      });
 }
 
 final peopleRepositoryProvider = Provider<PeopleRepository>(
@@ -114,12 +147,25 @@ Person personFromRow(Map<String, dynamic> row) {
     address: _text(row['address']),
     notes: _text(row['notes']),
     stageSince: DateTime.parse(row['stage_since'] as String),
+    place: switch ((row['workflow_id'], row['at_position'], row['last_tick'])) {
+      (final String id, final num at, final String tick) => (
+        workflowId: id,
+        atPosition: at,
+        // A bare date parses as local midnight, which is what a day is here.
+        lastTick: DateTime.parse(tick),
+      ),
+      _ => null,
+    },
+    pausedAt: switch (row['paused_at']) {
+      final String at => DateTime.parse(at),
+      _ => null,
+    },
   );
 }
 
-/// What an update writes: everything the user can edit, except the stage.
-/// Only [PeopleRepository.setStage] writes it, so a stale copy never moves
-/// someone back (and into the history).
+/// What an update writes: everything the user can edit, except the stage and
+/// the workflow fields. Only [PeopleRepository.setStage] writes it, so a stale
+/// copy never moves someone back (and into the history).
 Map<String, dynamic> personToRow(Person person) => {
   'name': person.name.trim(),
   'prospect_status': _statusColumn[person.prospectStatus],
@@ -145,4 +191,16 @@ Map<String, dynamic> draftToRow(PersonDraft draft) => {
 String? _text(Object? value) {
   final text = (value as String?)?.trim();
   return text == null || text.isEmpty ? null : text;
+}
+
+Map<String, dynamic> placeToRow(WorkflowPlace? place) => {
+  'workflow_id': place?.workflowId,
+  'at_position': place?.atPosition,
+  'last_tick': place == null ? null : dayColumn(place.lastTick),
+};
+
+/// `yyyy-MM-dd`, what a `date` column takes; no locale involved.
+String dayColumn(DateTime day) {
+  String two(int value) => value.toString().padLeft(2, '0');
+  return '${day.year}-${two(day.month)}-${two(day.day)}';
 }

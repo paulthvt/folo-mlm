@@ -117,4 +117,24 @@ void main() {
 
     expect(refreshes, 1);
   });
+
+  testWidgets('a paused prospect reads Not now · paused in July', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      people: [
+        Person(
+          id: 'p1',
+          name: 'Sarah Martin',
+          stage: Stage.prospect,
+          prospectStatus: ProspectStatus.notNow,
+          stageSince: DateTime.utc(2026, 3, 4),
+          pausedAt: DateTime(2026, 7, 12),
+        ),
+      ],
+    );
+
+    expect(find.text('Not now · paused in July'), findsOneWidget);
+  });
 }

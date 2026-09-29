@@ -31,12 +31,15 @@ Uri? callUri(Person person) {
   return phone == null ? null : Uri(scheme: 'tel', path: _dialable(phone));
 }
 
-typedef _Action = ({String label, IconData icon, VoidCallback onTap});
+typedef _Action = ({
+  String label,
+  IconData icon,
+  VoidCallback onTap,
+  String? trailing,
+});
 
-/// One person: who they are, how to reach them, where it stands, what you
-/// know. A pure view; the page owns saving and navigation.
-///
-/// `NEXT STEP` is not here yet: it arrives whole with #57.
+/// One person: who they are, how to reach them, where it stands, what's next,
+/// what you know. A pure view; the page owns saving and navigation.
 class ContactDetails extends StatelessWidget {
   const ContactDetails({
     required this.person,
@@ -45,8 +48,13 @@ class ContactDetails extends StatelessWidget {
     required this.onDelete,
     required this.onLog,
     required this.onMove,
+    required this.onChangeWorkflow,
+    required this.onPause,
+    required this.onResume,
     required this.onLaunch,
     required this.onRefresh,
+    this.workflowName,
+    this.nextStep,
     this.history,
     super.key,
   });
@@ -66,6 +74,16 @@ class ContactDetails extends StatelessWidget {
   /// Called with the stage picked in ⋯; the page confirms and saves.
   final ValueChanged<Stage> onMove;
 
+  final VoidCallback onChangeWorkflow;
+  final VoidCallback onPause;
+  final VoidCallback onResume;
+
+  /// The current workflow's name, shown beside Change workflow in ⋯.
+  final String? workflowName;
+
+  /// The `NEXT STEP` section, between where it stands and what you know.
+  final Widget? nextStep;
+
   /// The `HISTORY` section, below what you know.
   final Widget? history;
 
@@ -74,6 +92,7 @@ class ContactDetails extends StatelessWidget {
       label: l10n.contactLogSomething,
       icon: Icons.edit_note_rounded,
       onTap: onLog,
+      trailing: null,
     ),
     for (final stage in Stage.values)
       if (stage != person.stage)
@@ -81,8 +100,34 @@ class ContactDetails extends StatelessWidget {
           label: moveToLabel(l10n, stage),
           icon: Icons.swap_horiz_rounded,
           onTap: () => onMove(stage),
+          trailing: null,
         ),
-    (label: l10n.contactEditDetails, icon: Icons.edit_outlined, onTap: onEdit),
+    (
+      label: l10n.contactChangeWorkflow,
+      icon: Icons.alt_route_rounded,
+      onTap: onChangeWorkflow,
+      trailing: workflowName,
+    ),
+    if (person.pausedAt == null)
+      (
+        label: l10n.contactPause,
+        icon: Icons.pause_circle_outline_rounded,
+        onTap: onPause,
+        trailing: null,
+      )
+    else
+      (
+        label: l10n.contactResume,
+        icon: Icons.play_circle_outline_rounded,
+        onTap: onResume,
+        trailing: null,
+      ),
+    (
+      label: l10n.contactEditDetails,
+      icon: Icons.edit_outlined,
+      onTap: onEdit,
+      trailing: null,
+    ),
   ];
 
   /// A sheet on mobile, a menu elsewhere; the same items either way.
@@ -92,6 +137,7 @@ class ContactDetails extends StatelessWidget {
       label: l10n.contactDeleteName(firstName(person)),
       icon: Icons.delete_outline_rounded,
       onTap: () => _confirmDelete(context),
+      trailing: null,
     );
     const icon = Icon(Icons.more_horiz_rounded);
 
@@ -125,7 +171,20 @@ class ContactDetails extends StatelessWidget {
       onSelected: (action) => action(),
       itemBuilder: (context) => [
         for (final action in actions)
-          PopupMenuItem(value: action.onTap, child: Text(action.label)),
+          PopupMenuItem(
+            value: action.onTap,
+            child: Row(
+              spacing: AppSpacing.md,
+              children: [
+                Expanded(child: Text(action.label)),
+                if (action.trailing case final trailing?)
+                  Text(
+                    trailing,
+                    style: TextStyle(color: FoloColors.of(context).textMuted),
+                  ),
+              ],
+            ),
+          ),
         const PopupMenuDivider(),
         PopupMenuItem(
           value: delete.onTap,
@@ -246,6 +305,10 @@ class ContactDetails extends StatelessWidget {
               ],
             ),
           ],
+          if (nextStep case final nextStep?) ...[
+            const SizedBox(height: AppSpacing.lg),
+            nextStep,
+          ],
           const SizedBox(height: AppSpacing.lg),
           SectionHeader(
             title: l10n.contactSectionWhatYouKnow,
@@ -296,6 +359,13 @@ class _MoreSheet extends StatelessWidget {
     Widget tile(_Action action, {Color? color}) => ListTile(
       leading: Icon(action.icon, color: color),
       title: Text(action.label, style: TextStyle(color: color)),
+      trailing: switch (action.trailing) {
+        final text? => Text(
+          text,
+          style: TextStyle(color: FoloColors.of(context).textMuted),
+        ),
+        null => null,
+      },
       onTap: () => Navigator.pop(context, action.onTap),
     );
 

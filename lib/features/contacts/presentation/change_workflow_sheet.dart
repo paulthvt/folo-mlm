@@ -15,43 +15,43 @@ import 'package:folo/features/workflows/presentation/workflows_controller.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// Moves [person] to [stage] once confirmed: a sheet on mobile, a dialog
-/// elsewhere. Closes once the move is saved.
-Future<void> showChangeStage(
-  BuildContext context,
-  Person person,
-  Stage stage,
-) => FoloDialog.show<void>(
-  context,
-  (_) => _ChangeStage(person: person, stage: stage),
-);
+/// Picks what [person] follows next: a sheet on mobile, a dialog elsewhere.
+/// Saving starts the picked workflow from its first step, even the current
+/// one. Closes once saved.
+Future<void> showChangeWorkflow(BuildContext context, Person person) =>
+    FoloDialog.show<void>(context, (_) => _ChangeWorkflow(person));
 
-class _ChangeStage extends ConsumerStatefulWidget {
-  const _ChangeStage({required this.person, required this.stage});
+class _ChangeWorkflow extends ConsumerStatefulWidget {
+  const _ChangeWorkflow(this.person);
 
   final Person person;
-  final Stage stage;
 
   @override
-  ConsumerState<_ChangeStage> createState() => _ChangeStageState();
+  ConsumerState<_ChangeWorkflow> createState() => _ChangeWorkflowState();
 }
 
-class _ChangeStageState extends ConsumerState<_ChangeStage> {
-  /// What the user picked; null until they pick, so the default can arrive
-  /// with the workflows. The record tells "picked nothing" from "not yet".
+class _ChangeWorkflowState extends ConsumerState<_ChangeWorkflow> {
+  /// Null until the user picks; see Change stage.
   ({FollowWith? follow})? _picked;
   bool _saving = false;
   PeopleFailure? _failure;
 
   FollowWith? _follow(List<Workflow> workflows, DateTime today) {
     if (_picked case (:final follow)) return follow;
-    final suggested = defaultFor(workflows, widget.stage);
+    final suggested =
+        findWorkflow(workflows, widget.person.place?.workflowId) ??
+        defaultFor(workflows, widget.person.stage);
     return suggested == null
         ? null
         : (workflow: suggested, firstDue: firstDueDefault(suggested, today));
   }
 
-  Future<void> _move(FollowWith? follow) async {
+  Future<void> _save(FollowWith? follow) async {
+    // Close without writing if the user hasn't picked anything.
+    if (_picked == null) {
+      Navigator.pop(context);
+      return;
+    }
     setState(() {
       _saving = true;
       _failure = null;
@@ -59,7 +59,7 @@ class _ChangeStageState extends ConsumerState<_ChangeStage> {
     try {
       await ref
           .read(peopleProvider(ref.read(accountProvider)?.email).notifier)
-          .moveTo(widget.person, widget.stage, follow: follow);
+          .setWorkflow(widget.person, follow);
       if (mounted) Navigator.pop(context);
     } on PeopleFailure catch (failure) {
       if (mounted) {
@@ -74,41 +74,28 @@ class _ChangeStageState extends ConsumerState<_ChangeStage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
+    final material = MaterialLocalizations.of(context);
     final failure = _failure;
     final owner = ref.watch(accountProvider)?.email;
-    final workflowsAsync = ref.watch(workflowsProvider(owner));
-    final workflows = workflowsAsync.value ?? const [];
+    final workflows = ref.watch(workflowsProvider(owner)).value ?? const [];
     final now = today();
     final follow = _follow(workflows, now);
-    final ending = findWorkflow(workflows, widget.person.place?.workflowId);
-    final onStep = progressOf(widget.person, ending) is OnStep;
-    // The database clears a prospect's status when they leave prospects.
-    final clearsStatus =
-        widget.person.prospectStatus != null && widget.stage != Stage.prospect;
-    final body = clearsStatus
-        ? l10n.changeStageBodyCleared
-        : l10n.changeStageBody;
 
     return FoloDialog(
-      title: movedTitle(l10n, firstName(widget.person), widget.stage),
-      body: ending != null && onStep
-          ? '$body ${l10n.changeStageWorkflowEnds(ending.name)}'
-          : body,
+      title: l10n.changeWorkflowTitle(firstName(widget.person)),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+          child: Text(material.cancelButtonLabel),
         ),
         FilledButton(
-          onPressed: _saving || !workflowsAsync.hasValue
-              ? null
-              : () => _move(follow),
+          onPressed: _saving ? null : () => _save(follow),
           child: _saving
               ? const SizedBox.square(
                   dimension: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : Text(moveToLabel(l10n, widget.stage)),
+              : Text(material.saveButtonLabel),
         ),
       ],
       child: Column(
@@ -118,7 +105,7 @@ class _ChangeStageState extends ConsumerState<_ChangeStage> {
         children: [
           if (failure != null) FormError(peopleFailureCopy(l10n, failure)),
           FollowWithField(
-            workflows: forStage(workflows, widget.stage),
+            workflows: forStage(workflows, widget.person.stage),
             value: follow,
             today: now,
             onChanged: (next) => setState(() => _picked = (follow: next)),

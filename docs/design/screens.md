@@ -90,6 +90,27 @@ above the history because the history is memory, not homework. The app bar title
 is a back affordance, not a repeat of the name — the name is already the largest
 thing on the screen (principle #2).
 
+**`NEXT STEP`** sits between `WHERE IT STANDS` and `WHAT YOU KNOW`, on mobile and
+in the desktop pane. It follows the person's workflow, one step at a time:
+
+| State | Header | Card |
+| --- | --- | --- |
+| On a step | `NEXT STEP` · "Samples · 3 of 5" | The step as title; "Due today" / "Due in 3 days" / "2 days late", then the step's note; a round tick |
+| Done, prospect | `SAMPLES — DONE` | "How did it end with Sarah?" — `Became a customer`, `Not now` (pauses) |
+| Done, customer or team | `NEW CUSTOMER — DONE` | "All 4 steps are done with Claire." — `Follow with…` |
+| Paused | `NEXT STEP` | "Paused since July 12" — `Resume` |
+| No workflow | `NEXT STEP` | "Nothing planned" — `Follow with…` |
+| Loading / failed | `NEXT STEP` | A small spinner / "Couldn't load the workflows" — `Try again` |
+
+A tick completes the step today and waits for the server; on failure a SnackBar,
+and the card stays. There are no progress bars or streaks: the count "3 of 5"
+is where you are, not a score.
+
+The ⋯ menu adds `Change workflow` (the current one's name trailing) and
+`Pause — not now`, or `Resume` while paused. Change stage and Change workflow
+share the FOLLOW WITH block: the stage's workflows, "Nothing for now", and the
+first step's day.
+
 ## 4. Team
 
 App bar → a summary card ("6 people on your team" + AvatarGroup + "Two of them

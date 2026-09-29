@@ -3,6 +3,8 @@ import 'package:folo/features/contacts/data/people_repository.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/domain/search_key.dart';
 import 'package:folo/features/contacts/presentation/history_controller.dart';
+import 'package:folo/features/workflows/domain/progress.dart';
+import 'package:folo/features/workflows/domain/workflow.dart';
 
 /// One account's whole book, loaded once and kept in memory; every contacts
 /// screen reads the signed-in one, `peopleProvider(account?.email)`. Sorted by
@@ -53,8 +55,19 @@ class PeopleController extends AsyncNotifier<List<Person>> {
     return loadedAt != null && now.difference(loadedAt) > staleAfter;
   }
 
-  Future<Person> add(PersonDraft draft) async {
-    final person = await _repository.add(draft);
+  /// Starts [workflow], its first step due counted from [today]. No workflow
+  /// (none seeded yet): starts none.
+  Future<Person> add(
+    PersonDraft draft, {
+    Workflow? workflow,
+    required DateTime today,
+  }) async {
+    final person = await _repository.add(
+      draft,
+      place: workflow == null
+          ? null
+          : start(workflow, firstDue: firstDueDefault(workflow, today)),
+    );
     _change((people) => [...people, person]);
     return person;
   }
@@ -64,12 +77,56 @@ class PeopleController extends AsyncNotifier<List<Person>> {
   }
 
   /// Waits for the server, which decides [Person.stageSince] and the status,
-  /// and writes the history entry that is then reloaded. A failure rethrows
-  /// and changes nothing.
-  Future<void> moveTo(Person person, Stage stage) async {
-    _replace(await _repository.setStage(person.id, stage));
+  /// and writes the history entry that is then reloaded. [follow] travels in
+  /// the same update; null is "Nothing for now". A failure rethrows and
+  /// changes nothing.
+  Future<void> moveTo(Person person, Stage stage, {FollowWith? follow}) async {
+    _replace(
+      await _repository.setStage(person.id, stage, place: _placeFor(follow)),
+    );
     if (ref.mounted) ref.invalidate(historyProvider(person.id));
   }
+
+  /// Change workflow; null is "Nothing for now".
+  Future<void> setWorkflow(Person person, FollowWith? follow) async {
+    _replace(await _repository.setPlace(person.id, _placeFor(follow)));
+  }
+
+  /// Ticks [progress]'s step on [today]: a history entry, and the next step.
+  Future<void> completeStep(
+    Person person,
+    OnStep progress,
+    DateTime today,
+  ) async {
+    _replace(
+      await _repository.completeStep(
+        person.id,
+        progress.step.id,
+        nextPosition(progress.workflow, progress.step),
+        today,
+      ),
+    );
+    if (ref.mounted) ref.invalidate(historyProvider(person.id));
+  }
+
+  /// Hides the next step; a prospect also becomes Not now.
+  Future<void> pause(Person person) async {
+    _replace(
+      await _repository.pause(
+        person.id,
+        DateTime.now(),
+        notNow: person.stage == Stage.prospect,
+      ),
+    );
+  }
+
+  /// The same step comes back, due counted from [today].
+  Future<void> resume(Person person, DateTime today) async {
+    _replace(await _repository.resume(person.id, today));
+  }
+
+  static WorkflowPlace? _placeFor(FollowWith? follow) =>
+      follow == null ? null : start(follow.workflow, firstDue: follow.firstDue);
 
   Future<void> remove(String id) async {
     await _repository.delete(id);

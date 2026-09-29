@@ -13,6 +13,7 @@ class ActionItem extends StatelessWidget {
   const ActionItem({
     required this.name,
     required this.reason,
+    this.title,
     this.chip,
     this.onOpen,
     this.onResolve,
@@ -22,6 +23,9 @@ class ActionItem extends StatelessWidget {
 
   final String name;
   final String reason;
+
+  /// The first line; defaults to [name]. The avatar always reads [name].
+  final String? title;
 
   /// Usually an accent chip, and only when a real date drives the item.
   final Widget? chip;
@@ -66,7 +70,7 @@ class ActionItem extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name, style: theme.textTheme.titleMedium),
+                    Text(title ?? name, style: theme.textTheme.titleMedium),
                     const SizedBox(height: AppSpacing.xs),
                     Text(reason, style: theme.textTheme.bodySmall),
                     if (chipWidget != null) ...[
