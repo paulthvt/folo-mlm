@@ -219,6 +219,56 @@
   "@todayEmptyBody": {
     "description": "Body of the Today screen's empty state. Reassuring, never a reprimand."
   },
+  "todayDate": "{day}",
+  "@todayDate": {
+    "description": "Eyebrow above the Today greeting, shown uppercased: the weekday and the date, e.g. 'Monday, September 29'; the format follows the locale.",
+    "placeholders": {
+      "day": { "type": "DateTime", "format": "MMMMEEEEd" }
+    }
+  },
+  "todayGreeting": "{part, select, morning{Good morning} afternoon{Good afternoon} other{Good evening}}",
+  "@todayGreeting": {
+    "description": "Today's title when the account has no first name. part is the time of day on the device: morning before noon, afternoon before 6 pm, evening after.",
+    "placeholders": {
+      "part": { "type": "String" }
+    }
+  },
+  "todayGreetingNamed": "{part, select, morning{Good morning, {name}} afternoon{Good afternoon, {name}} other{Good evening, {name}}}",
+  "@todayGreetingNamed": {
+    "description": "Today's title, with the account's first name. part is the time of day on the device: morning before noon, afternoon before 6 pm, evening after.",
+    "placeholders": {
+      "part": { "type": "String" },
+      "name": { "type": "String", "example": "Pauline" }
+    }
+  },
+  "todayHeadline": "{count, plural, =1{One person is worth a message today} other{{count} people are worth a message today}}",
+  "@todayHeadline": {
+    "description": "The sentence in the Today hero: a sentence, not a number, so it never reads as a quota. count is everyone due today or late, including rows not shown yet.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "todayReason": "{step} · {workflow}, step {index} of {total}",
+  "@todayReason": {
+    "description": "Line under a person's name on Today: the step to do, then the workflow and where they are in it, e.g. 'Send the samples · Samples, step 2 of 5'.",
+    "placeholders": {
+      "step": { "type": "String", "example": "Send the samples" },
+      "workflow": { "type": "String", "example": "Samples" },
+      "index": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "todayShowMore": "{count, plural, =1{And one more waiting} other{And {count} more waiting}}",
+  "@todayShowMore": {
+    "description": "Button under the first rows on Today; shows the rest in place. count is how many are not shown yet.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "todayLoadFailed": "Couldn't load today.",
+  "@todayLoadFailed": {
+    "description": "Heading in place of Today when the contacts or the workflows could not be loaded. Above contactsLoadErrorBody and a Try again button."
+  },
   "actionMarkAsDone": "Mark as done",
   "@actionMarkAsDone": {
     "description": "Default label of the button that clears a suggested follow-up from the list."

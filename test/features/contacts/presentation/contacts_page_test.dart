@@ -557,9 +557,16 @@ void main() {
     final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples())
       ..gate = Completer<void>();
     people.store['p1'] = _marieOn(1);
-    await openContacts(tester, workflows: workflows);
-    await tester.tap(find.text('Marie Dupont'));
-    // The spinner never settles: pump the route transition by hand.
+    // Today spins too while the workflows load: nothing settles, pump by hand.
+    final container = await pumpFolo(
+      tester,
+      size: _phone,
+      people: people,
+      activities: activities,
+      workflows: workflows,
+      settle: false,
+    );
+    container.read(routerProvider).go(Routes.contactLocation('p1'));
     await tester.pump();
     await tester.pump(const Duration(seconds: 1));
 

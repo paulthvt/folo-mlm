@@ -1,6 +1,5 @@
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/app/theme/app_typography.dart';
-import 'package:folo/core/ui/folo_progress_bar.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Answers "what should I do today?" from arm's length
@@ -12,9 +11,6 @@ class TodayHero extends StatelessWidget {
   const TodayHero({
     required this.eyebrow,
     required this.headline,
-    required this.progress,
-    required this.progressLabel,
-    required this.effortLabel,
     this.compact = true,
     super.key,
   });
@@ -23,10 +19,6 @@ class TodayHero extends StatelessWidget {
 
   /// A sentence. The count lives inside it so it cannot read as a quota.
   final String headline;
-
-  final double progress;
-  final String progressLabel;
-  final String effortLabel;
 
   /// Mobile keeps `title-lg`; desktop steps the headline up to `headline`.
   final bool compact;
@@ -54,13 +46,6 @@ class TodayHero extends StatelessWidget {
             headline,
             style: (compact ? AppTypography.titleLarge : AppTypography.headline)
                 .copyWith(color: scheme.onPrimary),
-          ),
-          const SizedBox(height: AppSpacing.md),
-          FoloProgressBar(
-            value: progress,
-            tone: ProgressTone.primary,
-            leadingLabel: progressLabel,
-            trailingLabel: effortLabel,
           ),
         ],
       ),
