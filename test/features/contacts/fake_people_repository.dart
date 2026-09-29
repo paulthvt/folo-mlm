@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:folo/features/contacts/data/people_repository.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 
+import 'fake_activity_repository.dart';
+
 /// An in-memory book that records calls, and fails or stalls on demand.
 class FakePeopleRepository implements PeopleRepository {
   FakePeopleRepository([Iterable<Person> people = const []]) {
@@ -21,6 +23,10 @@ class FakePeopleRepository implements PeopleRepository {
 
   /// Calls started while set wait on it.
   Completer<void>? gate;
+
+  /// Where [setStage] writes its history entry, as the database does. Unset,
+  /// stage changes leave no entry.
+  FakeActivityRepository? activities;
 
   var _next = 0;
 
@@ -46,7 +52,7 @@ class FakePeopleRepository implements PeopleRepository {
       id: 'new-${_next++}',
       name: draft.name.trim(),
       stage: draft.stage,
-      createdAt: DateTime.utc(2026, 9, 28),
+      stageSince: DateTime.utc(2026, 9, 28),
       phone: draft.phone,
       email: draft.email,
       instagram: draft.instagram,
@@ -58,13 +64,58 @@ class FakePeopleRepository implements PeopleRepository {
   @override
   Future<Person> update(Person person) async {
     await _record('update(${person.id})');
-    store[person.id] = person;
-    return person;
+    // The real update never writes the stage: the stored one stays.
+    final stored = store[person.id]!;
+    final saved = Person(
+      id: person.id,
+      name: person.name,
+      stage: stored.stage,
+      stageSince: stored.stageSince,
+      prospectStatus: stored.stage == Stage.prospect
+          ? person.prospectStatus
+          : null,
+      phone: person.phone,
+      email: person.email,
+      instagram: person.instagram,
+      needs: person.needs,
+      products: person.products,
+      profession: person.profession,
+      address: person.address,
+      notes: person.notes,
+    );
+    store[person.id] = saved;
+    return saved;
   }
 
   @override
   Future<void> delete(String id) async {
     await _record('delete($id)');
     store.remove(id);
+  }
+
+  /// What the database does on a stage change: a new [Person.stageSince], no
+  /// status outside prospects, and an entry in the history.
+  @override
+  Future<Person> setStage(String id, Stage stage) async {
+    await _record('setStage($id, ${stage.name})');
+    final before = store[id]!;
+    final moved = Person(
+      id: id,
+      name: before.name,
+      stage: stage,
+      stageSince: DateTime.utc(2026, 9, 28),
+      prospectStatus: stage == Stage.prospect ? before.prospectStatus : null,
+      phone: before.phone,
+      email: before.email,
+      instagram: before.instagram,
+      needs: before.needs,
+      products: before.products,
+      profession: before.profession,
+      address: before.address,
+      notes: before.notes,
+    );
+    store[id] = moved;
+    activities?.recordStage(id, stage);
+    return moved;
   }
 }

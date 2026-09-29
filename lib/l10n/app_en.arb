@@ -468,10 +468,6 @@
   "@contactEditDetails": {
     "description": "Item of the ⋯ menu on a person's detail screen that opens the edit form."
   },
-  "contactDelete": "Delete",
-  "@contactDelete": {
-    "description": "Destructive item of the ⋯ menu on a person's detail screen."
-  },
   "contactDeleteTitle": "Delete {name}?",
   "@contactDeleteTitle": {
     "description": "Title of the confirmation before deleting a person.",
@@ -528,5 +524,156 @@
   "editPersonTitle": "Edit details",
   "@editPersonTitle": {
     "description": "Title of the form that edits a person's details."
+  },
+  "contactLogSomething": "Log something",
+  "@contactLogSomething": {
+    "description": "Item of the ⋯ menu on a person's detail screen that opens Log something."
+  },
+  "contactMoveToProspects": "Move to prospects",
+  "@contactMoveToProspects": {
+    "description": "Item of the ⋯ menu, and the confirm button of the Change stage sheet, that makes the person a prospect again."
+  },
+  "contactMoveToCustomers": "Move to customers",
+  "@contactMoveToCustomers": {
+    "description": "Item of the ⋯ menu, and the confirm button of the Change stage sheet, that makes the person a customer."
+  },
+  "contactMoveToTeam": "Move to team",
+  "@contactMoveToTeam": {
+    "description": "Item of the ⋯ menu, and the confirm button of the Change stage sheet, that puts the person on the user's team."
+  },
+  "contactDeleteName": "Delete {name}",
+  "@contactDeleteName": {
+    "description": "Destructive item of the ⋯ menu on a person's detail screen, with their first name, e.g. 'Delete Sarah'.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "changeStageToProspect": "{name} is a prospect again",
+  "@changeStageToProspect": {
+    "description": "Title of the sheet confirming a move back to prospects, with the person's first name.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "changeStageToCustomer": "{name} is now a customer",
+  "@changeStageToCustomer": {
+    "description": "Title of the sheet confirming a move to customers, with the person's first name.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "changeStageToTeam": "{name} is now on your team",
+  "@changeStageToTeam": {
+    "description": "Title of the sheet confirming a move to the user's team, with the person's first name.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "changeStageBody": "Everything you noted stays with them.",
+  "@changeStageBody": {
+    "description": "Body of the Change stage sheet. Gender-neutral."
+  },
+  "changeStageBodyCleared": "Everything you noted stays with them. Where it stands is cleared.",
+  "@changeStageBodyCleared": {
+    "description": "Body of the Change stage sheet when a prospect with a status (Interested, Thinking about it…) leaves prospects: the status goes. 'Where it stands' is the section title of the status. Gender-neutral."
+  },
+  "logTitle": "Log something with {name}",
+  "@logTitle": {
+    "description": "Title of the form that adds an entry to a person's history, with their first name.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "activityKindNote": "Note",
+  "@activityKindNote": {
+    "description": "Kind of history entry: something the user wants to remember."
+  },
+  "activityKindCall": "Call",
+  "@activityKindCall": {
+    "description": "Kind of history entry: a phone call with the person."
+  },
+  "activityKindMessage": "Message",
+  "@activityKindMessage": {
+    "description": "Kind of history entry: a text or DM exchanged with the person."
+  },
+  "activityKindOrder": "Order",
+  "@activityKindOrder": {
+    "description": "Kind of history entry: the person bought something."
+  },
+  "activityKindMeeting": "Meeting",
+  "@activityKindMeeting": {
+    "description": "Kind of history entry: the user met the person."
+  },
+  "logWhen": "When",
+  "@logWhen": {
+    "description": "Label of the day field in Log something."
+  },
+  "logWhenToday": "Today, {date}",
+  "@logWhenToday": {
+    "description": "Value of the day field in Log something when it is today, e.g. 'Today, September 28'; the day format follows the locale.",
+    "placeholders": {
+      "date": { "type": "DateTime", "format": "MMMMd" }
+    }
+  },
+  "logWhat": "What happened",
+  "@logWhat": {
+    "description": "Label of the text field in Log something."
+  },
+  "logWhatRequired": "Say what happened.",
+  "@logWhatRequired": {
+    "description": "Validation error under the text field of Log something when it is empty."
+  },
+  "historyTitle": "History",
+  "@historyTitle": {
+    "description": "Section title on a person's detail screen: what happened with them, latest first."
+  },
+  "historyAdd": "Add",
+  "@historyAdd": {
+    "description": "Action of the History section header; opens Log something."
+  },
+  "historySeeAll": "See all {count}",
+  "@historySeeAll": {
+    "description": "Button under the latest history entries that shows every entry; count is the total.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "historyEmpty": "Nothing logged yet.",
+  "@historyEmpty": {
+    "description": "The History section when it has no entry."
+  },
+  "historyLoadError": "Couldn't load the history.",
+  "@historyLoadError": {
+    "description": "The History section when it failed to load; a Try again button follows."
+  },
+  "historyBackToProspects": "Back to prospects",
+  "@historyBackToProspects": {
+    "description": "History entry recorded when the person became a prospect again."
+  },
+  "historyBecameCustomer": "Became a customer",
+  "@historyBecameCustomer": {
+    "description": "History entry recorded when the person became a customer."
+  },
+  "historyJoinedTeam": "Joined your team",
+  "@historyJoinedTeam": {
+    "description": "History entry recorded when the person joined the user's team."
+  },
+  "historyDay": "{day}",
+  "@historyDay": {
+    "description": "Day of a history entry in the current year, e.g. 'October 13'; the format follows the locale.",
+    "placeholders": {
+      "day": { "type": "DateTime", "format": "MMMMd" }
+    }
+  },
+  "historyDayWithYear": "{day}",
+  "@historyDayWithYear": {
+    "description": "Day of a history entry in an earlier year, e.g. 'October 13, 2024'; the format follows the locale.",
+    "placeholders": {
+      "day": { "type": "DateTime", "format": "yMMMMd" }
+    }
+  },
+  "historyMeta": "{day} · {kind}",
+  "@historyMeta": {
+    "description": "Line under a history entry: its day, then its kind, e.g. 'October 13 · Call'.",
+    "placeholders": {
+      "day": { "type": "String" },
+      "kind": { "type": "String" }
+    }
+  },
+  "historyDeleteTitle": "Delete this entry?",
+  "@historyDeleteTitle": {
+    "description": "Title of the confirmation before deleting a history entry."
+  },
+  "historyDeleteConfirm": "Delete",
+  "@historyDeleteConfirm": {
+    "description": "Destructive button that deletes a history entry; also the screen-reader action on an entry."
   }
 }

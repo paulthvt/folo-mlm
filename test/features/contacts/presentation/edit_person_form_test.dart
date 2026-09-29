@@ -14,7 +14,7 @@ final _marie = Person(
   stage: Stage.prospect,
   prospectStatus: ProspectStatus.thinking,
   phone: '06 12 34 56 78',
-  createdAt: DateTime.utc(2026, 3, 4),
+  stageSince: DateTime.utc(2026, 3, 4),
 );
 
 void main() {

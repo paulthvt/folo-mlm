@@ -151,6 +151,8 @@ Every table follows the same conventions (#48), first applied to `person`:
   cascade`, which is how `delete-account` removes everything a user owns.
 - `created_at` and `updated_at timestamptz not null default now()`;
   `updated_at` is kept current by the shared `set_updated_at()` trigger.
+- A table whose rows are never edited (`activity`) drops `updated_at` and has
+  no UPDATE grant.
 - Hard delete. A state such as "Not now" is a column, not a hidden row.
 - A calendar day is `date`, an instant is `timestamptz`. "Today" is computed
   on the device, never on the server.

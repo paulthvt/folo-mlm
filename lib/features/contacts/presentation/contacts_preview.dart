@@ -57,7 +57,7 @@ final _sample = [
     needs: 'Sleep, stress',
     profession: 'Nurse',
     notes: 'Met at the Saturday market. Asked about lavender.',
-    createdAt: DateTime.utc(2026, 3, 4),
+    stageSince: DateTime.utc(2026, 3, 4),
   ),
   Person(
     id: 'p2',
@@ -65,7 +65,7 @@ final _sample = [
     stage: Stage.customer,
     products: 'Lavender, Peppermint',
     needs: 'Headaches',
-    createdAt: DateTime.utc(2026, 5, 1),
+    stageSince: DateTime.utc(2026, 5, 1),
   ),
   Person(
     id: 'p3',
@@ -73,13 +73,13 @@ final _sample = [
     stage: Stage.team,
     instagram: 'helene.b',
     profession: 'Yoga teacher',
-    createdAt: DateTime.utc(2025, 11, 12),
+    stageSince: DateTime.utc(2025, 11, 12),
   ),
   Person(
     id: 'p4',
     name: 'Sarah Cohen',
     stage: Stage.prospect,
-    createdAt: DateTime.utc(2026, 9, 20),
+    stageSince: DateTime.utc(2026, 9, 20),
   ),
 ];
 
@@ -97,6 +97,8 @@ Widget _details() => ContactDetails(
   onStatus: (_) {},
   onEdit: () {},
   onDelete: () {},
+  onLog: () {},
+  onMove: (_) {},
   onLaunch: (_) {},
   onRefresh: () async {},
 );

@@ -7,6 +7,10 @@ environment:
   sdk: ^3.13.0
 
 dependencies:
+  # The iOS date wheel: system pickers follow the platform
+  # (docs/architecture.md → Design packages). Already brought by material_ui;
+  # direct because lib/ imports it.
+  cupertino_ui: ^1.1.0
   flutter:
     sdk: flutter
   # Imported by the code gen-l10n generates. The delegates the app registers come

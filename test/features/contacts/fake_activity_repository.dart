@@ -1,0 +1,74 @@
+import 'dart:async';
+
+import 'package:folo/features/contacts/data/activity_repository.dart';
+import 'package:folo/features/contacts/domain/activity.dart';
+import 'package:folo/features/contacts/domain/person.dart';
+
+/// An in-memory history that records calls, and fails or stalls on demand.
+class FakeActivityRepository implements ActivityRepository {
+  FakeActivityRepository([Iterable<Activity> activities = const []]) {
+    store.addAll(activities);
+  }
+
+  final List<Activity> store = [];
+
+  /// One entry per call, e.g. `delete(a-0)`.
+  final List<String> calls = <String>[];
+
+  /// Thrown by calls started while set. Use a `PeopleFailure`.
+  Object? failWith;
+
+  /// Calls started while set wait on it.
+  Completer<void>? gate;
+
+  var _next = 0;
+
+  Future<void> _record(String call) async {
+    calls.add(call);
+    // Captured now: a later change applies to later calls only.
+    final failure = failWith;
+    final wait = gate;
+    if (wait != null) await wait.future;
+    if (failure != null) throw failure;
+  }
+
+  @override
+  Future<List<Activity>> list(String personId) async {
+    await _record('list($personId)');
+    return store.where((entry) => entry.personId == personId).toList();
+  }
+
+  @override
+  Future<Activity> add(String personId, ActivityDraft draft) async {
+    await _record('add($personId)');
+    final activity = Activity(
+      id: 'a-${_next++}',
+      personId: personId,
+      kind: draft.kind,
+      happenedOn: draft.happenedOn,
+      text: draft.text.trim(),
+      createdAt: DateTime.utc(2026, 9, 28, 12),
+    );
+    store.add(activity);
+    return activity;
+  }
+
+  @override
+  Future<void> delete(String id) async {
+    await _record('delete($id)');
+    store.removeWhere((entry) => entry.id == id);
+  }
+
+  /// What the database trigger writes when a person changes stage. Not a
+  /// call: the app never asks for it.
+  void recordStage(String personId, Stage stage) => store.add(
+    Activity(
+      id: 'a-${_next++}',
+      personId: personId,
+      kind: ActivityKind.stage,
+      happenedOn: DateTime(2026, 9, 28),
+      stage: stage,
+      createdAt: DateTime.utc(2026, 9, 28, 12),
+    ),
+  );
+}
