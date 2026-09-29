@@ -165,6 +165,11 @@ Every table follows the same conventions (#48), first applied to `person`:
   contact page and a future push job cannot disagree. The test fake in
   `test/features/workflows/server_rule.dart` is the only other copy; the
   pgTAP tests pin the real one.
+- Default workflows are seeded once per account, ever (#59). `seed_workflows`
+  writes a `workflow_seeded` row the first time and no-ops whenever that row
+  exists, even after the user has deleted every workflow. The device asks on
+  every workflows load and keeps no memory of having asked; the server
+  decides.
 - Default privileges are revoked from both `anon` and `authenticated`; only
   SELECT, INSERT, UPDATE, DELETE are granted to `authenticated`.
 - Enums are Postgres enum types; a new value is a migration.

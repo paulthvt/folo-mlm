@@ -7,6 +7,7 @@ import 'package:folo/app/theme/theme_preview.dart';
 import 'package:folo/core/ui/ui_preview.dart';
 import 'package:folo/features/contacts/presentation/contacts_preview.dart';
 import 'package:folo/features/today/presentation/today_preview.dart';
+import 'package:folo/features/workflows/presentation/workflows_preview.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Every `@Preview`, rendered at its preview size and compared against a
@@ -31,6 +32,9 @@ void main() {
     'contact_mobile_light': (const Size(390, 844), contactMobileLight),
     'contact_mobile_dark': (const Size(390, 844), contactMobileDark),
     'contacts_desktop_light': (const Size(1440, 900), contactsDesktopLight),
+    'workflows_list_light': (const Size(390, 844), workflowsListLight),
+    'workflow_editor_light': (const Size(390, 844), workflowEditorLight),
+    'workflow_step_light': (const Size(390, 844), workflowStepLight),
     'components_light': (const Size(420, 1800), uiComponentsLight),
     'components_dark': (const Size(420, 1800), uiComponentsDark),
     'tokens_colour_light': (const Size(420, 900), colourTokensLight),
