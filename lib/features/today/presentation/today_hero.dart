@@ -8,20 +8,12 @@ import 'package:material_ui/material_ui.dart';
 /// The only filled colour block in the product. Its colour is identical in light
 /// and dark, which is why the labels on it can be white at 78% in both modes.
 class TodayHero extends StatelessWidget {
-  const TodayHero({
-    required this.eyebrow,
-    required this.headline,
-    this.compact = true,
-    super.key,
-  });
+  const TodayHero({required this.eyebrow, required this.headline, super.key});
 
   final String eyebrow;
 
   /// A sentence. The count lives inside it so it cannot read as a quota.
   final String headline;
-
-  /// Mobile keeps `title-lg`; desktop steps the headline up to `headline`.
-  final bool compact;
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +36,7 @@ class TodayHero extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           Text(
             headline,
-            style: (compact ? AppTypography.titleLarge : AppTypography.headline)
-                .copyWith(color: scheme.onPrimary),
+            style: AppTypography.titleLarge.copyWith(color: scheme.onPrimary),
           ),
         ],
       ),

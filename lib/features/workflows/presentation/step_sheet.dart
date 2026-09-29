@@ -145,7 +145,6 @@ class _StepFormState extends State<StepForm> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final material = MaterialLocalizations.of(context);
     final failure = _failure;
@@ -160,10 +159,6 @@ class _StepFormState extends State<StepForm> {
             ? l10n.stepNew
             : l10n.stepTitle(widget.number),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(material.cancelButtonLabel),
-          ),
           FilledButton(
             onPressed: _saving ? null : _save,
             child: _saving
@@ -174,6 +169,12 @@ class _StepFormState extends State<StepForm> {
                 : Text(material.saveButtonLabel),
           ),
         ],
+        footer: remove == null
+            ? null
+            : TextButton(
+                onPressed: _saving ? null : () => unawaited(_run(remove)),
+                child: Text(l10n.stepRemove),
+              ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -215,17 +216,6 @@ class _StepFormState extends State<StepForm> {
               textCapitalization: TextCapitalization.sentences,
               decoration: InputDecoration(labelText: l10n.stepNote),
             ),
-            if (remove != null)
-              Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: TextButton(
-                  onPressed: _saving ? null : () => unawaited(_run(remove)),
-                  style: TextButton.styleFrom(
-                    foregroundColor: theme.colorScheme.error,
-                  ),
-                  child: Text(l10n.stepRemove),
-                ),
-              ),
           ],
         ),
       ),

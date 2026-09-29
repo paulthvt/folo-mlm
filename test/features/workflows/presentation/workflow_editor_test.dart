@@ -421,9 +421,10 @@ void main() {
     final handle = find.byIcon(Icons.drag_handle_rounded).first;
     await tester.ensureVisible(handle);
     await tester.pumpAndSettle();
-    final row = tester
-        .getSize(find.widgetWithText(ListTile, 'Send a first message'))
-        .height;
+    // One row plus the hairline under it.
+    double top(String label) =>
+        tester.getTopLeft(find.widgetWithText(ListTile, label)).dy;
+    final row = top('Send the samples') - top('Send a first message');
 
     final gesture = await tester.startGesture(tester.getCenter(handle));
     await tester.pump();

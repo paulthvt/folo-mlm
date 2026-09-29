@@ -1,5 +1,6 @@
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
+import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/core/layout/breakpoints.dart';
 import 'package:folo/core/ui/fact_row.dart';
 import 'package:folo/core/ui/folo_avatar.dart';
@@ -42,6 +43,9 @@ typedef _Action = ({
 /// One person: who they are, how to reach them, where it stands, what's next,
 /// what you know. A pure view; the page owns saving and navigation.
 class ContactDetails extends StatelessWidget {
+  /// WHAT YOU KNOW's column on desktop, beside the rest.
+  static const double _factsWidth = 272;
+
   const ContactDetails({
     required this.person,
     required this.onStatus,
@@ -230,129 +234,184 @@ class ContactDetails extends StatelessWidget {
       (l10n.factNotes, person.notes, null),
     ].where((fact) => fact.$2 != null).toList();
 
+    final desktop = context.screenSize.isDesktop;
+    final more = _more(context, l10n);
+
+    final buttons = [
+      if (message != null)
+        FilledButton.icon(
+          onPressed: () => onLaunch(message),
+          icon: const Icon(Icons.chat_bubble_outline_rounded),
+          label: Text(l10n.contactMessage),
+        ),
+      if (call != null)
+        FilledButton.tonalIcon(
+          onPressed: () => onLaunch(call),
+          style: AppTheme.tonal(context),
+          icon: const Icon(Icons.call_outlined),
+          label: Text(l10n.contactCall),
+        ),
+    ];
+
+    final header = Row(
+      crossAxisAlignment: desktop
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
+      children: [
+        FoloAvatar(name: person.name, size: AvatarSize.header),
+        const SizedBox(width: AppSpacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: AppSpacing.xs,
+            children: [
+              Text(
+                person.name,
+                style: desktop
+                    ? theme.textTheme.displaySmall
+                    : theme.textTheme.headlineSmall,
+              ),
+              Text(
+                l10n.contactSince(
+                  stageLabel(l10n, person.stage),
+                  person.stageSince.toLocal(),
+                ),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: folo.textMuted,
+                ),
+              ),
+              FoloChip(label: stageLabel(l10n, person.stage)),
+            ],
+          ),
+        ),
+        // Desktop: the buttons sit in the header, sized to their labels.
+        if (desktop) ...[
+          for (final button in buttons) ...[
+            const SizedBox(width: AppSpacing.sm),
+            button,
+          ],
+          const SizedBox(width: AppSpacing.sm),
+          more,
+        ],
+      ],
+    );
+
+    final whereItStands = [
+      if (person.stage == Stage.prospect) ...[
+        SectionHeader(title: l10n.contactSectionWhereItStands),
+        // Each chip already pads itself to the 48px tap target.
+        Wrap(
+          spacing: AppSpacing.sm,
+          children: [
+            for (final option in ProspectStatus.values)
+              ChoiceChip(
+                label: Text(statusLabel(l10n, option)),
+                selected: option == status,
+                onSelected: (_) => onStatus(option == status ? null : option),
+              ),
+          ],
+        ),
+      ],
+    ];
+
+    final whatYouKnow = [
+      SectionHeader(
+        title: l10n.contactSectionWhatYouKnow,
+        actionLabel: l10n.contactEdit,
+        onAction: onEdit,
+      ),
+      Card(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.md,
+            vertical: AppSpacing.sm,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              if (facts.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
+                  child: Text(
+                    l10n.contactNothingYet,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: folo.textMuted,
+                    ),
+                  ),
+                )
+              else
+                for (final (label, value, link) in facts)
+                  FactRow(
+                    label: label,
+                    value: value!,
+                    onTap: link == null ? null : () => onLaunch(link),
+                  ),
+            ],
+          ),
+        ),
+      ),
+    ];
+
+    // Sections with the same gap between each, none above the first.
+    List<Widget> spaced(List<List<Widget>> sections) => [
+      for (final (index, section)
+          in sections.where((section) => section.isNotEmpty).indexed) ...[
+        if (index > 0) const SizedBox(height: AppSpacing.lg),
+        ...section,
+      ],
+    ];
+
     return RefreshIndicator(
       onRefresh: onRefresh,
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: EdgeInsets.all(
-          context.screenSize.isDesktop ? AppSpacing.xl : AppSpacing.md,
-        ),
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FoloAvatar(name: person.name, size: AvatarSize.header),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
+        padding: EdgeInsets.all(desktop ? AppSpacing.xl : AppSpacing.md),
+        children: desktop
+            ? [
+                header,
+                const SizedBox(height: AppSpacing.lg),
+                Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: AppSpacing.xs,
                   children: [
-                    Text(person.name, style: theme.textTheme.headlineSmall),
-                    Text(
-                      l10n.contactSince(
-                        stageLabel(l10n, person.stage),
-                        person.stageSince.toLocal(),
-                      ),
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: folo.textMuted,
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: spaced([
+                          whereItStands,
+                          [?nextStep],
+                          [?history],
+                        ]),
                       ),
                     ),
-                    FoloChip(label: stageLabel(l10n, person.stage)),
+                    const SizedBox(width: AppSpacing.lg),
+                    SizedBox(
+                      width: _factsWidth,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: whatYouKnow,
+                      ),
+                    ),
                   ],
                 ),
-              ),
-              _more(context, l10n),
-            ],
-          ),
-          if (message != null || call != null) ...[
-            const SizedBox(height: AppSpacing.lg),
-            Row(
-              spacing: AppSpacing.sm,
-              children: [
-                if (message != null)
-                  Expanded(
-                    child: FilledButton.icon(
-                      onPressed: () => onLaunch(message),
-                      icon: const Icon(Icons.chat_bubble_outline_rounded),
-                      label: Text(l10n.contactMessage),
-                    ),
+              ]
+            : spaced([
+                [
+                  header,
+                  const SizedBox(height: AppSpacing.lg),
+                  Row(
+                    spacing: AppSpacing.sm,
+                    children: [
+                      for (final button in buttons) Expanded(child: button),
+                      if (buttons.isEmpty) const Spacer(),
+                      more,
+                    ],
                   ),
-                if (call != null)
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () => onLaunch(call),
-                      icon: const Icon(Icons.call_outlined),
-                      label: Text(l10n.contactCall),
-                    ),
-                  ),
-              ],
-            ),
-          ],
-          if (person.stage == Stage.prospect) ...[
-            const SizedBox(height: AppSpacing.lg),
-            SectionHeader(title: l10n.contactSectionWhereItStands),
-            // Each chip already pads itself to the 48px tap target.
-            Wrap(
-              spacing: AppSpacing.sm,
-              children: [
-                for (final option in ProspectStatus.values)
-                  ChoiceChip(
-                    label: Text(statusLabel(l10n, option)),
-                    selected: option == status,
-                    onSelected: (_) =>
-                        onStatus(option == status ? null : option),
-                  ),
-              ],
-            ),
-          ],
-          if (nextStep case final nextStep?) ...[
-            const SizedBox(height: AppSpacing.lg),
-            nextStep,
-          ],
-          const SizedBox(height: AppSpacing.lg),
-          SectionHeader(
-            title: l10n.contactSectionWhatYouKnow,
-            actionLabel: l10n.contactEdit,
-            onAction: onEdit,
-          ),
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: AppSpacing.md,
-                vertical: AppSpacing.sm,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (facts.isEmpty)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: AppSpacing.sm,
-                      ),
-                      child: Text(
-                        l10n.contactNothingYet,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: folo.textMuted,
-                        ),
-                      ),
-                    )
-                  else
-                    for (final (label, value, link) in facts)
-                      FactRow(
-                        label: label,
-                        value: value!,
-                        onTap: link == null ? null : () => onLaunch(link),
-                      ),
                 ],
-              ),
-            ),
-          ),
-          if (history case final history?) ...[
-            const SizedBox(height: AppSpacing.lg),
-            history,
-          ],
-        ],
+                whereItStands,
+                [?nextStep],
+                whatYouKnow,
+                [?history],
+              ]),
       ),
     );
   }

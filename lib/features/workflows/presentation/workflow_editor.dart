@@ -326,21 +326,32 @@ class _WorkflowEditorViewState extends State<WorkflowEditorView> {
                 onReorderItem: _reorder,
                 itemBuilder: (context, index) {
                   final step = steps[index];
-                  return ListTile(
+                  // The group's hairlines only fall between its own children,
+                  // and the whole list is one of them.
+                  return Column(
                     key: ValueKey(step.id),
-                    leading: _NumberBadge(index + 1),
-                    title: Text(step.label),
-                    subtitle: Text(
-                      index == 0 && step.days == 0
-                          ? l10n.workflowStepWhenYouStart
-                          : l10n.workflowStepDaysAfter(step.days),
-                    ),
-                    trailing: ReorderableDragStartListener(
-                      index: index,
-                      enabled: !moving,
-                      child: const Icon(Icons.drag_handle_rounded),
-                    ),
-                    onTap: () => widget.onOpenStep(index),
+                    children: [
+                      if (index > 0) const Divider(),
+                      ListTile(
+                        visualDensity: VisualDensity.compact,
+                        leading: _NumberBadge(index + 1),
+                        title: Text(
+                          step.label,
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                        subtitle: Text(
+                          index == 0 && step.days == 0
+                              ? l10n.workflowStepWhenYouStart
+                              : l10n.workflowStepDaysAfter(step.days),
+                        ),
+                        trailing: ReorderableDragStartListener(
+                          index: index,
+                          enabled: !moving,
+                          child: const Icon(Icons.drag_handle_rounded),
+                        ),
+                        onTap: () => widget.onOpenStep(index),
+                      ),
+                    ],
                   );
                 },
               ),

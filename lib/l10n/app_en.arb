@@ -358,6 +358,10 @@
   "@contactsAdd": {
     "description": "Button on the Contacts list, and on its empty state, that opens the form to add a person."
   },
+  "contactsAddShort": "Add",
+  "@contactsAddShort": {
+    "description": "Short label of the button at the top of the Contacts list on desktop, which opens the form to add a person."
+  },
   "contactsRefresh": "Refresh",
   "@contactsRefresh": {
     "description": "Tooltip of the icon button that reloads the Contacts list, shown where there is no pull to refresh (mouse)."

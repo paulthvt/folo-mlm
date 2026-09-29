@@ -161,7 +161,8 @@ class _TodayViewState extends State<TodayView> {
 
     return Scaffold(
       body: SafeArea(
-        child: Center(
+        child: Align(
+          alignment: AlignmentDirectional.topStart,
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: _column),
             child: RefreshIndicator(
@@ -181,6 +182,7 @@ class _TodayViewState extends State<TodayView> {
                     title: greeting(l10n, widget.now, widget.firstName),
                     large: desktop,
                     action: widget.accountAction,
+                    gap: AppSpacing.sm,
                   ),
                   ...switch (widget.due) {
                     AsyncData(:final value) when value.isEmpty => const [
@@ -207,7 +209,6 @@ class _TodayViewState extends State<TodayView> {
       TodayHero(
         eyebrow: l10n.todayTitle,
         headline: l10n.todayHeadline(due.length),
-        compact: !desktop,
       ),
       SizedBox(height: desktop ? AppSpacing.xl : AppSpacing.lg),
       SectionHeader(title: l10n.todaySectionPriority),

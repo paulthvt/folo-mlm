@@ -196,8 +196,9 @@ anymore" and `Back to workflows`.
 
 **Step** — "Step 2" or "New step": What to do, Days after the previous step
 ("Days after starting" for step 1, 0 to 365) with a live "Comes due 3 days
-after you tick step 1." hint, an optional Note, and `Remove this step` without
-a confirmation: people on it move on and their history stays.
+after you tick step 1." hint, an optional Note, a full-width `Save`, and
+`Remove this step` centred under it, without a confirmation: people on it move
+on and their history stays. No Cancel: the sheet closes by dragging it down.
 
 Nothing is optimistic. A control is disabled while its write is in flight; a
 failure says "Couldn't save. Check your connection and try again." — inline
