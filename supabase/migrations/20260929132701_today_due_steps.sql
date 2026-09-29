@@ -38,7 +38,7 @@ declare
   next_position numeric;
   moved public.person;
 begin
-  select * into target from public.person where id = p_person;
+  select * into target from public.person where id = p_person for update;
   if target.id is null
     or public.current_step_id(target) is distinct from p_step then
     raise exception 'step % is not the current step of person %', p_step, p_person
