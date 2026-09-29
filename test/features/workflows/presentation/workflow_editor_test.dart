@@ -113,4 +113,44 @@ void main() {
     expect(find.text('Health professionals'), findsOneWidget);
     expect(find.text('Samples'), findsNothing);
   });
+
+  testWidgets('a name typed without Done is saved when leaving', (
+    tester,
+  ) async {
+    final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples());
+    await openWorkflows(
+      tester,
+      Routes.settingsWorkflowLocation('samples'),
+      workflows: workflows,
+    );
+
+    await tester.enterText(find.byType(TextField).first, 'Tasters');
+    await tester.tap(find.byType(BackButton));
+    await tester.pumpAndSettle();
+
+    expect(_renames(workflows), ['rename(samples, Tasters)']);
+  });
+
+  testWidgets('desktop: typed name saved when leaving via sidebar', (
+    tester,
+  ) async {
+    final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples());
+    await openWorkflows(
+      tester,
+      Routes.settings,
+      workflows: workflows,
+      size: const Size(1440, 900),
+    );
+
+    await tester.tap(find.text('Workflows'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Samples'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(find.byType(TextField).first, 'Tasters');
+    await tester.tap(find.text('Language'));
+    await tester.pumpAndSettle();
+
+    expect(_renames(workflows), ['rename(samples, Tasters)']);
+  });
 }

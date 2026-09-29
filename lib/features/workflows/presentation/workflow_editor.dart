@@ -108,6 +108,14 @@ class _WorkflowEditorViewState extends State<WorkflowEditorView> {
   }
 
   @override
+  void deactivate() {
+    // Unfocus before leaving so the focus listener fires and saves. If we
+    // don't, dispose() removes the listener first and a typed name is lost.
+    _nameFocus.unfocus();
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     _name.dispose();
     _nameFocus.dispose();
