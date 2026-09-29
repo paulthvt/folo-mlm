@@ -5,6 +5,7 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/router/app_router.dart';
 import 'package:folo/app/router/routes.dart';
+import 'package:folo/core/ui/pick_day.dart';
 import 'package:folo/features/contacts/domain/activity.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
@@ -12,9 +13,11 @@ import 'package:folo/features/contacts/presentation/contact_details.dart';
 import 'package:folo/features/contacts/presentation/contact_list.dart';
 import 'package:folo/features/contacts/presentation/contact_page.dart';
 import 'package:folo/features/contacts/presentation/history_section.dart';
+import 'package:folo/features/contacts/presentation/next_step_section.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../app/app_harness.dart';
+import '../../workflows/fake_workflow_repository.dart';
 import '../fake_activity_repository.dart';
 import '../fake_people_repository.dart';
 
@@ -46,6 +49,16 @@ Activity _note(String id, String text, int day) => Activity(
   createdAt: DateTime.utc(2026, 9, day, 12),
 );
 
+Person _marieOn(num position, {DateTime? pausedAt}) => Person(
+  id: 'p1',
+  name: 'Marie Dupont',
+  stage: Stage.prospect,
+  phone: '06 12 34 56 78',
+  stageSince: DateTime.utc(2026, 3, 4),
+  place: (workflowId: 'samples', atPosition: position, lastTick: today()),
+  pausedAt: pausedAt,
+);
+
 void main() {
   late FakePeopleRepository people;
   late FakeActivityRepository activities;
@@ -55,19 +68,27 @@ void main() {
     people = FakePeopleRepository([_marie, _lucas])..activities = activities;
   });
 
-  Future<void> openContacts(WidgetTester tester, {Size size = _phone}) async {
+  Future<void> openContacts(
+    WidgetTester tester, {
+    Size size = _phone,
+    FakeWorkflowRepository? workflows,
+  }) async {
     final container = await pumpFolo(
       tester,
       size: size,
       people: people,
       activities: activities,
+      workflows: workflows,
     );
     container.read(routerProvider).go(Routes.contacts);
     await tester.pumpAndSettle();
   }
 
-  Future<void> openMarie(WidgetTester tester) async {
-    await openContacts(tester);
+  Future<void> openMarie(
+    WidgetTester tester, {
+    FakeWorkflowRepository? workflows,
+  }) async {
+    await openContacts(tester, workflows: workflows);
     await tester.tap(find.text('Marie Dupont'));
     await tester.pumpAndSettle();
   }
@@ -427,5 +448,143 @@ void main() {
 
     expect(activities.calls, contains('delete(a1)'));
     expect(find.text('Ordered the cream'), findsNothing);
+  });
+
+  const markFirst = 'Mark "Send a first message" done';
+  const couldNotSave = "Couldn't save. Check your connection and try again.";
+
+  testWidgets('ticking a step moves the card on and logs it', (tester) async {
+    people.store['p1'] = _marieOn(1);
+    await openMarie(tester);
+
+    expect(find.text('Samples · 1 of 5'), findsOneWidget);
+    await tester.tap(find.byTooltip(markFirst));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Send the samples'), findsOneWidget);
+    expect(find.text('Samples · 2 of 5'), findsOneWidget);
+    expect(people.calls, contains('completeStep(p1, samples-1)'));
+  });
+
+  testWidgets('a tick in flight hides the button: one step, not two', (
+    tester,
+  ) async {
+    people.store['p1'] = _marieOn(1);
+    await openMarie(tester);
+    people.gate = Completer<void>();
+
+    await tester.tap(find.byTooltip(markFirst));
+    await tester.pump();
+    expect(find.byTooltip(markFirst), findsNothing);
+    people.gate!.complete();
+    people.gate = null;
+    await tester.pumpAndSettle();
+
+    expect(
+      people.calls.where((call) => call.startsWith('completeStep')),
+      hasLength(1),
+    );
+  });
+
+  testWidgets('a failed tick says so and keeps the step', (tester) async {
+    people.store['p1'] = _marieOn(1);
+    await openMarie(tester);
+    people.failWith = PeopleFailure.network;
+
+    await tester.tap(find.byTooltip(markFirst));
+    await tester.pumpAndSettle();
+
+    expect(find.text(couldNotSave), findsOneWidget);
+    expect(find.text('Send a first message'), findsOneWidget);
+  });
+
+  testWidgets('Pause from ⋯ shows the paused card; Resume brings it back', (
+    tester,
+  ) async {
+    people.store['p1'] = _marieOn(2);
+    await openMarie(tester);
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Pause — not now'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Paused since'), findsOneWidget);
+    expect(people.store['p1']!.prospectStatus, ProspectStatus.notNow);
+    await tester.tap(find.widgetWithText(OutlinedButton, 'Resume'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Send the samples'), findsOneWidget);
+  });
+
+  testWidgets('done: Became a customer opens the move to customers', (
+    tester,
+  ) async {
+    people.store['p1'] = _marieOn(6);
+    await openMarie(tester);
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Became a customer'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Marie is now a customer'), findsOneWidget);
+  });
+
+  testWidgets('Change workflow from ⋯ opens the sheet', (tester) async {
+    people.store['p1'] = _marieOn(2);
+    await openMarie(tester);
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Change workflow'));
+    await tester.pumpAndSettle();
+
+    expect(find.text("Change Marie's workflow"), findsOneWidget);
+  });
+
+  testWidgets('workflows loading: a spinner in the card, the page works', (
+    tester,
+  ) async {
+    final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples())
+      ..gate = Completer<void>();
+    people.store['p1'] = _marieOn(1);
+    await openContacts(tester, workflows: workflows);
+    await tester.tap(find.text('Marie Dupont'));
+    // The spinner never settles: pump the route transition by hand.
+    await tester.pump();
+    await tester.pump(const Duration(seconds: 1));
+
+    expect(
+      find.descendant(
+        of: find.byType(NextStepSection),
+        matching: find.byType(CircularProgressIndicator),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Marie Dupont'), findsWidgets);
+    workflows.gate!.complete();
+    await tester.pumpAndSettle();
+
+    expect(find.text('Send a first message'), findsOneWidget);
+  });
+
+  testWidgets('workflows failed: the card says so, Try again loads them', (
+    tester,
+  ) async {
+    final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples())
+      ..failWith = PeopleFailure.network;
+    people.store['p1'] = _marieOn(1);
+    await openMarie(tester, workflows: workflows);
+
+    expect(find.text("Couldn't load the workflows"), findsOneWidget);
+    workflows.failWith = null;
+    await tester.tap(
+      find.descendant(
+        of: find.byType(NextStepSection),
+        matching: find.text('Try again'),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Send a first message'), findsOneWidget);
   });
 }

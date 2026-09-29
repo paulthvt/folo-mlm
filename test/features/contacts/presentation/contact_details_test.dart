@@ -13,6 +13,7 @@ Person _person({
   String? email,
   String? instagram,
   String? needs,
+  DateTime? pausedAt,
 }) => Person(
   id: 'p1',
   name: 'Marie Dupont',
@@ -23,6 +24,7 @@ Person _person({
   email: email,
   instagram: instagram,
   needs: needs,
+  pausedAt: pausedAt,
 );
 
 class _Calls {
@@ -32,12 +34,16 @@ class _Calls {
   var deletes = 0;
   var logs = 0;
   final moves = <Stage>[];
+  var workflowChanges = 0;
+  var pauses = 0;
+  var resumes = 0;
 }
 
 Future<_Calls> _pump(
   WidgetTester tester,
   Person person, {
   Size size = const Size(800, 600),
+  String? workflowName,
 }) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
@@ -59,6 +65,10 @@ Future<_Calls> _pump(
           onMove: calls.moves.add,
           onLaunch: calls.launched.add,
           onRefresh: () async {},
+          onChangeWorkflow: () => calls.workflowChanges++,
+          onPause: () => calls.pauses++,
+          onResume: () => calls.resumes++,
+          workflowName: workflowName,
         ),
       ),
     ),
@@ -254,5 +264,41 @@ void main() {
 
     expect(find.byType(BottomSheet), findsNothing);
     expect(calls.logs + calls.edits + calls.deletes + calls.moves.length, 0);
+  });
+
+  testWidgets('⋯: Change workflow names the current one, then Pause', (
+    tester,
+  ) async {
+    final calls = await _pump(tester, _person(), workflowName: 'Samples');
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+    expect(find.text('Samples'), findsOneWidget);
+    expect(find.text('Resume'), findsNothing);
+    await tester.tap(find.text('Pause — not now'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Change workflow'));
+    await tester.pumpAndSettle();
+
+    expect(calls.pauses, 1);
+    expect(calls.workflowChanges, 1);
+  });
+
+  testWidgets('mobile ⋯, paused: Resume instead of Pause', (tester) async {
+    final calls = await _pump(
+      tester,
+      _person(pausedAt: DateTime.utc(2026, 7, 12)),
+      size: const Size(390, 844),
+    );
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+    expect(find.text('Pause — not now'), findsNothing);
+    await tester.tap(find.text('Resume'));
+    await tester.pumpAndSettle();
+
+    expect(calls.resumes, 1);
   });
 }
