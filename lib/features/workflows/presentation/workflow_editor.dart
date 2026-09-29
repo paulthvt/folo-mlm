@@ -11,6 +11,7 @@ import 'package:folo/core/ui/folo_dialog.dart';
 import 'package:folo/core/ui/section_header.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
+import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/presentation/people_controller.dart';
 import 'package:folo/features/contacts/presentation/people_copy.dart';
 import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
@@ -83,29 +84,41 @@ class WorkflowEditor extends ConsumerWidget {
           ref,
           (repository) => repository.setDefault(workflow.id, on),
         ),
-        onDelete: () => _delete(context, ref, workflow),
+        onDelete: () => _delete(context, ref, owner, workflow),
       ),
     );
   }
 
   /// Asks first, saying who follows it; then deletes and returns to the list.
+  /// People not loaded: waits for them; failed: says no count rather than a
+  /// wrong one.
   static Future<void> _delete(
     BuildContext context,
     WidgetRef ref,
+    String? owner,
     Workflow workflow,
   ) async {
     final l10n = AppLocalizations.of(context);
-    final people =
-        ref.read(peopleProvider(ref.read(accountProvider)?.email)).value ??
-        const [];
+    final state = ref.read(peopleProvider(owner));
+    List<Person>? people = state.hasError ? null : state.value;
+    if (people == null) {
+      try {
+        people = await ref.read(peopleProvider(owner).future);
+      } on Object {
+        people = null;
+      }
+      if (!context.mounted) return;
+    }
     final followers = people
-        .where((person) => person.place?.workflowId == workflow.id)
+        ?.where((person) => person.place?.workflowId == workflow.id)
         .length;
     final confirmed = await confirmDestructive(
       context,
       title: l10n.workflowDeleteTitle(workflow.name),
       action: l10n.workflowDeleteConfirm,
-      body: l10n.workflowDeleteBody(followers),
+      body: followers == null
+          ? l10n.workflowDeleteBodyUnknown
+          : l10n.workflowDeleteBody(followers),
     );
     if (!confirmed || !context.mounted) return;
     await editWorkflows(ref, (repository) => repository.delete(workflow.id));
@@ -206,9 +219,9 @@ class _WorkflowEditorViewState extends State<WorkflowEditorView> {
       _written = name;
       // ponytail: failure after leaving can't show (no SnackBar on dead context)
       unawaited(
-        notifier.edit(
-          (repository) => repository.rename(widget.workflow.id, name),
-        ),
+        notifier
+            .edit((repository) => repository.rename(widget.workflow.id, name))
+            .catchError((Object _) {}, test: (e) => e is PeopleFailure),
       );
     }
     super.deactivate();
@@ -261,6 +274,8 @@ class _WorkflowEditorViewState extends State<WorkflowEditorView> {
   /// [from] and [to] are indexes in the saved order, [to] counted once [from]
   /// is out of the list: what `onReorderItem` gives, drag or Move down alike.
   void _reorder(int from, int to) {
+    // Dropped where it was: nothing to write.
+    if (from == to) return;
     final steps = widget.workflow.steps;
     final rest = [...steps]..removeAt(from);
     unawaited(

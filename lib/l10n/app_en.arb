@@ -1054,6 +1054,10 @@
       "count": { "type": "int" }
     }
   },
+  "workflowDeleteBodyUnknown": "They'll have nothing planned; their history stays.",
+  "@workflowDeleteBodyUnknown": {
+    "description": "Body of the confirmation before deleting a workflow, when the people could not be loaded to count who is on it."
+  },
   "workflowDeleteConfirm": "Delete",
   "@workflowDeleteConfirm": {
     "description": "Confirms deleting a workflow."

@@ -191,6 +191,25 @@ void main() {
     expect(_renames(workflows), ['rename(samples, Tasters)']);
   });
 
+  testWidgets('a failed save on the way out is not an uncaught error', (
+    tester,
+  ) async {
+    final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples());
+    final container = await openWorkflows(
+      tester,
+      Routes.settingsWorkflowLocation('samples'),
+      workflows: workflows,
+    );
+    workflows.failWith = PeopleFailure.network;
+
+    await tester.enterText(find.byType(TextField).first, 'Tasters');
+    container.read(routerProvider).go(Routes.today);
+    await tester.pumpAndSettle();
+
+    expect(_renames(workflows), ['rename(samples, Tasters)']);
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('desktop: list shows the new name after deactivate save', (
     tester,
   ) async {
@@ -341,6 +360,57 @@ void main() {
     semantics.dispose();
   });
 
+  testWidgets('a step dropped where it was writes nothing', (tester) async {
+    final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples());
+    await openWorkflows(
+      tester,
+      Routes.settingsWorkflowLocation('samples'),
+      workflows: workflows,
+    );
+    // Flutter's own list filters this out today; the editor does not rely on
+    // it, so the callback is called directly.
+    tester
+        .widget<ReorderableListView>(find.byType(ReorderableListView))
+        .onReorderItem!(1, 1);
+    await tester.pumpAndSettle();
+
+    expect(
+      workflows.calls.where((call) => call.startsWith('moveStep')),
+      isEmpty,
+    );
+  });
+
+  testWidgets('a failed move says so and shows the saved order', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples());
+    await openWorkflows(
+      tester,
+      Routes.settingsWorkflowLocation('samples'),
+      workflows: workflows,
+    );
+    workflows.failWith = PeopleFailure.network;
+
+    tester.semantics.customAction(_stepNode('Send a first message'), _moveDown);
+    await tester.pumpAndSettle();
+
+    expect(workflows.calls, contains('moveStep(samples-1, 2.5)'));
+    expect(find.text(_failed), findsOneWidget);
+    expect(find.byType(WorkflowEditor), findsOneWidget);
+    final labels = tester
+        .widgetList<ListTile>(
+          find.descendant(
+            of: find.byType(ReorderableListView),
+            matching: find.byType(ListTile),
+          ),
+        )
+        .map((tile) => (tile.title! as Text).data)
+        .take(2);
+    expect(labels, ['Send a first message', 'Send the samples']);
+    semantics.dispose();
+  });
+
   testWidgets('dragging a step by its handle moves it', (tester) async {
     final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples());
     await openWorkflows(
@@ -484,5 +554,47 @@ void main() {
     await tester.pumpAndSettle();
     expect(workflows.calls.where((call) => call.startsWith('delete')), isEmpty);
     expect(find.byType(WorkflowEditor), findsOneWidget);
+  });
+  testWidgets('a failed delete says so and stays on the workflow', (
+    tester,
+  ) async {
+    final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples());
+    await openWorkflows(
+      tester,
+      Routes.settingsWorkflowLocation('samples'),
+      workflows: workflows,
+    );
+    workflows.failWith = PeopleFailure.network;
+
+    await _tapVisible(tester, find.text('Delete workflow'));
+    await tester.tap(find.text('Delete'));
+    await tester.pumpAndSettle();
+
+    expect(workflows.calls, contains('delete(samples)'));
+    expect(find.text(_failed), findsOneWidget);
+    expect(find.byType(WorkflowEditor), findsOneWidget);
+    expect(_name(tester), 'Samples');
+    expect(find.text('Delete workflow'), findsOneWidget);
+  });
+
+  testWidgets('delete with people not loaded does not say no one follows it', (
+    tester,
+  ) async {
+    final people = FakePeopleRepository([_on('p1', 'samples')])
+      ..failWith = PeopleFailure.network;
+    await openWorkflows(
+      tester,
+      Routes.settingsWorkflowLocation('samples'),
+      people: people,
+    );
+
+    await _tapVisible(tester, find.text('Delete workflow'));
+
+    expect(find.text('Delete Samples?'), findsOneWidget);
+    expect(find.text('No one follows it.'), findsNothing);
+    expect(
+      find.text("They'll have nothing planned; their history stays."),
+      findsOneWidget,
+    );
   });
 }
