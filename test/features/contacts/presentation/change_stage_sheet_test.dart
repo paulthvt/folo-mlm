@@ -86,4 +86,51 @@ void main() {
 
     expect(people.calls, isNot(contains('setStage(p1, customer)')));
   });
+
+  testWidgets('follows with the new stage\'s default', (tester) async {
+    await open(tester, _sarah(), Stage.customer);
+
+    expect(find.text('Suggested · 4 steps'), findsOneWidget);
+    await tester.tap(find.widgetWithText(FilledButton, 'Move to customers'));
+    await tester.pumpAndSettle();
+
+    expect(people.store['p1']!.place?.workflowId, 'new-customer');
+  });
+
+  testWidgets('Nothing for now moves with no workflow', (tester) async {
+    await open(tester, _sarah(), Stage.team);
+
+    await tester.tap(find.text('Nothing for now'));
+    await tester.pump();
+    await tester.tap(find.widgetWithText(FilledButton, 'Move to team'));
+    await tester.pumpAndSettle();
+
+    expect(people.store['p1']!.stage, Stage.team);
+    expect(people.store['p1']!.place, isNull);
+  });
+
+  testWidgets('says the current workflow ends', (tester) async {
+    await open(
+      tester,
+      Person(
+        id: 'p1',
+        name: 'Sarah Martin',
+        stage: Stage.prospect,
+        stageSince: DateTime.utc(2026, 3, 4),
+        place: (
+          workflowId: 'samples',
+          atPosition: 2,
+          lastTick: DateTime(2026, 9, 28),
+        ),
+      ),
+      Stage.customer,
+    );
+
+    expect(
+      find.text(
+        'Everything you noted stays with them. The Samples workflow ends here.',
+      ),
+      findsOneWidget,
+    );
+  });
 }

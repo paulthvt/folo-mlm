@@ -10,23 +10,24 @@ DateTime today() {
   return DateTime(now.year, now.month, now.day);
 }
 
-/// A calendar day no later than [last], as local midnight; null when
+/// A calendar day between [first] and [last], as local midnight; null when
 /// dismissed. The platform's own picker (docs/architecture.md → Design
 /// packages): a wheel on iOS, the Material calendar elsewhere.
 Future<DateTime?> pickDay(
   BuildContext context, {
   required DateTime initial,
+  DateTime? first,
   required DateTime last,
 }) async {
   final picked = !kIsWeb && defaultTargetPlatform == TargetPlatform.iOS
       ? await showCupertinoModalPopup<DateTime>(
           context: context,
-          builder: (_) => _Wheel(initial: initial, last: last),
+          builder: (_) => _Wheel(initial: initial, first: first, last: last),
         )
       : await showDatePicker(
           context: context,
           initialDate: initial,
-          firstDate: DateTime(1900),
+          firstDate: first ?? DateTime(1900),
           lastDate: last,
         );
   return picked == null
@@ -35,9 +36,10 @@ Future<DateTime?> pickDay(
 }
 
 class _Wheel extends StatefulWidget {
-  const _Wheel({required this.initial, required this.last});
+  const _Wheel({required this.initial, this.first, required this.last});
 
   final DateTime initial;
+  final DateTime? first;
   final DateTime last;
 
   @override
@@ -67,6 +69,7 @@ class _WheelState extends State<_Wheel> {
               child: CupertinoDatePicker(
                 mode: CupertinoDatePickerMode.date,
                 initialDateTime: widget.initial,
+                minimumDate: widget.first,
                 maximumDate: widget.last,
                 onDateTimeChanged: (day) => _day = day,
               ),
