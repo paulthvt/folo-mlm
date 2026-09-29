@@ -37,12 +37,15 @@ class _TodayPageState extends ConsumerState<TodayPage> {
     final id = due.person.id;
     if (!_busy.add(id)) return;
     setState(() {});
-    await writePeople(
-      context,
-      ref,
-      (people) => people.completeStep(due.person, due.step, today()),
-    );
-    if (mounted) setState(() => _busy.remove(id));
+    try {
+      await writePeople(
+        context,
+        ref,
+        (people) => people.completeStep(due.person, due.step, today()),
+      );
+    } finally {
+      if (mounted) setState(() => _busy.remove(id));
+    }
   }
 
   @override
@@ -73,7 +76,11 @@ class _TodayPageState extends ConsumerState<TodayPage> {
       firstName: account?.firstName ?? '',
       // With a sidebar, Settings is its account block instead.
       accountAction: context.screenSize.usesSideNavigation
-          ? null
+          ? IconButton(
+              onPressed: () => refreshPeople(context, ref),
+              tooltip: AppLocalizations.of(context).contactsRefresh,
+              icon: const Icon(Icons.refresh_rounded),
+            )
           : const AccountButton(),
       busy: _busy,
       onTick: (due) => unawaited(_tick(due)),

@@ -213,6 +213,20 @@ void main() {
     expect(find.byType(ContactPage), findsOneWidget);
   });
 
+  testWidgets('desktop refresh button reloads the book', (tester) async {
+    final people = FakePeopleRepository([_on('p1', 'Anna')])
+      ..failWith = PeopleFailure.network;
+    await pumpFolo(tester, size: _tallDesktop, people: people);
+
+    expect(find.text("Couldn't load today."), findsOneWidget);
+    people.failWith = null;
+    final l10n = lookupAppLocalizations(const Locale('en'));
+    await tester.tap(find.byTooltip(l10n.contactsRefresh));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Anna'), findsOneWidget);
+  });
+
   test('the greeting follows the clock, with the first name if there is '
       'one', () {
     final l10n = lookupAppLocalizations(const Locale('en'));
