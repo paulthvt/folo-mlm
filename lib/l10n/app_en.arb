@@ -947,5 +947,59 @@
   "workflowBackToList": "Back to workflows",
   "@workflowBackToList": {
     "description": "Button under workflowMissingTitle that returns to the list."
+  },
+  "stepTitle": "Step {number}",
+  "@stepTitle": {
+    "description": "Title of the sheet editing one step of a workflow.",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "stepNew": "New step",
+  "@stepNew": {
+    "description": "Title of the sheet adding a step at the end of a workflow."
+  },
+  "stepLabel": "What to do",
+  "@stepLabel": {
+    "description": "Label of a step's text field: the action, e.g. 'Send the samples'."
+  },
+  "stepLabelRequired": "Enter what to do.",
+  "@stepLabelRequired": {
+    "description": "Error under stepLabel when it is empty."
+  },
+  "stepDaysAfterPrevious": "Days after the previous step",
+  "@stepDaysAfterPrevious": {
+    "description": "Label of the days field, for every step but the first."
+  },
+  "stepDaysAfterStart": "Days after starting",
+  "@stepDaysAfterStart": {
+    "description": "Label of the days field for step 1, which counts from the day the person starts the workflow."
+  },
+  "stepDaysInvalid": "Enter a number from 0 to 365.",
+  "@stepDaysInvalid": {
+    "description": "Error under the days field when it is empty or above 365."
+  },
+  "stepDueAfterPrevious": "{days, plural, =0{Comes due the same day you tick step {previous}.} =1{Comes due 1 day after you tick step {previous}.} other{Comes due {days} days after you tick step {previous}.}}",
+  "@stepDueAfterPrevious": {
+    "description": "Live hint under the days field: when this step comes due. {previous} is the number of the step before.",
+    "placeholders": {
+      "days": { "type": "int" },
+      "previous": { "type": "int" }
+    }
+  },
+  "stepDueAfterStart": "{days, plural, =0{Comes due the same day you start.} =1{Comes due 1 day after you start.} other{Comes due {days} days after you start.}}",
+  "@stepDueAfterStart": {
+    "description": "Live hint under the days field of step 1.",
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "stepNote": "Note",
+  "@stepNote": {
+    "description": "Label of a step's optional note field."
+  },
+  "stepRemove": "Remove this step",
+  "@stepRemove": {
+    "description": "Button in the step sheet. No confirmation: people on the step move on, and their history stays."
   }
 }
