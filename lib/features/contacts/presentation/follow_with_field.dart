@@ -83,19 +83,22 @@ class FollowWithField extends StatelessWidget {
         ),
         if (follow != null) ...[
           const SizedBox(height: AppSpacing.sm),
-          InkWell(
-            onTap: () => _pickDay(context, follow),
-            child: InputDecorator(
-              decoration: InputDecoration(
-                labelText:
-                    follow.workflow.steps.firstOrNull?.label ??
-                    follow.workflow.name,
-                suffixIcon: const Icon(Icons.calendar_today_outlined),
-              ),
-              child: Text(
-                follow.firstDue == today
-                    ? l10n.logWhenToday(today)
-                    : dayLabel(l10n, follow.firstDue, today),
+          Semantics(
+            button: true,
+            child: InkWell(
+              onTap: () => _pickDay(context, follow),
+              child: InputDecorator(
+                decoration: InputDecoration(
+                  labelText:
+                      follow.workflow.steps.firstOrNull?.label ??
+                      follow.workflow.name,
+                  suffixIcon: const Icon(Icons.calendar_today_outlined),
+                ),
+                child: Text(
+                  follow.firstDue == today
+                      ? l10n.logWhenToday(today)
+                      : dayLabel(l10n, follow.firstDue, today),
+                ),
               ),
             ),
           ),

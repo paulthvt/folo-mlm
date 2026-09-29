@@ -47,6 +47,11 @@ class _ChangeWorkflowState extends ConsumerState<_ChangeWorkflow> {
   }
 
   Future<void> _save(FollowWith? follow) async {
+    // Close without writing if the user hasn't picked anything.
+    if (_picked == null) {
+      Navigator.pop(context);
+      return;
+    }
     setState(() {
       _saving = true;
       _failure = null;

@@ -76,10 +76,12 @@ class _ChangeStageState extends ConsumerState<_ChangeStage> {
     final l10n = AppLocalizations.of(context);
     final failure = _failure;
     final owner = ref.watch(accountProvider)?.email;
-    final workflows = ref.watch(workflowsProvider(owner)).value ?? const [];
+    final workflowsAsync = ref.watch(workflowsProvider(owner));
+    final workflows = workflowsAsync.value ?? const [];
     final now = today();
     final follow = _follow(workflows, now);
     final ending = findWorkflow(workflows, widget.person.place?.workflowId);
+    final onStep = progressOf(widget.person, ending) is OnStep;
     // The database clears a prospect's status when they leave prospects.
     final clearsStatus =
         widget.person.prospectStatus != null && widget.stage != Stage.prospect;
@@ -89,16 +91,18 @@ class _ChangeStageState extends ConsumerState<_ChangeStage> {
 
     return FoloDialog(
       title: movedTitle(l10n, firstName(widget.person), widget.stage),
-      body: ending == null
-          ? body
-          : '$body ${l10n.changeStageWorkflowEnds(ending.name)}',
+      body: ending != null && onStep
+          ? '$body ${l10n.changeStageWorkflowEnds(ending.name)}'
+          : body,
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(context),
           child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
         ),
         FilledButton(
-          onPressed: _saving ? null : () => _move(follow),
+          onPressed: _saving || !workflowsAsync.hasValue
+              ? null
+              : () => _move(follow),
           child: _saving
               ? const SizedBox.square(
                   dimension: 20,

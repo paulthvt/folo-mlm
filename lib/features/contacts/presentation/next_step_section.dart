@@ -38,6 +38,7 @@ class _NextStepSectionState extends ConsumerState<NextStepSection> {
   Future<void> _run(
     Future<void> Function(PeopleController people) write,
   ) async {
+    if (_busy) return;
     setState(() => _busy = true);
     await writePeople(context, ref, write);
     if (mounted) setState(() => _busy = false);

@@ -74,10 +74,33 @@ void main() {
     await open(tester, _sarah());
     people.failWith = PeopleFailure.network;
 
+    await tester.tap(find.text('Health professionals'));
+    await tester.pump();
     await tester.tap(find.widgetWithText(FilledButton, 'Save'));
     await tester.pumpAndSettle();
 
     expect(find.byType(FormError), findsOneWidget);
     expect(find.text("Change Sarah's workflow"), findsOneWidget);
+  });
+
+  testWidgets('Save without picking closes and leaves place unchanged', (
+    tester,
+  ) async {
+    await open(
+      tester,
+      _sarah(
+        place: (
+          workflowId: 'samples',
+          atPosition: 3,
+          lastTick: DateTime(2026, 9, 27),
+        ),
+      ),
+    );
+
+    await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+    await tester.pumpAndSettle();
+
+    expect(people.calls, isNot(contains(startsWith('setPlace('))));
+    expect(find.text("Change Sarah's workflow"), findsNothing);
   });
 }
