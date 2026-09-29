@@ -117,3 +117,48 @@ end $$;
 
 revoke execute on function public.set_default(uuid, boolean) from public, anon;
 grant execute on function public.set_default(uuid, boolean) to authenticated;
+
+-- Same as #58, except that past the last step parks the person at 1e9, not
+-- one past the last: a step moved or added at the end then never brings back
+-- someone who finished.
+-- ponytail: a finite sentinel; a workflow reaching position 1e9 would collide.
+create or replace function public.complete_step(p_person uuid, p_step uuid, p_on date)
+returns public.person
+language plpgsql security invoker set search_path = '' as $$
+declare
+  target public.person;
+  step public.workflow_step;
+  next_position numeric;
+  moved public.person;
+begin
+  select * into target from public.person where id = p_person for update;
+  if target.id is null
+    or public.current_step_id(target) is distinct from p_step then
+    raise exception 'step % is not the current step of person %', p_step, p_person
+      using errcode = 'P0002';
+  end if;
+
+  select * into step from public.workflow_step where id = p_step;
+  select coalesce(min(s.position), 1e9) into next_position
+    from public.workflow_step s
+    where s.workflow_id = step.workflow_id and s.position > step.position;
+
+  insert into public.activity (person_id, kind, text, happened_on)
+    values (p_person, 'step', step.label, p_on);
+  update public.person
+    set at_position = next_position, last_tick = p_on
+    where id = p_person
+    returning * into moved;
+  return moved;
+end $$;
+
+revoke execute on function public.complete_step(uuid, uuid, date) from public, anon;
+grant execute on function public.complete_step(uuid, uuid, date) to authenticated;
+
+-- Everyone who finished before this migration moves to the same place.
+update public.person p set at_position = 1e9
+  where p.workflow_id is not null and p.at_position is not null
+    and not exists (
+      select 1 from public.workflow_step s
+      where s.workflow_id = p.workflow_id and s.position >= p.at_position
+    );

@@ -3,7 +3,7 @@
 -- Run with `supabase test db`.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(20);
+select plan(22);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-00000000000a', 'a@example.com'),
@@ -116,7 +116,40 @@ select is(
   'the refused call changed nothing'
 );
 
--- 15: deleting a workflow.
+-- 15-16: finishing is for good. Tom ticks both steps of Own, then a step is
+-- added at the end, then an earlier one is moved there.
+insert into public.workflow_step (id, workflow_id, position, label, days) values
+  ('00000000-0000-0000-0000-0000000000e1',
+   '00000000-0000-0000-0000-0000000000f1', 1, 'One', 0),
+  ('00000000-0000-0000-0000-0000000000e2',
+   '00000000-0000-0000-0000-0000000000f1', 2, 'Two', 0);
+insert into public.person (id, name, stage, workflow_id, at_position, last_tick)
+  values ('00000000-0000-0000-0000-0000000000a2', 'Tom', 'team',
+          '00000000-0000-0000-0000-0000000000f1', 1, '2026-09-29');
+select public.complete_step('00000000-0000-0000-0000-0000000000a2',
+  '00000000-0000-0000-0000-0000000000e1', '2026-09-29');
+select public.complete_step('00000000-0000-0000-0000-0000000000a2',
+  '00000000-0000-0000-0000-0000000000e2', '2026-09-29');
+
+insert into public.workflow_step (workflow_id, position, label, days) values
+  ('00000000-0000-0000-0000-0000000000f1', 3, 'Three', 0);
+select is(
+  (select public.current_step_id(p) from public.person p
+    where p.id = '00000000-0000-0000-0000-0000000000a2'),
+  null,
+  'a step added at the end does not bring back someone who finished'
+);
+
+update public.workflow_step set position = 4
+  where id = '00000000-0000-0000-0000-0000000000e1';
+select is(
+  (select public.current_step_id(p) from public.person p
+    where p.id = '00000000-0000-0000-0000-0000000000a2'),
+  null,
+  'a step moved to the end does not bring back someone who finished'
+);
+
+-- 17: deleting a workflow.
 delete from public.workflow where name = 'Samples';
 select is(
   (select count(*)::int from public.person
@@ -125,7 +158,7 @@ select is(
   'deleting a workflow clears its people''s workflow_id'
 );
 
--- 16: the #57 carry-over.
+-- 18: the #57 carry-over.
 delete from public.workflow;
 select public.seed_workflows('en', '2026-09-29');
 select is(
@@ -133,13 +166,13 @@ select is(
   'after deleting every workflow, seed still no-ops'
 );
 
--- 17.
+-- 19.
 select throws_ok(
   'delete from public.workflow_seeded', '42501', null,
   'the marker cannot be deleted'
 );
 
--- 18-19: as anon.
+-- 20-21: as anon.
 reset role;
 set local role anon;
 set local request.jwt.claims = '{"role": "anon"}';
@@ -156,7 +189,7 @@ select throws_ok(
 
 reset role;
 
--- 20.
+-- 22.
 select table_privs_are(
   'public', 'workflow_seeded', 'authenticated',
   ARRAY['SELECT', 'INSERT'],

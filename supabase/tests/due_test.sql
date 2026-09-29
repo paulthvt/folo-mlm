@@ -109,8 +109,8 @@ select results_eq(
        select public.complete_step(
          '00000000-0000-0000-0000-0000000000a1',
          '00000000-0000-0000-0000-0000000000c3', '2026-10-02') as m) t $$,
-  $$ values (4::numeric, '2026-10-02'::date) $$,
-  'the last step moves one past the end, and returns the row'
+  $$ values (1e9::numeric, '2026-10-02'::date) $$,
+  'the last step parks the person at 1e9 (#59), and returns the row'
 );
 select results_eq(
   $$ select p.current_step_id, p.due_on from public.person p
