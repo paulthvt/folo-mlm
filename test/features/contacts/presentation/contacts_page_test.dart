@@ -286,6 +286,17 @@ void main() {
     await openMarie(tester);
 
     await reveal(tester, find.text("Couldn't load the history."));
+    // The rest of the page still works: scroll back up to the header.
+    await tester.scrollUntilVisible(
+      find.text('Marie Dupont'),
+      -300,
+      scrollable: find.descendant(
+        of: find.byType(ContactDetails),
+        matching: find.byType(Scrollable),
+      ),
+    );
+    expect(find.text('Marie Dupont'), findsOneWidget);
+    await reveal(tester, find.text('Try again'));
     activities.failWith = null;
     await tester.tap(find.text('Try again'));
     await tester.pumpAndSettle();
