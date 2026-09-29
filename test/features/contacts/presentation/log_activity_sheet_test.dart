@@ -50,6 +50,26 @@ void main() {
     expect(find.textContaining('Today, '), findsOneWidget);
   });
 
+  testWidgets(
+    'on a phone with the keyboard up: no overflow, buttons in a row',
+    (tester) async {
+      tester.view
+        ..devicePixelRatio = 1
+        ..physicalSize = const Size(390, 844)
+        // Roughly a phone keyboard with its suggestion bar.
+        ..viewInsets = const FakeViewPadding(bottom: 430);
+      addTearDown(tester.view.reset);
+      await open(tester);
+
+      expect(tester.takeException(), isNull);
+      final cancel = tester.getRect(find.widgetWithText(TextButton, 'Cancel'));
+      final save = tester.getRect(find.widgetWithText(FilledButton, 'Save'));
+      expect(cancel.center.dy, save.center.dy);
+      expect(cancel.right, lessThan(save.left));
+      expect(save.bottom, lessThanOrEqualTo(844 - 430));
+    },
+  );
+
   testWidgets('nothing written, or only spaces, is refused', (tester) async {
     await open(tester);
 

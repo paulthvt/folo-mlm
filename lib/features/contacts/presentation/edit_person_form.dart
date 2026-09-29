@@ -149,42 +149,35 @@ class _EditPersonFormState extends ConsumerState<_EditPersonForm> {
                 : Text(material.saveButtonLabel),
           ),
         ],
-        // Nine fields outgrow a short screen: the fields scroll, the title and
-        // the buttons stay.
-        child: Flexible(
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              spacing: AppSpacing.ms,
-              children: [
-                if (failure != null)
-                  FormError(peopleFailureCopy(l10n, failure)),
-                for (final field in _Field.values)
-                  TextFormField(
-                    controller: _controllers[field],
-                    decoration: InputDecoration(labelText: labels[field]),
-                    textCapitalization: field == _Field.name
-                        ? TextCapitalization.words
-                        : TextCapitalization.sentences,
-                    keyboardType: switch (field) {
-                      _Field.phone => TextInputType.phone,
-                      _Field.email => TextInputType.emailAddress,
-                      _Field.address || _Field.notes => TextInputType.multiline,
-                      _ => TextInputType.text,
-                    },
-                    maxLines: field == _Field.notes || field == _Field.address
-                        ? null
-                        : 1,
-                    validator: field == _Field.name
-                        ? (value) => (value ?? '').trim().isEmpty
-                              ? l10n.addPersonNameRequired
-                              : null
-                        : null,
-                  ),
-              ],
-            ),
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: AppSpacing.ms,
+          children: [
+            if (failure != null) FormError(peopleFailureCopy(l10n, failure)),
+            for (final field in _Field.values)
+              TextFormField(
+                controller: _controllers[field],
+                decoration: InputDecoration(labelText: labels[field]),
+                textCapitalization: field == _Field.name
+                    ? TextCapitalization.words
+                    : TextCapitalization.sentences,
+                keyboardType: switch (field) {
+                  _Field.phone => TextInputType.phone,
+                  _Field.email => TextInputType.emailAddress,
+                  _Field.address || _Field.notes => TextInputType.multiline,
+                  _ => TextInputType.text,
+                },
+                maxLines: field == _Field.notes || field == _Field.address
+                    ? null
+                    : 1,
+                validator: field == _Field.name
+                    ? (value) => (value ?? '').trim().isEmpty
+                          ? l10n.addPersonNameRequired
+                          : null
+                    : null,
+              ),
+          ],
         ),
       ),
     );

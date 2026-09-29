@@ -18,11 +18,12 @@ class FoloDialog extends StatelessWidget {
   final String title;
   final String? body;
 
-  /// A form field, under the body.
+  /// A form field, under the body. It scrolls when the keyboard leaves too
+  /// little room; the title and the buttons stay.
   final Widget? child;
 
-  /// The safe action first, then the primary one: side by side they read
-  /// left to right; stacked in a sheet the primary one goes on top.
+  /// The safe action first, then the primary one, read left to right. In a
+  /// sheet they share the width, so the keyboard leaves room for the form.
   final List<Widget> actions;
 
   static Future<T?> show<T>(BuildContext context, WidgetBuilder builder) =>
@@ -79,16 +80,17 @@ class FoloDialog extends StatelessWidget {
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
-              ?child,
+              if (child case final child?)
+                Flexible(child: SingleChildScrollView(child: child)),
               const SizedBox(height: AppSpacing.xs),
-              if (mobile)
-                ...actions.reversed
-              else
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  spacing: AppSpacing.sm,
-                  children: actions,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                spacing: AppSpacing.sm,
+                children: [
+                  for (final action in actions)
+                    mobile ? Expanded(child: action) : action,
+                ],
+              ),
             ],
           ),
         ),
