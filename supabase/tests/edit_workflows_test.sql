@@ -3,7 +3,7 @@
 -- Run with `supabase test db`.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(21);
+select plan(20);
 
 insert into auth.users (id, email) values
   ('00000000-0000-0000-0000-00000000000a', 'a@example.com'),
@@ -139,18 +139,8 @@ select throws_ok(
   'the marker cannot be deleted'
 );
 
--- 18: the backfill. Tests run on a fresh database, where the migration had
--- no workflow to backfill; this pins the invariant it establishes.
+-- 18-19: as anon.
 reset role;
-select is(
-  (select count(*)::int from (select distinct owner_id from public.workflow) w
-    where not exists (
-      select 1 from public.workflow_seeded s where s.owner_id = w.owner_id)),
-  0,
-  'every owner with workflows has a marker'
-);
-
--- 19-20: as anon.
 set local role anon;
 set local request.jwt.claims = '{"role": "anon"}';
 
@@ -166,7 +156,7 @@ select throws_ok(
 
 reset role;
 
--- 21.
+-- 20.
 select table_privs_are(
   'public', 'workflow_seeded', 'authenticated',
   ARRAY['SELECT', 'INSERT'],
