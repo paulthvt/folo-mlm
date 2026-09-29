@@ -106,9 +106,9 @@ class _LogActivityFormState extends ConsumerState<_LogActivityForm> {
               runSpacing: AppSpacing.sm,
               children: [
                 for (final kind in ActivityKind.values)
-                  if (kindLabel(l10n, kind) case final label?)
+                  if (kind.byUser)
                     ChoiceChip(
-                      label: Text(label),
+                      label: Text(kindLabel(l10n, kind)!),
                       selected: _kind == kind,
                       onSelected: (_) => setState(() => _kind = kind),
                     ),

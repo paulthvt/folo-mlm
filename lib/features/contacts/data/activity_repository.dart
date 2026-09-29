@@ -63,10 +63,7 @@ Activity activityFromRow(Map<String, dynamic> row) {
 }
 
 Map<String, dynamic> activityDraftToRow(String personId, ActivityDraft draft) {
-  assert(
-    draft.kind != ActivityKind.stage,
-    'Only the database writes stage entries',
-  );
+  assert(draft.kind.byUser, 'Only the database writes stage entries');
   return {
     'person_id': personId,
     'kind': draft.kind.name,

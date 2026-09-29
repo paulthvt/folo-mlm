@@ -153,4 +153,11 @@ void main() {
     expect(find.byType(CupertinoDatePicker), findsNothing);
     expect(find.textContaining('Today, '), findsOneWidget);
   }, variant: TargetPlatformVariant.only(TargetPlatform.iOS));
+
+  testWidgets('Step is never offered: the app writes those', (tester) async {
+    await open(tester);
+
+    expect(find.widgetWithText(ChoiceChip, 'Step'), findsNothing);
+    expect(find.widgetWithText(ChoiceChip, 'Note'), findsOneWidget);
+  });
 }

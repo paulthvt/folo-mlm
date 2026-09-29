@@ -2,12 +2,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/ui/folo_dialog.dart';
 import 'package:folo/core/ui/form_error.dart';
+import 'package:folo/core/ui/pick_day.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/domain/contact_channel.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/presentation/people_controller.dart';
 import 'package:folo/features/contacts/presentation/people_copy.dart';
+import 'package:folo/features/workflows/domain/workflow.dart';
+import 'package:folo/features/workflows/presentation/workflows_controller.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -48,14 +51,22 @@ class _AddPersonFormState extends ConsumerState<_AddPersonForm> {
       _failure = null;
     });
     try {
-      final people = peopleProvider(ref.read(accountProvider)?.email);
-      final person = await ref.read(people.notifier).add((
-        name: _name.text.trim(),
-        stage: _stage,
-        phone: value(ChannelKind.phone),
-        email: value(ChannelKind.email),
-        instagram: value(ChannelKind.instagram),
-      ));
+      final owner = ref.read(accountProvider)?.email;
+      final people = peopleProvider(owner);
+      final workflows = ref.read(workflowsProvider(owner)).value ?? const [];
+      final person = await ref
+          .read(people.notifier)
+          .add(
+            (
+              name: _name.text.trim(),
+              stage: _stage,
+              phone: value(ChannelKind.phone),
+              email: value(ChannelKind.email),
+              instagram: value(ChannelKind.instagram),
+            ),
+            workflow: defaultFor(workflows, _stage),
+            today: today(),
+          );
       if (mounted) Navigator.pop(context, person);
     } on PeopleFailure catch (failure) {
       if (mounted) {
@@ -72,6 +83,8 @@ class _AddPersonFormState extends ConsumerState<_AddPersonForm> {
     final l10n = AppLocalizations.of(context);
     final material = MaterialLocalizations.of(context);
     final failure = _failure;
+    // Loads the workflows, so the default is there by the time Add is tapped.
+    ref.watch(workflowsProvider(ref.watch(accountProvider)?.email));
 
     return Form(
       key: _form,

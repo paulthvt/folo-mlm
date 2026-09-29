@@ -594,6 +594,10 @@
   "@activityKindMeeting": {
     "description": "Kind of history entry: the user met the person."
   },
+  "activityKindStep": "Step",
+  "@activityKindStep": {
+    "description": "Kind of history entry: a workflow step the user marked done. The entry's title is the step's name."
+  },
   "logWhen": "When",
   "@logWhen": {
     "description": "Label of the day field in Log something."
