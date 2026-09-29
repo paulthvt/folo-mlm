@@ -7,7 +7,6 @@ import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/presentation/people_copy.dart';
 import 'package:folo/features/settings/presentation/widgets/settings_scroll.dart';
-import 'package:folo/features/workflows/data/workflow_repository.dart';
 import 'package:folo/features/workflows/domain/workflow.dart';
 import 'package:folo/features/workflows/presentation/workflows_controller.dart';
 import 'package:folo/features/workflows/presentation/workflows_settings.dart';
@@ -89,11 +88,8 @@ class _WorkflowEditorViewState extends State<WorkflowEditorView> {
   late final _name = TextEditingController(text: widget.workflow.name);
   final _nameFocus = FocusNode();
   final Set<_Control> _busy = {};
-  String? _lastSaved;
-  String? _saveInProgress;
-  bool _deactivateSaved = false;
-  ProviderContainer? _container;
-  String? _email;
+  String? _written;
+  WorkflowsController? _notifier;
 
   @override
   void initState() {
@@ -106,9 +102,12 @@ class _WorkflowEditorViewState extends State<WorkflowEditorView> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (_container == null) {
-      _container = ProviderScope.containerOf(context);
-      _email = _container!.read(accountProvider)?.email;
+    if (_notifier == null && mounted) {
+      final container = ProviderScope.containerOf(context);
+      final email = container.read(accountProvider)?.email;
+      if (email != null) {
+        _notifier = container.read(workflowsProvider(email).notifier);
+      }
     }
   }
 
@@ -120,6 +119,10 @@ class _WorkflowEditorViewState extends State<WorkflowEditorView> {
     if (!_nameFocus.hasFocus && widget.workflow.name != _name.text) {
       _name.text = widget.workflow.name;
     }
+    // Clear written if the workflow name changed (saved elsewhere or failed).
+    if (widget.workflow.name != oldWidget.workflow.name) {
+      _written = null;
+    }
   }
 
   @override
@@ -128,18 +131,19 @@ class _WorkflowEditorViewState extends State<WorkflowEditorView> {
     // and is leaving. Empty or unchanged names write nothing.
     final saved = widget.workflow.name;
     final name = _name.text.trim();
-    final container = _container;
+    final notifier = _notifier;
     if (name.isNotEmpty &&
         name != saved &&
-        name != _lastSaved &&
-        name != _saveInProgress &&
+        name != _written &&
         !_busy.contains(_Control.name) &&
-        _email != null &&
-        container != null) {
-      // ponytail: silent failure after leaving (no context for SnackBar)
-      final repository = container.read(workflowRepositoryProvider);
-      unawaited(repository.rename(widget.workflow.id, name));
-      _deactivateSaved = true;
+        notifier != null) {
+      _written = name;
+      // ponytail: failure after leaving can't show (no SnackBar on dead context)
+      unawaited(
+        notifier.edit(
+          (repository) => repository.rename(widget.workflow.id, name),
+        ),
+      );
     }
     super.deactivate();
   }
@@ -174,20 +178,18 @@ class _WorkflowEditorViewState extends State<WorkflowEditorView> {
   Future<void> _saveName() async {
     final saved = widget.workflow.name;
     final name = _name.text.trim();
-    // Empty or unchanged: put the saved name back, write nothing.
-    if (name.isEmpty || name == saved || _deactivateSaved) {
+    // Empty, unchanged, or already written: put the saved name back, write nothing.
+    if (name.isEmpty || name == saved || name == _written) {
       _name.text = saved;
       return;
     }
     _name.text = name;
-    _saveInProgress = name;
+    _written = name;
     final ok = await _run(_Control.name, () => widget.onRename(name));
-    if (ok) {
-      _lastSaved = name;
-    } else if (mounted) {
-      _name.text = widget.workflow.name;
+    if (!ok) {
+      _written = null;
+      if (mounted) _name.text = widget.workflow.name;
     }
-    _saveInProgress = null;
   }
 
   @override

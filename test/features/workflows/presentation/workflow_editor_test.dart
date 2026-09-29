@@ -150,4 +150,43 @@ void main() {
 
     expect(_renames(workflows), ['rename(samples, Tasters)']);
   });
+
+  testWidgets('desktop: list shows the new name after deactivate save', (
+    tester,
+  ) async {
+    final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples());
+    final container = await openWorkflows(
+      tester,
+      Routes.settingsWorkflowLocation('samples'),
+      workflows: workflows,
+      size: const Size(1440, 900),
+    );
+
+    await tester.enterText(find.byType(TextField).first, 'Tasters');
+    container.read(routerProvider).go(Routes.settingsWorkflows);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Tasters'), findsOneWidget);
+    expect(find.text('Samples'), findsNothing);
+    expect(_renames(workflows), ['rename(samples, Tasters)']);
+  });
+
+  testWidgets('mobile: list shows the new name after deactivate save', (
+    tester,
+  ) async {
+    final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples());
+    final container = await openWorkflows(
+      tester,
+      Routes.settingsWorkflowLocation('samples'),
+      workflows: workflows,
+    );
+
+    await tester.enterText(find.byType(TextField).first, 'Tasters');
+    container.read(routerProvider).go(Routes.settingsWorkflows);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Tasters'), findsOneWidget);
+    expect(find.text('Samples'), findsNothing);
+    expect(_renames(workflows), ['rename(samples, Tasters)']);
+  });
 }
