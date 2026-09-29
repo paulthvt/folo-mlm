@@ -156,6 +156,15 @@ Every table follows the same conventions (#48), first applied to `person`:
 - Hard delete. A state such as "Not now" is a column, not a hidden row.
 - A calendar day is `date`, an instant is `timestamptz`. "Today" is computed
   on the device, never on the server.
+- A rule every reader must agree on lives in Postgres, once (#58). Where a
+  person is in their workflow and when that step is due are the computed
+  fields `current_step_id(person)` and `due_on(person)`, which PostgREST
+  selects as `*, current_step_id, due_on`; `complete_step` moves on by the
+  same rule and refuses a step that is no longer current. The device compares
+  `due_on` with its own today and never recomputes a step, so Today, the
+  contact page and a future push job cannot disagree. The test fake in
+  `test/features/workflows/server_rule.dart` is the only other copy; the
+  pgTAP tests pin the real one.
 - Default privileges are revoked from both `anon` and `authenticated`; only
   SELECT, INSERT, UPDATE, DELETE are granted to `authenticated`.
 - Enums are Postgres enum types; a new value is a migration.

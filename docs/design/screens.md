@@ -30,31 +30,35 @@ screens read as one product and not as seven mockups.
 
 ## 1. Today — the home
 
-**Mobile**
+**Every size** — one column, 624px at most. Desktop keeps the sidebar and
+uses the large top bar; mobile keeps the account button and the bottom nav.
 
-TopAppBar (`MONDAY 22 SEPTEMBER` / "Good morning, Pauline") → TodayHero →
-`PRIORITY` + 3 ActionItems → `SEPTEMBER` + GoalCard + a two-up StatTile pair →
-BottomNav.
+Top bar (`TUESDAY, SEPTEMBER 29` / "Good morning, Pauline") → TodayHero →
+`PRIORITY` + the people whose workflow step is due today or late.
+
+The greeting follows the device clock: morning until noon, afternoon until
+6 pm, evening after. Without a first name it is "Good morning" alone.
 
 The hero says *"Three people are worth a message today"* — a sentence, not a
-number, so it cannot read as a quota. Below it, each ActionItem carries the reason
-it exists: "Said she would decide after her holiday — she is back today", "Her
-refill usually runs out around now", "Turns 42 tomorrow". The accent chip appears
-only on the two items a real date drives.
+number, so it cannot read as a quota. It counts everyone due, not only the
+rows shown.
 
-Everything the user needs in the first viewport: what today is, how far through it
-they are, and the first person to message. The goal is below the fold on purpose —
-it is context, not the job.
+Each ActionItem is a person: their name, then the reason it exists —
+"Send the samples · Samples, step 2 of 5". The accent chip appears only when
+the step is late ("2 days late"). The round button ticks the step, exactly as
+on the contact page; the row then leaves, or shows the next step if that one
+is due too. Tapping the row opens the person.
 
-**Desktop**
+Oldest first. Five rows on a phone or tablet, six on desktop, then
+`And 2 more waiting`, which shows the rest in place. Pull to refresh on every
+size.
 
-Sidebar → top bar (date eyebrow, `display` greeting, search, notifications,
-account avatar) → two columns: 624px left (hero, then four priority items) and
-400px right (GoalCard, stat pair, a team nudge card, "YOU TALKED TO").
+Loading is a spinner; a failed load says "Couldn't load today." with Try
+again; nobody due is "You are up to date".
 
-The extra width buys one more priority item and moves context beside the actions
-instead of below them. It is not the mobile column stretched: the right column
-exists only here.
+Goal, stats, "You talked to" and the desktop right column are gone until
+their features exist (goals, activity summaries). Nothing on Today is sample
+data.
 
 ## 2. Contacts
 
