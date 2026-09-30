@@ -6,11 +6,13 @@
 #      CHANGELOG.md).
 #   3. Merging that PR runs this workflow again; release-please sees its own PR
 #      merged and cuts the tag + GitHub Release.
-#   4. Artifacts are built and attached to that release.
+#   4. A signed AAB + APK are built, attached to that release, and the AAB goes
+#      to the Play internal testing track. The release stays a GitHub
+#      pre-release until promote.yaml ships the same build further.
 #
-# No prerelease/RC channels: trunk-based, one line of releases off main.
-# Not here yet: Play Store / TestFlight upload, iOS build — all need signing
-# material that does not exist yet.
+# Trunk-based, no branches per channel: every release starts internal, only
+# promotion decides what reaches users. Setup: README.md → Releases.
+# Not here yet: TestFlight upload, iOS build.
 name: Release
 
 on:
@@ -66,11 +68,38 @@ jobs:
 
       - run: flutter pub get
 
-      # Signed with the Android debug keys (see android/app/build.gradle.kts) —
-      # installable for testing, not publishable. Real signing lands with the
-      # first store release.
-      - name: Build APK
-        run: flutter build apk --release
+      - name: Write the upload key
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          echo "$KEYSTORE_BASE64" | base64 --decode > android/upload.jks
+          cat > android/key.properties <<EOF
+          storeFile=upload.jks
+          storePassword=$KEYSTORE_PASSWORD
+          keyAlias=$KEY_ALIAS
+          keyPassword=$KEY_PASSWORD
+          EOF
+
+      # Play needs a strictly increasing versionCode. Derived from the tag so
+      # promote.yaml can find the same build again.
+      # ponytail: breaks once minor or patch passes 99, widen the multipliers then.
+      - name: Compute versionCode
+        id: version
+        env:
+          TAG: ${{ needs.release-please.outputs.tag_name }}
+        run: |
+          IFS=. read -r major minor patch <<< "${TAG#v}"
+          echo "code=$((major * 10000 + minor * 100 + patch))" >> "$GITHUB_OUTPUT"
+
+      - name: Build AAB and APK
+        env:
+          BUILD_NUMBER: ${{ steps.version.outputs.code }}
+        run: |
+          flutter build appbundle --release --build-number="$BUILD_NUMBER"
+          flutter build apk --release --build-number="$BUILD_NUMBER"
 
       - name: Build web
         run: |
@@ -86,3 +115,14 @@ jobs:
             build/app/outputs/flutter-apk/app-release.apk \
             loomia-web.zip \
             --clobber
+          gh release edit "$TAG" --prerelease
+
+      - name: Upload to Play internal testing
+        uses: r0adkll/upload-google-play@e738b9dd8f2476ea806d921b64aacd24f34515a5 # v1.1.5
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: app.loomia
+          releaseFiles: build/app/outputs/bundle/release/app-release.aab
+          releaseName: ${{ needs.release-please.outputs.tag_name }}
+          track: internal
+          status: completed
