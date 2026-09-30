@@ -5,7 +5,8 @@ import 'package:folo/app/router/back.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/ui/activity_item.dart';
+import 'package:folo/app/theme/app_typography.dart';
+import 'package:folo/core/layout/breakpoints.dart';
 import 'package:folo/core/ui/empty_state.dart';
 import 'package:folo/core/ui/folo_top_bar.dart';
 import 'package:folo/core/ui/pick_day.dart';
@@ -116,65 +117,67 @@ class _WorkflowTimelinePageState extends ConsumerState<WorkflowTimelinePage> {
     final paused = person.pausedAt;
     final now = today();
 
-    return ListView(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      children: [
-        FoloTopBar(
-          eyebrow: current < steps.length
-              ? l10n.workflowTimelineStep(
-                  person.name,
-                  current + 1,
-                  steps.length,
-                )
-              : l10n.workflowTimelineDone(person.name),
-          title: workflow.name,
-        ),
-        for (final (index, step) in steps.indexed)
-          if (index != current)
-            ActivityItem(
-              title: step.label,
-              meta: l10n.workflowTimelineDaysLater(step.days),
-              showRailLine: index < steps.length - 1,
-              dimmed: index < current,
-            )
-          else
-            _Current(
-              item: ActivityItem(
+    final desktop = context.screenSize.isDesktop;
+    // ponytail: 600 matches SettingsScroll; one token if a third page wants it.
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 600),
+        child: ListView(
+          padding: EdgeInsets.all(desktop ? AppSpacing.xl : AppSpacing.md),
+          children: [
+            FoloTopBar(
+              large: desktop,
+              eyebrow: current < steps.length
+                  ? l10n.workflowTimelineStep(
+                      person.name,
+                      current + 1,
+                      steps.length,
+                    )
+                  : l10n.workflowTimelineDone(person.name),
+              title: workflow.name,
+            ),
+            for (final (index, step) in steps.indexed)
+              TimelineStep(
                 title: step.label,
-                meta: switch ((paused, progress)) {
-                  (final since?, _) => l10n.nextStepPausedSince(
+                meta: switch ((index == current, paused, progress)) {
+                  (true, final since?, _) => l10n.nextStepPausedSince(
                     since.toLocal(),
                   ),
-                  (_, final OnStep on) => _dueWithNote(l10n, on, now),
+                  (true, _, final OnStep on) => _dueWithNote(l10n, on, now),
                   _ => l10n.workflowTimelineDaysLater(step.days),
                 },
-                showRailLine: index < steps.length - 1,
-              ),
-              action: switch ((paused, progress)) {
-                (_?, _) => TextButton(
-                  onPressed: _busy
-                      ? null
-                      : () => unawaited(
-                          _run((people) => people.resume(person, today())),
-                        ),
-                  child: Text(l10n.contactResume),
-                ),
-                (_, final OnStep on) => IconButton(
-                  onPressed: _busy
-                      ? null
-                      : () => unawaited(
-                          _run(
-                            (people) =>
-                                people.completeStep(person, on, today()),
+                first: index == 0,
+                last: index == steps.length - 1,
+                dimmed: index < current,
+                current: index == current,
+                action: switch ((index == current, paused, progress)) {
+                  (false, _, _) => null,
+                  (true, _?, _) => TextButton(
+                    onPressed: _busy
+                        ? null
+                        : () => unawaited(
+                            _run((people) => people.resume(person, today())),
                           ),
-                        ),
-                  tooltip: l10n.nextStepMarkDone(step.label),
-                  icon: const Icon(Icons.check_rounded),
-                ),
-                _ => null,
-              },
-            ),
-      ],
+                    child: Text(l10n.contactResume),
+                  ),
+                  (true, _, final OnStep on) => IconButton(
+                    onPressed: _busy
+                        ? null
+                        : () => unawaited(
+                            _run(
+                              (people) =>
+                                  people.completeStep(person, on, today()),
+                            ),
+                          ),
+                    tooltip: l10n.nextStepMarkDone(step.label),
+                    icon: const Icon(Icons.check_rounded),
+                  ),
+                  _ => null,
+                },
+              ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -187,31 +190,103 @@ class _WorkflowTimelinePageState extends ConsumerState<WorkflowTimelinePage> {
   }
 }
 
-/// The current step, on the selected-row wash, its action beside it.
-class _Current extends StatelessWidget {
-  const _Current({required this.item, required this.action});
+/// One step on the rail. Every row has the same insets, so the rail stays
+/// straight through the current one's wash.
+class TimelineStep extends StatelessWidget {
+  const TimelineStep({
+    required this.title,
+    required this.meta,
+    required this.first,
+    required this.last,
+    this.dimmed = false,
+    this.current = false,
+    this.action,
+    super.key,
+  });
 
-  final Widget item;
+  final String title;
+  final String meta;
+  final bool first;
+  final bool last;
+
+  /// Before the current step: greyed.
+  final bool dimmed;
+
+  /// On the selected-row wash, its dot in primary.
+  final bool current;
   final Widget? action;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final folo = FoloColors.of(context);
     final button = action;
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        color: FoloColors.of(context).primaryMuted,
-        borderRadius: BorderRadius.circular(AppRadii.lg),
-      ),
-      child: Padding(
-        padding: const EdgeInsetsDirectional.only(
-          start: AppSpacing.ms,
-          top: AppSpacing.sm,
-        ),
+    Widget line({double? height, bool visible = true}) => Container(
+      width: 2,
+      height: height,
+      color: visible ? folo.borderSubtle : null,
+    );
+
+    return Container(
+      decoration: current
+          ? BoxDecoration(
+              color: folo.primaryMuted,
+              borderRadius: BorderRadius.circular(AppRadii.lg),
+            )
+          : null,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.ms),
+      child: IntrinsicHeight(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(child: item),
-            ?button,
+            SizedBox(
+              width: AppSpacing.md,
+              child: Column(
+                children: [
+                  line(height: AppSpacing.ms + AppSpacing.xs, visible: !first),
+                  Container(
+                    width: AppSpacing.sm,
+                    height: AppSpacing.sm,
+                    decoration: BoxDecoration(
+                      color: current
+                          ? folo.primaryText
+                          : dimmed
+                          ? folo.borderSubtle
+                          : folo.borderStrong,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  Expanded(child: line(visible: !last)),
+                ],
+              ),
+            ),
+            const SizedBox(width: AppSpacing.ms),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: AppSpacing.ms),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: dimmed
+                            ? folo.textDisabled
+                            : theme.colorScheme.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.xs),
+                    Text(
+                      meta,
+                      style: AppTypography.caption.copyWith(
+                        color: dimmed ? folo.textDisabled : folo.textMuted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            if (button != null) Center(child: button),
           ],
         ),
       ),

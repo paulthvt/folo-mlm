@@ -1,7 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/router/app_router.dart';
 import 'package:folo/app/router/routes.dart';
-import 'package:folo/core/ui/activity_item.dart';
 import 'package:folo/core/ui/pick_day.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/presentation/contact_details.dart';
@@ -30,8 +29,8 @@ Person _marie({
 );
 
 bool _dimmed(WidgetTester tester, String label) => tester
-    .widget<ActivityItem>(
-      find.ancestor(of: find.text(label), matching: find.byType(ActivityItem)),
+    .widget<TimelineStep>(
+      find.ancestor(of: find.text(label), matching: find.byType(TimelineStep)),
     )
     .dimmed;
 
