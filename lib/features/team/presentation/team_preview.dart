@@ -47,6 +47,7 @@ Widget _app(ThemeData theme) {
       today: _today,
       onOpen: (_) {},
       onRetry: () {},
+      onCheckIn: (_) {},
       onRefresh: () async {},
     ),
   );
