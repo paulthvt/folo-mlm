@@ -21,7 +21,10 @@ class LaunchSplash extends StatefulWidget {
   /// iOS `LaunchImage`, web `index.html`), so the hand-off is invisible.
   static const ring = 96.0;
 
-  static const _stagger = Duration(milliseconds: 120);
+  // Slower than the UI motion tokens on purpose: this is watched, not used.
+  static const _grow = Duration(milliseconds: 400);
+  static const _stagger = Duration(milliseconds: 200);
+  static const _hold = Duration(milliseconds: 250);
 
   @override
   State<LaunchSplash> createState() => _LaunchSplashState();
@@ -46,10 +49,11 @@ class _LaunchSplashState extends State<LaunchSplash>
     if (_controller.duration != null) return;
 
     final reduce = context.reduceMotion;
-    final grow = reduce ? Duration.zero : AppMotion.medium;
+    final grow = reduce ? Duration.zero : LaunchSplash._grow;
     final stagger = reduce ? Duration.zero : LaunchSplash._stagger;
-    final fade = context.motion(AppMotion.quick);
-    final total = stagger * 2 + grow + fade;
+    final hold = reduce ? Duration.zero : LaunchSplash._hold;
+    final fade = context.motion(AppMotion.medium);
+    final total = stagger * 2 + grow + hold + fade;
     double at(Duration d) => d.inMicroseconds / total.inMicroseconds;
 
     _dots = [
@@ -71,11 +75,15 @@ class _LaunchSplashState extends State<LaunchSplash>
         curve: Interval(at(total - fade), 1, curve: AppMotion.accelerate),
       ),
     );
-    _controller
-      ..duration = total
-      ..forward().whenComplete(() {
+    _controller.duration = total;
+    // The first frame after launch is slow; starting once it is out keeps it
+    // from eating the animation.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      _controller.forward().whenComplete(() {
         if (mounted) setState(() => _done = true);
       });
+    });
   }
 
   @override

@@ -30,13 +30,17 @@ void main() {
     expect(find.text('app'), findsOneWidget, reason: 'built underneath');
     expect(_dots(tester), [0, 0, 0]);
 
-    await tester.pump(const Duration(milliseconds: 180));
+    await tester.pump(); // first frame on screen: the animation starts
+    await tester.pump(const Duration(milliseconds: 300));
     final [small, middle, large] = _dots(tester);
     expect(small, greaterThan(middle));
     expect(middle, greaterThan(large));
 
-    await tester.pump(const Duration(milliseconds: 320));
+    await tester.pump(const Duration(milliseconds: 500));
     expect(_dots(tester), [1, 1, 1]);
+
+    await tester.pump(const Duration(milliseconds: 200));
+    expect(_dots(tester), [1, 1, 1], reason: 'held before the fade');
 
     await tester.pumpAndSettle();
     expect(
