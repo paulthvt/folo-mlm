@@ -134,7 +134,7 @@ Widget _list({String? selectedId, bool showRefresh = false}) => ContactList(
 Widget _details({Person? person}) => ContactDetails(
   person: person ?? _sample.first,
   onStatus: (_) {},
-  onEdit: () {},
+  onEdit: (_) {},
   onDelete: () {},
   onLog: () {},
   onMove: (_) {},

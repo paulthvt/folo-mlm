@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/presentation/contact_details.dart';
+import 'package:folo/features/contacts/presentation/edit_person_form.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:folo/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
@@ -34,7 +35,7 @@ Person _person({
 class _Calls {
   final statuses = <ProspectStatus?>[];
   final launched = <Uri>[];
-  var edits = 0;
+  final edits = <EditPart>[];
   var deletes = 0;
   var logs = 0;
   final moves = <Stage>[];
@@ -63,7 +64,7 @@ Future<_Calls> _pump(
         body: ContactDetails(
           person: person,
           onStatus: calls.statuses.add,
-          onEdit: () => calls.edits++,
+          onEdit: calls.edits.add,
           onDelete: () => calls.deletes++,
           onLog: () => calls.logs++,
           onMove: calls.moves.add,
@@ -197,7 +198,9 @@ void main() {
     expect(find.text('WHAT THEY ARE AIMING FOR'), findsOneWidget);
     expect(find.text('Nothing yet.'), findsNWidgets(2));
     await tester.tap(find.text('Edit').first);
-    expect(calls.edits, 1);
+    await tester.tap(find.text('Edit').last);
+    // Each section edits its own facts.
+    expect(calls.edits, [EditPart.aims, EditPart.facts]);
   });
 
   testWidgets('not on the team: no aims, even if saved', (tester) async {
@@ -219,7 +222,7 @@ void main() {
     await tester.tap(find.text('Edit details'));
     await tester.pumpAndSettle();
 
-    expect(calls.edits, 2);
+    expect(calls.edits, [EditPart.facts, EditPart.everything]);
   });
 
   testWidgets('Delete asks first; Cancel keeps the person', (tester) async {
@@ -312,7 +315,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(BottomSheet), findsNothing);
-    expect(calls.logs + calls.edits + calls.deletes + calls.moves.length, 0);
+    expect(
+      calls.logs + calls.edits.length + calls.deletes + calls.moves.length,
+      0,
+    );
   });
 
   testWidgets('⋯: Change workflow names the current one, then Pause', (

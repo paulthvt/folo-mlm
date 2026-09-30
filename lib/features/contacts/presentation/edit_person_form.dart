@@ -11,11 +11,26 @@ import 'package:folo/features/contacts/presentation/people_copy.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
+/// Which fields the form asks for: all of them from ⋯, or one section's from
+/// its own Edit, so a single fact is not lost in the whole form.
+enum EditPart {
+  everything,
+
+  /// WHAT THEY ARE AIMING FOR: a team member's own profile.
+  aims,
+
+  /// WHAT YOU KNOW: every fact but the name and the profile.
+  facts,
+}
+
 /// Edit details: every field but the stage (it moves through ⋯ in #56) and the
-/// status (edited on the detail screen). A scrolling sheet on mobile, a dialog
-/// elsewhere.
-Future<void> showEditPerson(BuildContext context, Person person) =>
-    FoloDialog.show<void>(context, (_) => _EditPersonForm(person));
+/// status (edited on the detail screen), or only those of [part]. A scrolling
+/// sheet on mobile, a dialog elsewhere. Fields not asked for are kept.
+Future<void> showEditPerson(
+  BuildContext context,
+  Person person, [
+  EditPart part = EditPart.everything,
+]) => FoloDialog.show<void>(context, (_) => _EditPersonForm(person, part));
 
 enum _Field {
   name,
@@ -49,9 +64,10 @@ const _teamFields = {
 const _multiline = {_Field.address, _Field.notes, ..._teamFields};
 
 class _EditPersonForm extends ConsumerStatefulWidget {
-  const _EditPersonForm(this.person);
+  const _EditPersonForm(this.person, this.part);
 
   final Person person;
+  final EditPart part;
 
   @override
   ConsumerState<_EditPersonForm> createState() => _EditPersonFormState();
@@ -86,6 +102,13 @@ class _EditPersonFormState extends ConsumerState<_EditPersonForm> {
       _Field.stuckOn => p.stuckOn,
     };
   }
+
+  bool _asks(_Field field) => switch (widget.part) {
+    EditPart.everything =>
+      widget.person.stage == Stage.team || !_teamFields.contains(field),
+    EditPart.aims => _teamFields.contains(field),
+    EditPart.facts => field != _Field.name && !_teamFields.contains(field),
+  };
 
   /// Blank is absent.
   String? _text(_Field field) {
@@ -171,7 +194,11 @@ class _EditPersonFormState extends ConsumerState<_EditPersonForm> {
     return Form(
       key: _form,
       child: FoloDialog(
-        title: l10n.editPersonTitle,
+        title: switch (widget.part) {
+          EditPart.everything => l10n.editPersonTitle,
+          EditPart.aims => l10n.contactSectionAimingFor,
+          EditPart.facts => l10n.contactSectionWhatYouKnow,
+        },
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -194,8 +221,7 @@ class _EditPersonFormState extends ConsumerState<_EditPersonForm> {
           children: [
             if (failure != null) FormError(peopleFailureCopy(l10n, failure)),
             for (final field in _Field.values)
-              if (widget.person.stage == Stage.team ||
-                  !_teamFields.contains(field))
+              if (_asks(field))
                 LabeledField(
                   label: labels[field]!,
                   child: TextFormField(

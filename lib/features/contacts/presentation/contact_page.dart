@@ -110,7 +110,7 @@ class ContactPane extends ConsumerWidget {
       onStatus: (status) => unawaited(
         writePeople(context, ref, (people) => people.setStatus(person, status)),
       ),
-      onEdit: () => unawaited(showEditPerson(context, person)),
+      onEdit: (part) => unawaited(showEditPerson(context, person, part)),
       onDelete: () => unawaited(_delete(context, ref)),
       onLog: () => unawaited(showLogActivity(context, person)),
       onMove: (stage) => unawaited(showChangeStage(context, person, stage)),

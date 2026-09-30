@@ -119,6 +119,45 @@ void main() {
     expect(people.store['p3']!.ownGoal, 'Pay for the holidays');
   });
 
+  testWidgets('a section asks only for its own fields and keeps the rest', (
+    tester,
+  ) async {
+    final member = Person(
+      id: 'p2',
+      name: 'Léa Martin',
+      stage: Stage.team,
+      stageSince: DateTime.utc(2026, 3, 4),
+      needs: 'Sleep',
+      why: 'More time with my kids',
+    );
+    people = FakePeopleRepository([member]);
+    Future<void> edit(EditPart part) => pumpFormHarness(
+      tester,
+      people: people,
+      open: (context) => showEditPerson(context, member, part),
+      result: (_) {},
+    );
+
+    await edit(EditPart.aims);
+    expect(find.text('What they are aiming for'), findsOneWidget);
+    expect(field('Their own goal'), findsOneWidget);
+    expect(field('Name'), findsNothing);
+    expect(field('Needs'), findsNothing);
+    await tester.enterText(field('Their own goal'), 'Pay for the holidays');
+    await tester.tap(find.text('Save'));
+    await tester.pumpAndSettle();
+
+    final saved = people.store['p2']!;
+    expect(saved.ownGoal, 'Pay for the holidays');
+    expect(saved.name, 'Léa Martin');
+    expect(saved.needs, 'Sleep');
+
+    await edit(EditPart.facts);
+    expect(field('Needs'), findsOneWidget);
+    expect(field('Name'), findsNothing);
+    expect(field('Their why'), findsNothing);
+  });
+
   testWidgets('a name is still required', (tester) async {
     await open(tester);
 

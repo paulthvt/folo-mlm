@@ -8,6 +8,7 @@ import 'package:folo/core/ui/folo_chip.dart';
 import 'package:folo/core/ui/folo_dialog.dart';
 import 'package:folo/core/ui/section_header.dart';
 import 'package:folo/features/contacts/domain/person.dart';
+import 'package:folo/features/contacts/presentation/edit_person_form.dart';
 import 'package:folo/features/contacts/presentation/people_copy.dart';
 import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
 import 'package:folo/l10n/app_localizations.dart';
@@ -68,7 +69,9 @@ class ContactDetails extends StatelessWidget {
 
   /// The tapped status, or null when the selected one was tapped again.
   final ValueChanged<ProspectStatus?> onStatus;
-  final VoidCallback onEdit;
+
+  /// Called with the part to edit: a section's own, or everything from ⋯.
+  final ValueChanged<EditPart> onEdit;
 
   /// Called once the user has confirmed.
   final VoidCallback onDelete;
@@ -130,7 +133,7 @@ class ContactDetails extends StatelessWidget {
     (
       label: l10n.contactEditDetails,
       icon: Icons.edit_outlined,
-      onTap: onEdit,
+      onTap: () => onEdit(EditPart.everything),
       trailing: null,
     ),
   ];
@@ -315,13 +318,17 @@ class ContactDetails extends StatelessWidget {
     ];
 
     // Facts with a value, under a header that edits them all.
-    List<Widget> factsSection(String title, List<(String, String?, Uri?)> all) {
+    List<Widget> factsSection(
+      String title,
+      EditPart part,
+      List<(String, String?, Uri?)> all,
+    ) {
       final facts = all.where((fact) => fact.$2 != null);
       return [
         SectionHeader(
           title: title,
           actionLabel: l10n.contactEdit,
-          onAction: onEdit,
+          onAction: () => onEdit(part),
         ),
         Card(
           child: Padding(
@@ -360,7 +367,7 @@ class ContactDetails extends StatelessWidget {
 
     // Their own aims, in their words: nothing to rank or compare.
     final aimingFor = person.stage == Stage.team
-        ? factsSection(l10n.contactSectionAimingFor, [
+        ? factsSection(l10n.contactSectionAimingFor, EditPart.aims, [
             (l10n.factWhy, person.why, null),
             (l10n.factOwnGoal, person.ownGoal, null),
             (l10n.factTimeAvailable, person.timeAvailable, null),
@@ -369,7 +376,11 @@ class ContactDetails extends StatelessWidget {
             (l10n.factStuckOn, person.stuckOn, null),
           ])
         : <Widget>[];
-    final whatYouKnow = factsSection(l10n.contactSectionWhatYouKnow, facts);
+    final whatYouKnow = factsSection(
+      l10n.contactSectionWhatYouKnow,
+      EditPart.facts,
+      facts,
+    );
 
     // Sections with the same gap between each, none above the first.
     List<Widget> spaced(List<List<Widget>> sections) => [
