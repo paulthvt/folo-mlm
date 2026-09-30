@@ -1093,5 +1093,94 @@
   "workflowDeleteConfirm": "Delete",
   "@workflowDeleteConfirm": {
     "description": "Confirms deleting a workflow."
+  },
+  "contactsImport": "Import from your contacts",
+  "@contactsImport": {
+    "description": "Button and tooltip that opens the phone's contacts to pick people to import (first-run screen, Contacts toolbar and empty state)."
+  },
+  "firstRunEyebrow": "Welcome",
+  "@firstRunEyebrow": {
+    "description": "Large word at the top of the first-run screen, shown once after sign-up."
+  },
+  "firstRunTitle": "Who do you already work with?",
+  "@firstRunTitle": {
+    "description": "Question on the first-run screen, shown once after sign-up."
+  },
+  "firstRunBody": "Bring them in from your phone. Only the people you pick are saved in Folo.",
+  "@firstRunBody": {
+    "description": "Body of the first-run screen on a phone, under the question."
+  },
+  "firstRunBodyWeb": "Add the first one here, or import from your phone in the Folo app. They show up here too.",
+  "@firstRunBodyWeb": {
+    "description": "Body of the first-run screen on the web, where contacts cannot be imported."
+  },
+  "firstRunSkip": "Skip for now",
+  "@firstRunSkip": {
+    "description": "Leaves the first-run screen without adding anyone; importing stays available from Contacts."
+  },
+  "importTitle": "Your contacts",
+  "@importTitle": {
+    "description": "Title of the screen listing the phone's contacts to import."
+  },
+  "importSelected": "{count} selected",
+  "@importSelected": {
+    "description": "Small line above the import title: how many contacts are ticked. Shown in capitals.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "importHint": "Only the people you tick are saved in Folo.",
+  "@importHint": {
+    "description": "Reassurance under the search field of the import screen: the address book is not uploaded."
+  },
+  "importAlreadyIn": "Already in Folo",
+  "@importAlreadyIn": {
+    "description": "Shown instead of the phone number when a contact looks like someone already in Folo (same number or name). They can still be ticked."
+  },
+  "importStage": "Add them as",
+  "@importStage": {
+    "description": "Heading above the stage chips (Prospect, Customer, Team) given to everyone imported. Shown in capitals."
+  },
+  "importAction": "{count, plural, =0{Import} =1{Import one person} other{Import {count} people}}",
+  "@importAction": {
+    "description": "Button that imports the ticked contacts.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "importDone": "{count, plural, =1{One person imported} other{{count} people imported}}",
+  "@importDone": {
+    "description": "Snack bar after an import.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "importDeniedTitle": "Folo can't see your contacts",
+  "@importDeniedTitle": {
+    "description": "Shown when the contacts permission was refused."
+  },
+  "importDeniedBody": "Allow it in your phone's settings, then come back here.",
+  "@importDeniedBody": {
+    "description": "Body under the refused-permission title."
+  },
+  "importOpenSettings": "Open settings",
+  "@importOpenSettings": {
+    "description": "Opens the phone's settings for Folo, to allow contacts access."
+  },
+  "importNoneTitle": "No contacts on this phone",
+  "@importNoneTitle": {
+    "description": "Shown when the phone's address book is empty."
+  },
+  "importNoneBody": "Add people one by one from Contacts instead.",
+  "@importNoneBody": {
+    "description": "Body when the phone's address book is empty."
+  },
+  "importReadError": "Couldn't read your contacts",
+  "@importReadError": {
+    "description": "Shown when the phone's address book could not be read for another reason than permission."
+  },
+  "importReadErrorBody": "Your phone didn't answer. Try again in a moment.",
+  "@importReadErrorBody": {
+    "description": "Body under the could-not-read-contacts title."
   }
 }

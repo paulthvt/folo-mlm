@@ -5,15 +5,17 @@ import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/account.dart';
 import 'package:folo/features/contacts/data/activity_repository.dart';
 import 'package:folo/features/contacts/data/people_repository.dart';
+import 'package:folo/features/contacts/data/phone_contacts_repository.dart';
 import 'package:folo/features/workflows/data/workflow_repository.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../features/auth/fake_auth_repository.dart';
 import '../features/contacts/fake_activity_repository.dart';
 import '../features/contacts/fake_people_repository.dart';
+import '../features/contacts/fake_phone_contacts_repository.dart';
 import '../features/workflows/fake_workflow_repository.dart';
 
-/// The whole app, signed in as Pauline, at [size]. Returns the container so a
+/// The whole app, signed in as Pauline unless [auth] says otherwise, at [size]. Returns the container so a
 /// test can drive `routerProvider` the way a URL would. With [settle] false it
 /// pumps one frame, for a load gated on purpose.
 Future<ProviderContainer> pumpFolo(
@@ -22,12 +24,14 @@ Future<ProviderContainer> pumpFolo(
   FakePeopleRepository? people,
   FakeActivityRepository? activities,
   FakeWorkflowRepository? workflows,
+  FakePhoneContactsRepository? phoneContacts,
+  FakeAuthRepository? auth,
   bool settle = true,
 }) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
-  final auth = FakeAuthRepository()
+  auth ??= FakeAuthRepository()
     ..session = true
     ..account = const Account(firstName: 'Pauline', email: 'p@example.com');
   addTearDown(auth.dispose);
@@ -43,6 +47,9 @@ Future<ProviderContainer> pumpFolo(
         ),
         workflowRepositoryProvider.overrideWithValue(
           workflows ?? FakeWorkflowRepository(FakeWorkflowRepository.samples()),
+        ),
+        phoneContactsRepositoryProvider.overrideWithValue(
+          phoneContacts ?? FakePhoneContactsRepository(),
         ),
       ],
       child: const FoloApp(),

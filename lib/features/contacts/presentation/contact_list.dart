@@ -22,6 +22,7 @@ class ContactList extends StatefulWidget {
     required this.onOpen,
     required this.onAdd,
     required this.onRefresh,
+    this.onImport,
     this.selectedId,
     this.showRefresh = false,
     this.accountAction,
@@ -32,6 +33,10 @@ class ContactList extends StatefulWidget {
   final ValueChanged<Person> onOpen;
   final VoidCallback onAdd;
   final Future<void> Function() onRefresh;
+
+  /// Import from the phone's contacts; null where there is no address book
+  /// to read (the web).
+  final VoidCallback? onImport;
 
   /// The person open beside the list, on desktop.
   final String? selectedId;
@@ -78,6 +83,12 @@ class _ContactListState extends State<ContactList> {
             action: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (widget.onImport case final onImport?)
+                  IconButton(
+                    onPressed: onImport,
+                    tooltip: l10n.contactsImport,
+                    icon: const Icon(Icons.contacts_outlined),
+                  ),
                 if (widget.showRefresh)
                   IconButton(
                     onPressed: widget.onRefresh,
@@ -100,15 +111,22 @@ class _ContactListState extends State<ContactList> {
               ],
             ),
           ),
-          if (people.isEmpty)
+          if (people.isEmpty) ...[
             EmptyState(
               icon: Icons.people_outline,
               title: l10n.contactsEmptyTitle,
               body: l10n.contactsEmptyBody,
               actionLabel: l10n.contactsAdd,
               onAction: widget.onAdd,
-            )
-          else ...[
+            ),
+            if (widget.onImport case final onImport?)
+              Center(
+                child: TextButton(
+                  onPressed: onImport,
+                  child: Text(l10n.contactsImport),
+                ),
+              ),
+          ] else ...[
             TextField(
               onChanged: (value) => setState(() => _query = value),
               textInputAction: TextInputAction.search,

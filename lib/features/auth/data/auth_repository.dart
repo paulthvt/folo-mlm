@@ -36,6 +36,7 @@ class AuthRepository {
       locale: metadata['locale'] as String?,
       appearance:
           Appearance.values.asNameMap()[metadata['theme']] ?? Appearance.system,
+      onboarded: metadata['onboarded'] == true,
     );
   }
 
@@ -131,6 +132,10 @@ class AuthRepository {
       ),
     ),
   );
+
+  /// The first-run screen is done with, on every device.
+  Future<void> markOnboarded() =>
+      _guard(() => _auth.updateUser(UserAttributes(data: {'onboarded': true})));
 
   /// Deleting needs the secret key, so it happens in the `delete-account` Edge
   /// Function. The session is then dead server-side; sign out locally only —

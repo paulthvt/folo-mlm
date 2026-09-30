@@ -55,6 +55,27 @@ void main() {
     });
   });
 
+  group('signed in, not onboarded yet', () {
+    String? redirect(String location) => authRedirect(
+      hasSession: true,
+      recoveringPassword: false,
+      location: location,
+      onboarded: false,
+    );
+
+    test('is sent to the first-run screen from anywhere else', () {
+      expect(redirect(Routes.today), Routes.start);
+      expect(redirect(Routes.contacts), Routes.start);
+      expect(redirect(Routes.login), Routes.start);
+    });
+
+    test('may go from the first-run screen to the import', () {
+      for (final path in Routes.onboardingPaths) {
+        expect(redirect(path), isNull, reason: path);
+      }
+    });
+  });
+
   group('recovering a password', () {
     String? redirect(String location, {bool hasSession = true}) => authRedirect(
       hasSession: hasSession,

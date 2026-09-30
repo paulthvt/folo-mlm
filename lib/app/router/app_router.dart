@@ -11,6 +11,8 @@ import 'package:folo/features/auth/presentation/reset_password_page.dart';
 import 'package:folo/features/auth/presentation/welcome_page.dart';
 import 'package:folo/features/contacts/presentation/contact_page.dart';
 import 'package:folo/features/contacts/presentation/contacts_page.dart';
+import 'package:folo/features/contacts/presentation/import_contacts_page.dart';
+import 'package:folo/features/onboarding/presentation/first_run_page.dart';
 import 'package:folo/features/settings/presentation/settings_page.dart';
 import 'package:folo/features/today/presentation/today_page.dart';
 import 'package:go_router/go_router.dart';
@@ -36,6 +38,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       hasSession: status.hasSession,
       recoveringPassword: status.recoveringPassword,
       location: state.matchedLocation,
+      onboarded: status.onboarded,
     ),
     routes: [
       ShellRoute(
@@ -120,6 +123,16 @@ final routerProvider = Provider<GoRouter>((ref) {
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: Routes.start,
+        name: Routes.startName,
+        builder: (context, state) => const FirstRunPage(),
+      ),
+      GoRoute(
+        path: Routes.importContacts,
+        name: Routes.importContactsName,
+        builder: (context, state) => const ImportContactsPage(),
       ),
       GoRoute(
         path: Routes.welcome,

@@ -29,6 +29,7 @@ Future<void> _pump(
   ValueChanged<Person>? onOpen,
   VoidCallback? onAdd,
   Future<void> Function()? onRefresh,
+  VoidCallback? onImport,
 }) async {
   await tester.pumpWidget(
     MaterialApp(
@@ -42,6 +43,7 @@ Future<void> _pump(
           onOpen: onOpen ?? (_) {},
           onAdd: onAdd ?? () {},
           onRefresh: onRefresh ?? () async {},
+          onImport: onImport,
         ),
       ),
     ),
@@ -136,5 +138,26 @@ void main() {
     );
 
     expect(find.text('Not now · paused in July'), findsOneWidget);
+  });
+
+  testWidgets('the import is in the toolbar and the empty state', (
+    tester,
+  ) async {
+    var imports = 0;
+    await _pump(tester, people: const [], onImport: () => imports++);
+
+    await tester.tap(find.byTooltip('Import from your contacts'));
+    await tester.tap(
+      find.widgetWithText(TextButton, 'Import from your contacts'),
+    );
+
+    expect(imports, 2);
+  });
+
+  testWidgets('no import without an address book', (tester) async {
+    await _pump(tester, people: const []);
+
+    expect(find.text('Import from your contacts'), findsNothing);
+    expect(find.byTooltip('Import from your contacts'), findsNothing);
   });
 }

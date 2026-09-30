@@ -42,6 +42,17 @@ abstract final class Routes {
   static String settingsWorkflowLocation(String id) =>
       '$settingsWorkflows/${Uri.encodeComponent(id)}';
 
+  /// First run: "Who do you already work with?", once per account.
+  static const String start = '/start';
+  static const String startName = 'start';
+
+  /// The phone's contacts, to tick and import. Not on web.
+  static const String importContacts = '/import-contacts';
+  static const String importContactsName = 'importContacts';
+
+  /// Reachable before the first-run screen is passed.
+  static const Set<String> onboardingPaths = {start, importContacts};
+
   static const String welcome = '/welcome';
   static const String welcomeName = 'welcome';
 
