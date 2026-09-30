@@ -197,7 +197,12 @@ class _Summary extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: AppSpacing.sm),
-                LoomiaAvatarGroup(names: [for (final p in team) p.name]),
+                // The heading already says how many, in the user's language.
+                ExcludeSemantics(
+                  child: LoomiaAvatarGroup(
+                    names: [for (final p in team) p.name],
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: AppSpacing.ms),

@@ -129,6 +129,21 @@ void main() {
     expect(find.text('One person on your team'), findsOneWidget);
   });
 
+  testWidgets('the avatars add no second count for screen readers', (
+    tester,
+  ) async {
+    final semantics = tester.ensureSemantics();
+    await _pump(
+      tester,
+      AsyncData([
+        _person('p1', 'Bruno Keller', Stage.team, DateTime(2026, 9, 9)),
+      ]),
+    );
+
+    expect(find.bySemanticsLabel(RegExp('1 people')), findsNothing);
+    semantics.dispose();
+  });
+
   testWidgets('tapping a row opens the person', (tester) async {
     Person? opened;
     await _pump(
