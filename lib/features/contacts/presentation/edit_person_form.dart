@@ -3,6 +3,7 @@ import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/ui/folo_dialog.dart';
 import 'package:folo/core/ui/form_error.dart';
 import 'package:folo/core/ui/labeled_field.dart';
+import 'package:folo/core/ui/section_header.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
@@ -32,22 +33,23 @@ Future<void> showEditPerson(
   EditPart part = EditPart.everything,
 ]) => FoloDialog.show<void>(context, (_) => _EditPersonForm(person, part));
 
+// In the detail page's order.
 enum _Field {
   name,
-  phone,
-  email,
-  instagram,
-  needs,
-  products,
-  profession,
-  address,
-  notes,
   why,
   ownGoal,
   timeAvailable,
   wouldLoveTo,
   strengths,
   stuckOn,
+  needs,
+  products,
+  profession,
+  phone,
+  email,
+  instagram,
+  address,
+  notes,
 }
 
 /// A team member's own profile: only asked while they are on the team.
@@ -59,6 +61,11 @@ const _teamFields = {
   _Field.strengths,
   _Field.stuckOn,
 };
+
+/// WHAT YOU KNOW: the rest but the name.
+final _facts = _Field.values.where(
+  (field) => field != _Field.name && !_teamFields.contains(field),
+);
 
 /// Sentences in their words, not a single value.
 const _multiline = {_Field.address, _Field.notes, ..._teamFields};
@@ -107,7 +114,7 @@ class _EditPersonFormState extends ConsumerState<_EditPersonForm> {
     EditPart.everything =>
       widget.person.stage == Stage.team || !_teamFields.contains(field),
     EditPart.aims => _teamFields.contains(field),
-    EditPart.facts => field != _Field.name && !_teamFields.contains(field),
+    EditPart.facts => _facts.contains(field),
   };
 
   /// Blank is absent.
@@ -191,6 +198,28 @@ class _EditPersonFormState extends ConsumerState<_EditPersonForm> {
       _Field.stuckOn: l10n.factStuckOn,
     };
 
+    Widget input(_Field field) => LabeledField(
+      label: labels[field]!,
+      child: TextFormField(
+        controller: _controllers[field],
+        textCapitalization: field == _Field.name
+            ? TextCapitalization.words
+            : TextCapitalization.sentences,
+        keyboardType: switch (field) {
+          _Field.phone => TextInputType.phone,
+          _Field.email => TextInputType.emailAddress,
+          _ when _multiline.contains(field) => TextInputType.multiline,
+          _ => TextInputType.text,
+        },
+        maxLines: _multiline.contains(field) ? null : 1,
+        validator: field == _Field.name
+            ? (value) => (value ?? '').trim().isEmpty
+                  ? l10n.addPersonNameRequired
+                  : null
+            : null,
+      ),
+    );
+
     return Form(
       key: _form,
       child: FoloDialog(
@@ -217,33 +246,29 @@ class _EditPersonFormState extends ConsumerState<_EditPersonForm> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          spacing: AppSpacing.ms,
           children: [
-            if (failure != null) FormError(peopleFailureCopy(l10n, failure)),
-            for (final field in _Field.values)
-              if (_asks(field))
-                LabeledField(
-                  label: labels[field]!,
-                  child: TextFormField(
-                    controller: _controllers[field],
-                    textCapitalization: field == _Field.name
-                        ? TextCapitalization.words
-                        : TextCapitalization.sentences,
-                    keyboardType: switch (field) {
-                      _Field.phone => TextInputType.phone,
-                      _Field.email => TextInputType.emailAddress,
-                      _ when _multiline.contains(field) =>
-                        TextInputType.multiline,
-                      _ => TextInputType.text,
-                    },
-                    maxLines: _multiline.contains(field) ? null : 1,
-                    validator: field == _Field.name
-                        ? (value) => (value ?? '').trim().isEmpty
-                              ? l10n.addPersonNameRequired
-                              : null
-                        : null,
-                  ),
-                ),
+            if (failure != null) ...[
+              FormError(peopleFailureCopy(l10n, failure)),
+              const SizedBox(height: AppSpacing.ms),
+            ],
+            // The whole form is grouped as the page is; a section's own
+            // needs no header, the title says it.
+            for (final (index, (header, fields)) in [
+              (null, [_Field.name]),
+              (l10n.contactSectionAimingFor, _teamFields),
+              (l10n.contactSectionWhatYouKnow, _facts),
+            ].where((section) => section.$2.any(_asks)).indexed) ...[
+              if (index > 0) const SizedBox(height: AppSpacing.lg),
+              if (header != null && widget.part == EditPart.everything)
+                SectionHeader(title: header),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                spacing: AppSpacing.ms,
+                children: [
+                  for (final field in fields.where(_asks)) input(field),
+                ],
+              ),
+            ],
           ],
         ),
       ),

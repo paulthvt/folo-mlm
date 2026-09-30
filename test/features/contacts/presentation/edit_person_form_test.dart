@@ -158,6 +158,45 @@ void main() {
     expect(field('Their why'), findsNothing);
   });
 
+  testWidgets('the whole form is grouped as the page is', (tester) async {
+    final member = Person(
+      id: 'p2',
+      name: 'Léa Martin',
+      stage: Stage.team,
+      stageSince: DateTime.utc(2026, 3, 4),
+    );
+    people = FakePeopleRepository([member, _marie]);
+    Future<void> edit(Person person, [EditPart? part]) => pumpFormHarness(
+      tester,
+      people: people,
+      open: (context) => part == null
+          ? showEditPerson(context, person)
+          : showEditPerson(context, person, part),
+      result: (_) {},
+    );
+    double top(Finder finder) => tester.getTopLeft(finder).dy;
+
+    await edit(member);
+    final aims = find.text('WHAT THEY ARE AIMING FOR');
+    final known = find.text('WHAT YOU KNOW');
+    expect(top(field('Name')), lessThan(top(aims)));
+    expect(top(aims), lessThan(top(field('Their why'))));
+    await tester.ensureVisible(field('Needs'));
+    expect(top(field('Where they are stuck')), lessThan(top(known)));
+    expect(top(known), lessThan(top(field('Needs'))));
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+
+    await edit(_marie);
+    expect(find.text('WHAT THEY ARE AIMING FOR'), findsNothing);
+    expect(find.text('WHAT YOU KNOW'), findsOneWidget);
+    await tester.tap(find.text('Cancel'));
+    await tester.pumpAndSettle();
+
+    await edit(member, EditPart.facts);
+    expect(find.text('WHAT YOU KNOW'), findsNothing);
+  });
+
   testWidgets('a name is still required', (tester) async {
     await open(tester);
 
