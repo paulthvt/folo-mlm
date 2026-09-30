@@ -31,9 +31,9 @@ void main() {
   );
 
   Finder field(String label) => find.descendant(
-        of: find.widgetWithText(LabeledField, label),
-        matching: find.byType(TextFormField),
-      );
+    of: find.widgetWithText(LabeledField, label),
+    matching: find.byType(TextFormField),
+  );
 
   testWidgets('starts from what is saved', (tester) async {
     await open(tester);

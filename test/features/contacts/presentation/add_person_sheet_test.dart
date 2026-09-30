@@ -28,9 +28,9 @@ void main() {
   );
 
   Finder field(String label) => find.descendant(
-        of: find.widgetWithText(LabeledField, label),
-        matching: find.byType(TextFormField),
-      );
+    of: find.widgetWithText(LabeledField, label),
+    matching: find.byType(TextFormField),
+  );
 
   testWidgets('a name is required', (tester) async {
     await open(tester);
