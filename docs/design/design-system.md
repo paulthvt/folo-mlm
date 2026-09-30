@@ -297,6 +297,14 @@ sequenced entrances — a list appears at once, or it is not ready. Page-load
 fades on content that was already there. Any motion that reads as celebration:
 counting numbers up, filling a ring, confetti, a streak (principle #5).
 
+**One exception: the launch splash** (`lib/app/launch_splash.dart`). The ring
+of the mark on brand ochre, the three dots growing in smallest first (240ms
+each, 120ms apart, decelerate, no overshoot), then a 180ms fade into the app.
+It is a brand moment on cold start, not UI, and it is the only staggered
+entrance in the product. Reduce motion leaves only the fade. The native launch
+screens (Android, iOS, web) draw the same ring at the same 96px, so the hand-off
+to Flutter is invisible.
+
 ---
 
 ## 8. Mapping to Flutter
