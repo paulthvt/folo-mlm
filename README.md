@@ -119,6 +119,10 @@ same mark as a vector, `drawable/ic_launcher_foreground.xml`; the in-app
 wordmark paints it in `lib/core/ui/loomia_wordmark.dart`. Change all three
 together — the source is Figma `07 — Loomia logo`, E5b.
 
+The same script writes the Play Store listing images to `store/play/` (512 px
+icon, 1024×500 feature graphic). Play has no API for them in this pipeline:
+upload them by hand in Play Console → Store listing.
+
 ## Translations
 
 English lives in `lib/l10n/app_en.arb` and is the source of truth. Every other

@@ -8,9 +8,9 @@ BRAND='#E8964A'
 
 # The mark in its own units (100px type): ring r 28.5 / 15.5, three dots.
 # Centred on its bounding box and scaled to 56% of the canvas height.
-mark() { # $1 = fill
+mark() { # $1 = fill, $2 = centre x, $3 = centre y, $4 = scale (1024px canvas)
   cat <<SVG
-<g transform="translate(512 512) scale(7.7096) translate(5.1847 8.6905)" fill="$1">
+<g transform="translate(${2:-512} ${3:-512}) scale(${4:-7.7096}) translate(5.1847 8.6905)" fill="$1">
   <circle r="22" fill="none" stroke="$1" stroke-width="13"/>
   <circle cx="-35.119" cy="-16.376" r="3.75"/>
   <circle cx="-18.046" cy="-35.418" r="4.75"/>
@@ -70,5 +70,20 @@ launch=ios/Runner/Assets.xcassets/LaunchImage.imageset
 png ring 96 $launch/LaunchImage.png
 png ring 192 $launch/LaunchImage@2x.png
 png ring 288 $launch/LaunchImage@3x.png
+
+# Play Store listing, uploaded by hand: the icon full bleed (Play masks it) and
+# the 1024x500 feature graphic, the mark at the same 56% of the height. Play
+# rejects alpha on the feature graphic.
+store=store/play
+mkdir -p $store
+png square 512 $store/icon-512.png
+cat > "$tmp/feature.svg" <<SVG
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="500">
+  <rect width="1024" height="500" fill="$BRAND"/>
+  $(mark white 512 250 3.7645)
+</svg>
+SVG
+rsvg-convert "$tmp/feature.svg" | magick - -background "$BRAND" -alpha remove \
+  -alpha off -strip PNG24:$store/feature-graphic.png
 
 rm -r "$tmp"
