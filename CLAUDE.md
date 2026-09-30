@@ -83,6 +83,10 @@ already-installed packages first.
   test for domain logic. Every `@Preview` has a golden in `test/goldens/`,
   compared on Linux only; after a visual change, regenerate them through CI —
   procedure in README.md → *Golden tests*. Never commit locally made goldens.
+- **Copy**: English in `lib/l10n/app_en.arb` only, every key with a
+  description; other languages come from `tool/translate.dart` via the
+  *l10n sync* pull request. Informal register everywhere — French is *tu*,
+  never *vous*. See README.md → *Translations*.
 - **Commits**: Conventional Commits (`feat`/`fix`/`docs`/`style`/`refactor`/
   `perf`/`test`/`chore`). Branch off `main`, issue number first:
   `feature/<issue>-<slug>`, `fix/<issue>-<slug>`, `chore/<issue>-<slug>`.

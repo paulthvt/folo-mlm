@@ -122,25 +122,38 @@ together — the source is Figma `07 — Loomia logo`, E5b.
 ## Translations
 
 English lives in `lib/l10n/app_en.arb` and is the source of truth. Every other
-language comes from [Tolgee](https://tolgee.io) and is machine-translated on
-arrival.
+language is machine-translated by Google Gemini (`tool/translate.dart`) and
+arrives as a pull request to review.
 
 - **Adding a string:** add the key *and its description* to `app_en.arb`. The
-  description is what the machine translator reads — a key without one gets
-  translated blind. Merging to `main` pushes it up automatically.
-- **Getting translations back:** run the *l10n pull* workflow (or wait for
-  Monday). It opens one pull request, `chore/l10n-sync`, containing every
-  language. Review the copy and merge.
-- **Adding a language:** add it in the Tolgee UI, then run *l10n pull*. The new
-  `app_xx.arb` arrives in that pull request and the app supports it with no code
-  change — `supportedLocales` is generated from the files present.
-- **Never** edit English in Tolgee, and never hand-edit a translated `.arb`:
-  each direction overwrites the other.
+  description is what the translator reads — a key without one gets translated
+  blind. Merging to `main` runs the *l10n sync* workflow, which opens (or
+  updates) one pull request, `chore/l10n-sync`, with every language. Review the
+  copy and merge.
+- **What gets translated:** only keys missing from a language, or whose English
+  changed since they were translated. `lib/l10n/translation_sources.json`
+  records the English each translation was made from. Keys removed from English
+  are removed everywhere.
+- **Fixing a translation:** edit the translated `.arb` directly, in the sync
+  pull request or any other. The next run leaves it alone until its English
+  changes.
+- **Adding a language:** commit `lib/l10n/app_xx.arb` containing only
+  `{"@@locale": "xx"}`, then run *l10n sync* (or wait for Monday). The app
+  supports it with no code change — `supportedLocales` is generated from the
+  files present.
+- **Register:** Loomia is an assistant, so it speaks informally wherever the
+  language distinguishes — French says *tu* (*ton, ta, tes*, « Consulte »),
+  never *vous*. The rule is in the prompt in `tool/translate.dart`;
+  `test/l10n/french_register_test.dart` fails a sync that slips back to *vous*.
+  Imperatives have no marker word, so check them in review.
 
-`.tolgeerc` is what makes the CLI speak Flutter ARB instead of its own JSON
-format, and what keeps a pulled file named `app_fr.arb` rather than `fr.arb`.
-Changing it breaks both directions; `test/l10n/tolgee_config_test.dart` pins the
-parts that matter.
+The workflow needs the `GEMINI_API_KEY` repository secret: a free-tier key from
+[Google AI Studio](https://aistudio.google.com/apikey), no billing. Locally:
+`GEMINI_API_KEY=... dart run tool/translate.dart`. The model is one constant at
+the top of the script. The free tier is rate-limited — a run that hits the limit
+fails with a 429 message; re-run it later. Google may use free-tier requests to
+improve its products, which is acceptable because the input is only public UI
+copy.
 
 Generated Dart (`lib/l10n/app_localizations*.dart`) is not committed. Run
 `flutter gen-l10n` after changing an ARB file, or just `flutter run`.
