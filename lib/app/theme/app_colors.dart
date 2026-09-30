@@ -12,6 +12,11 @@ import 'package:material_ui/material_ui.dart';
 /// Widgets read `Theme.of(context).colorScheme` and `LoomiaColors.of(context)`.
 /// Never a literal colour.
 abstract final class AppColors {
+  /// Opacity of `onPrimary` for the hero's secondary labels (eyebrow,
+  /// captions). The hero is the same colour in both modes, so one value holds
+  /// both; below 0.92 it drops under AA on `primary`.
+  static const quietOnPrimary = 0.94;
+
   static const light = ColorScheme(
     brightness: Brightness.light,
     primary: Color(0xFFA75C15), // primary/base — identical in both modes
@@ -205,7 +210,7 @@ class LoomiaColors extends ThemeExtension<LoomiaColors> {
     borderStrong: Color(0xFF48413A),
     textMuted: Color(0xFFA59E97),
     textDisabled: Color(0xFF68625C),
-    primaryHover: Color(0xFFC26A19),
+    primaryHover: Color(0xFFB06017),
     primaryText: Color(0xFFD38A45),
     primaryMuted: Color(0xFF1A140F),
     secondaryText: Color(0xFF909FC1),

@@ -38,7 +38,7 @@ class LoomiaProgressBar extends StatelessWidget {
     // Inside the hero the captions sit on `primary/base`, so they take the
     // on-primary ink the hero uses rather than a surface ink.
     final captionInk = onPrimary
-        ? scheme.onPrimary.withValues(alpha: 0.78)
+        ? scheme.onPrimary.withValues(alpha: AppColors.quietOnPrimary)
         : colors.textMuted;
 
     return Column(

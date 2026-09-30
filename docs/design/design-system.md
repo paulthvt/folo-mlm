@@ -52,7 +52,7 @@ call-back — never for judgement (guardrail #2).
 | `text/on-secondary` | `#0B111E` | `#0B111E` | Text on `secondary/base`. |
 | `text/disabled` | `#A9A49F` | `#68625C` | |
 | `primary/base` | `#A75C15` | `#A75C15` | The filled hero, primary buttons. **Identical in both modes.** |
-| `primary/hover` | `#8C4C12` | `#C26A19` | Pointer hover; also the hero's own progress track. |
+| `primary/hover` | `#8C4C12` | `#B06017` | Pointer hover; also the hero's own progress track. |
 | `primary/text` | `#995413` | `#D38A45` | Primary used as *ink* — this is the token that must flip, since the base fails contrast on dark surfaces. |
 | `primary/container` | `#F2E8DE` | `#271E16` | Tinted blocks, active nav pill, avatar background. |
 | `primary/on-container` | `#713E0E` | `#E0AB7B` | Ink on `primary/container`. |
@@ -96,9 +96,11 @@ offers tokens that make sense in the slot being edited.
 
 All body and label pairs clear WCAG AA (4.5:1); `text/muted` on `surface/canvas`
 is 5.1:1 light and 7.2:1 dark. `text/on-primary` on `primary/base` is 5.0:1 in
-both modes; `primary/text` is 5.8:1 on white and 6.2:1 on dark `surface/default`.
-`test/app/theme/app_theme_test.dart` pins the last two. The hero's secondary labels are white at 78% opacity, which holds in
-both modes precisely because the block colour does not change.
+both modes, and 4.6:1 on dark `primary/hover`; `primary/text` is 5.8:1 on white
+and 6.2:1 on dark `surface/default`. The hero's secondary labels are white at
+94% opacity (`AppColors.quietOnPrimary`, 4.6:1): ochre leaves less headroom than
+the old forest did, so hierarchy there comes from size and weight, not fading.
+`test/app/theme/app_theme_test.dart` pins all of these.
 
 ---
 

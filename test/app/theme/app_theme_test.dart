@@ -102,6 +102,24 @@ void main() {
     }
   });
 
+  test('white text on primary hover meets AA in both modes', () {
+    for (final colors in [LoomiaColors.light, LoomiaColors.dark]) {
+      expect(
+        contrast(AppColors.light.onPrimary, colors.primaryHover),
+        greaterThanOrEqualTo(4.5),
+      );
+    }
+  });
+
+  test('quiet hero ink meets AA on primary', () {
+    final primary = AppColors.light.primary;
+    final quiet = Color.alphaBlend(
+      AppColors.light.onPrimary.withValues(alpha: AppColors.quietOnPrimary),
+      primary,
+    );
+    expect(contrast(quiet, primary), greaterThanOrEqualTo(4.5));
+  });
+
   test('primary ink meets AA on its surface', () {
     for (final colors in [LoomiaColors.light, LoomiaColors.dark]) {
       expect(
