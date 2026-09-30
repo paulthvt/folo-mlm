@@ -122,8 +122,8 @@ together — the source is Figma `07 — Loomia logo`, E5b.
 ## Translations
 
 English lives in `lib/l10n/app_en.arb` and is the source of truth. Every other
-language is machine-translated by Claude (`tool/translate.dart`) and arrives as
-a pull request to review.
+language is machine-translated by Google Gemini (`tool/translate.dart`) and
+arrives as a pull request to review.
 
 - **Adding a string:** add the key *and its description* to `app_en.arb`. The
   description is what the translator reads — a key without one gets translated
@@ -147,8 +147,13 @@ a pull request to review.
   `test/l10n/french_register_test.dart` fails a sync that slips back to *vous*.
   Imperatives have no marker word, so check them in review.
 
-The workflow needs the `ANTHROPIC_API_KEY` repository secret. Locally:
-`ANTHROPIC_API_KEY=... dart run tool/translate.dart`.
+The workflow needs the `GEMINI_API_KEY` repository secret: a free-tier key from
+[Google AI Studio](https://aistudio.google.com/apikey), no billing. Locally:
+`GEMINI_API_KEY=... dart run tool/translate.dart`. The model is one constant at
+the top of the script. The free tier is rate-limited — a run that hits the limit
+fails with a 429 message; re-run it later. Google may use free-tier requests to
+improve its products, which is acceptable because the input is only public UI
+copy.
 
 Generated Dart (`lib/l10n/app_localizations*.dart`) is not committed. Run
 `flutter gen-l10n` after changing an ARB file, or just `flutter run`.

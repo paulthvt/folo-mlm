@@ -1,4 +1,4 @@
-# English → every other language, through Claude, as one pull request.
+# English → every other language, through Gemini, as one pull request.
 #
 # tool/translate.dart sends only the keys that are new or whose English changed
 # (lib/l10n/translation_sources.json remembers what each translation was made
@@ -39,7 +39,7 @@ jobs:
 
       - name: Translate
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: dart run tool/translate.dart
 
       # Fails on broken ICU syntax before a pull request exists.

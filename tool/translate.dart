@@ -1,6 +1,10 @@
-// Translates every lib/l10n/app_xx.arb from app_en.arb with Claude.
+// Translates every lib/l10n/app_xx.arb from app_en.arb with Gemini.
 //
-//   ANTHROPIC_API_KEY=... dart run tool/translate.dart
+//   GEMINI_API_KEY=... dart run tool/translate.dart
+//
+// The key is a free-tier Google AI Studio key: no billing, rate-limited, and
+// Google may use the requests to improve its products. Fine here, the input is
+// public UI copy only.
 //
 // Only keys that need work are sent: missing in the target, or whose English
 // changed since they were translated. lib/l10n/translation_sources.json records
@@ -9,9 +13,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+// A Flash model on the Gemini free tier (ai.google.dev/gemini-api/docs/pricing).
+const _model = 'gemini-3.8-flash';
 const _dir = 'lib/l10n';
 const _sourcesPath = '$_dir/translation_sources.json';
-const _model = 'claude-sonnet-5-5';
 
 // ponytail: fixed batch size; lower it if a long language hits max_tokens.
 const _batch = 80;
@@ -37,8 +42,8 @@ Reply with a single JSON object mapping every key you were given to its
 translation. No other text.''';
 
 Future<void> main() async {
-  final key = Platform.environment['ANTHROPIC_API_KEY'];
-  if (key == null || key.isEmpty) _fail('ANTHROPIC_API_KEY is not set');
+  final key = Platform.environment['GEMINI_API_KEY'];
+  if (key == null || key.isEmpty) _fail('GEMINI_API_KEY is not set');
 
   final englishArb = _readJson('$_dir/app_en.arb');
   final english = messages(englishArb);
@@ -169,52 +174,56 @@ Future<Map<String, String>> _translate(
       },
   };
   final request = await client.postUrl(
-    Uri.parse('https://api.anthropic.com/v1/messages'),
+    Uri.parse(
+      'https://generativelanguage.googleapis.com/v1beta/models/$_model:generateContent',
+    ),
   );
   request.headers
-    ..set('x-api-key', apiKey)
-    ..set('anthropic-version', '2023-06-01')
+    ..set('x-goog-api-key', apiKey)
     ..contentType = ContentType.json;
   request.write(
     jsonEncode({
-      'model': _model,
-      'max_tokens': 16000,
-      'system': _system,
-      'output_config': {
-        'format': {
-          'type': 'json_schema',
-          'schema': {
-            'type': 'object',
-            'properties': {
-              for (final key in keys) key: {'type': 'string'},
-            },
-            'required': keys,
-            'additionalProperties': false,
-          },
-        },
+      'systemInstruction': {
+        'parts': [
+          {'text': _system},
+        ],
       },
-      'messages': [
+      'contents': [
         {
           'role': 'user',
-          'content':
-              'Translate from English into the locale "$locale".\n\n'
-              '${const JsonEncoder.withIndent('  ').convert(input)}',
+          'parts': [
+            {
+              'text':
+                  'Translate from English into the locale "$locale".\n\n'
+                  '${const JsonEncoder.withIndent('  ').convert(input)}',
+            },
+          ],
         },
       ],
+      'generationConfig': {'responseMimeType': 'application/json'},
     }),
   );
   final response = await request.close();
   final body = await response.transform(utf8.decoder).join();
-  if (response.statusCode != 200) {
-    _fail('Anthropic API ${response.statusCode}: $body');
+  if (response.statusCode == 429) {
+    _fail(
+      'Gemini free-tier quota or rate limit reached (429). Wait and re-run the '
+      'workflow, or lower _batch.\n$body',
+    );
   }
-  final message = jsonDecode(body) as Map<String, dynamic>;
-  final stop = message['stop_reason'];
-  if (stop != 'end_turn') _fail('$locale: stopped with $stop');
-  final text = (message['content'] as List<dynamic>)
+  if (response.statusCode != 200) {
+    _fail('Gemini API ${response.statusCode}: $body');
+  }
+  final reply = jsonDecode(body) as Map<String, dynamic>;
+  final candidates = reply['candidates'] as List<dynamic>? ?? [];
+  if (candidates.isEmpty) _fail('$locale: no candidate returned: $body');
+  final candidate = candidates.first as Map<String, dynamic>;
+  final finish = candidate['finishReason'];
+  if (finish != 'STOP') _fail('$locale: stopped with $finish');
+  final content = candidate['content'] as Map<String, dynamic>;
+  final text = (content['parts'] as List<dynamic>)
       .cast<Map<String, dynamic>>()
-      .where((block) => block['type'] == 'text')
-      .map((block) => block['text'] as String)
+      .map((part) => part['text'] as String? ?? '')
       .join();
   try {
     return Map<String, String>.from(jsonDecode(text) as Map);
