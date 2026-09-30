@@ -42,6 +42,28 @@ void main() {
       expect(person.stageSince, DateTime.utc(2026, 4, 1, 8));
     });
 
+    test("reads a team member's own profile", () {
+      final person = personFromRow(
+        _row({
+          'stage': 'team',
+          'prospect_status': null,
+          'why': 'More time with my kids',
+          'own_goal': 'Pay for the holidays',
+          'time_available': '3 evenings a week',
+          'would_love_to': 'Host a workshop',
+          'strengths': 'Warm, organised',
+          'stuck_on': '',
+        }),
+      );
+
+      expect(person.why, 'More time with my kids');
+      expect(person.ownGoal, 'Pay for the holidays');
+      expect(person.timeAvailable, '3 evenings a week');
+      expect(person.wouldLoveTo, 'Host a workshop');
+      expect(person.strengths, 'Warm, organised');
+      expect(person.stuckOn, isNull);
+    });
+
     test('reads blank text as null', () {
       final person = personFromRow(_row());
       expect(person.email, isNull);
@@ -82,6 +104,8 @@ void main() {
         prospectStatus: ProspectStatus.noReply,
         phone: '',
         notes: 'Met at the market',
+        stuckOn: ' ',
+        ownGoal: 'Pay for the holidays',
       ),
     );
 
@@ -96,6 +120,12 @@ void main() {
       'profession': null,
       'address': null,
       'notes': 'Met at the market',
+      'why': null,
+      'own_goal': 'Pay for the holidays',
+      'time_available': null,
+      'would_love_to': null,
+      'strengths': null,
+      'stuck_on': null,
     });
   });
 

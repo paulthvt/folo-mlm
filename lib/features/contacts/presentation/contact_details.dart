@@ -8,6 +8,7 @@ import 'package:folo/core/ui/folo_chip.dart';
 import 'package:folo/core/ui/folo_dialog.dart';
 import 'package:folo/core/ui/section_header.dart';
 import 'package:folo/features/contacts/domain/person.dart';
+import 'package:folo/features/contacts/presentation/edit_person_form.dart';
 import 'package:folo/features/contacts/presentation/people_copy.dart';
 import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
 import 'package:folo/l10n/app_localizations.dart';
@@ -68,7 +69,9 @@ class ContactDetails extends StatelessWidget {
 
   /// The tapped status, or null when the selected one was tapped again.
   final ValueChanged<ProspectStatus?> onStatus;
-  final VoidCallback onEdit;
+
+  /// Called with the part to edit: a section's own, or everything from ⋯.
+  final ValueChanged<EditPart> onEdit;
 
   /// Called once the user has confirmed.
   final VoidCallback onDelete;
@@ -130,7 +133,7 @@ class ContactDetails extends StatelessWidget {
     (
       label: l10n.contactEditDetails,
       icon: Icons.edit_outlined,
-      onTap: onEdit,
+      onTap: () => onEdit(EditPart.everything),
       trailing: null,
     ),
   ];
@@ -232,7 +235,7 @@ class ContactDetails extends StatelessWidget {
       (l10n.factInstagram, person.instagram, null),
       (l10n.factAddress, person.address, null),
       (l10n.factNotes, person.notes, null),
-    ].where((fact) => fact.$2 != null).toList();
+    ];
 
     final desktop = context.screenSize.isDesktop;
     final more = _more(context, l10n);
@@ -314,43 +317,70 @@ class ContactDetails extends StatelessWidget {
       ],
     ];
 
-    final whatYouKnow = [
-      SectionHeader(
-        title: l10n.contactSectionWhatYouKnow,
-        actionLabel: l10n.contactEdit,
-        onAction: onEdit,
-      ),
-      Card(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              if (facts.isEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
-                  child: Text(
-                    l10n.contactNothingYet,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: folo.textMuted,
+    // Facts with a value, under a header that edits them all.
+    List<Widget> factsSection(
+      String title,
+      EditPart part,
+      List<(String, String?, Uri?)> all,
+    ) {
+      final facts = all.where((fact) => fact.$2 != null);
+      return [
+        SectionHeader(
+          title: title,
+          actionLabel: l10n.contactEdit,
+          onAction: () => onEdit(part),
+        ),
+        Card(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                if (facts.isEmpty)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: AppSpacing.sm,
                     ),
-                  ),
-                )
-              else
-                for (final (label, value, link) in facts)
-                  FactRow(
-                    label: label,
-                    value: value!,
-                    onTap: link == null ? null : () => onLaunch(link),
-                  ),
-            ],
+                    child: Text(
+                      l10n.contactNothingYet,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: folo.textMuted,
+                      ),
+                    ),
+                  )
+                else
+                  for (final (label, value, link) in facts)
+                    FactRow(
+                      label: label,
+                      value: value!,
+                      onTap: link == null ? null : () => onLaunch(link),
+                    ),
+              ],
+            ),
           ),
         ),
-      ),
-    ];
+      ];
+    }
+
+    // Their own aims, in their words: nothing to rank or compare.
+    final aimingFor = person.stage == Stage.team
+        ? factsSection(l10n.contactSectionAimingFor, EditPart.aims, [
+            (l10n.factWhy, person.why, null),
+            (l10n.factOwnGoal, person.ownGoal, null),
+            (l10n.factTimeAvailable, person.timeAvailable, null),
+            (l10n.factWouldLoveTo, person.wouldLoveTo, null),
+            (l10n.factStrengths, person.strengths, null),
+            (l10n.factStuckOn, person.stuckOn, null),
+          ])
+        : <Widget>[];
+    final whatYouKnow = factsSection(
+      l10n.contactSectionWhatYouKnow,
+      EditPart.facts,
+      facts,
+    );
 
     // Sections with the same gap between each, none above the first.
     List<Widget> spaced(List<List<Widget>> sections) => [
@@ -388,7 +418,7 @@ class ContactDetails extends StatelessWidget {
                       width: _factsWidth,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: whatYouKnow,
+                        children: spaced([aimingFor, whatYouKnow]),
                       ),
                     ),
                   ],
@@ -417,6 +447,7 @@ class ContactDetails extends StatelessWidget {
                 ],
                 whereItStands,
                 [?nextStep],
+                aimingFor,
                 whatYouKnow,
                 [?history],
               ]),

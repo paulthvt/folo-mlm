@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/theme/app_theme.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/presentation/contact_details.dart';
+import 'package:folo/features/contacts/presentation/edit_person_form.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:folo/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
@@ -13,6 +14,8 @@ Person _person({
   String? email,
   String? instagram,
   String? needs,
+  String? ownGoal,
+  String? stuckOn,
   DateTime? pausedAt,
 }) => Person(
   id: 'p1',
@@ -24,13 +27,15 @@ Person _person({
   email: email,
   instagram: instagram,
   needs: needs,
+  ownGoal: ownGoal,
+  stuckOn: stuckOn,
   pausedAt: pausedAt,
 );
 
 class _Calls {
   final statuses = <ProspectStatus?>[];
   final launched = <Uri>[];
-  var edits = 0;
+  final edits = <EditPart>[];
   var deletes = 0;
   var logs = 0;
   final moves = <Stage>[];
@@ -59,7 +64,7 @@ Future<_Calls> _pump(
         body: ContactDetails(
           person: person,
           onStatus: calls.statuses.add,
-          onEdit: () => calls.edits++,
+          onEdit: calls.edits.add,
           onDelete: () => calls.deletes++,
           onLog: () => calls.logs++,
           onMove: calls.moves.add,
@@ -161,6 +166,53 @@ void main() {
     expect(find.text('Phone'), findsNothing);
   });
 
+  testWidgets('a team member: what they are aiming for, filled facts only', (
+    tester,
+  ) async {
+    await _pump(
+      tester,
+      _person(
+        stage: Stage.team,
+        ownGoal: 'Pay for the holidays',
+        stuckOn: 'Talking about it',
+      ),
+    );
+
+    expect(find.text('WHAT THEY ARE AIMING FOR'), findsOneWidget);
+    expect(find.text('Their own goal'), findsOneWidget);
+    expect(find.text('Pay for the holidays'), findsOneWidget);
+    expect(find.text('Where they are stuck'), findsOneWidget);
+    expect(find.text('Their why'), findsNothing);
+    // Above what you know.
+    expect(
+      tester.getTopLeft(find.text('WHAT THEY ARE AIMING FOR')).dy,
+      lessThan(tester.getTopLeft(find.text('WHAT YOU KNOW')).dy),
+    );
+  });
+
+  testWidgets('a team member with no profile yet still gets the section', (
+    tester,
+  ) async {
+    final calls = await _pump(tester, _person(stage: Stage.team));
+
+    expect(find.text('WHAT THEY ARE AIMING FOR'), findsOneWidget);
+    expect(find.text('Nothing yet.'), findsNWidgets(2));
+    await tester.tap(find.text('Edit').first);
+    await tester.tap(find.text('Edit').last);
+    // Each section edits its own facts.
+    expect(calls.edits, [EditPart.aims, EditPart.facts]);
+  });
+
+  testWidgets('not on the team: no aims, even if saved', (tester) async {
+    await _pump(
+      tester,
+      _person(stage: Stage.customer, ownGoal: 'Pay for the holidays'),
+    );
+
+    expect(find.text('WHAT THEY ARE AIMING FOR'), findsNothing);
+    expect(find.text('Pay for the holidays'), findsNothing);
+  });
+
   testWidgets('Edit in the section header and in ⋯ both edit', (tester) async {
     final calls = await _pump(tester, _person());
 
@@ -170,7 +222,7 @@ void main() {
     await tester.tap(find.text('Edit details'));
     await tester.pumpAndSettle();
 
-    expect(calls.edits, 2);
+    expect(calls.edits, [EditPart.facts, EditPart.everything]);
   });
 
   testWidgets('Delete asks first; Cancel keeps the person', (tester) async {
@@ -263,7 +315,10 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(BottomSheet), findsNothing);
-    expect(calls.logs + calls.edits + calls.deletes + calls.moves.length, 0);
+    expect(
+      calls.logs + calls.edits.length + calls.deletes + calls.moves.length,
+      0,
+    );
   });
 
   testWidgets('⋯: Change workflow names the current one, then Pause', (

@@ -33,6 +33,12 @@ class Person {
     this.profession,
     this.address,
     this.notes,
+    this.why,
+    this.ownGoal,
+    this.timeAvailable,
+    this.wouldLoveTo,
+    this.strengths,
+    this.stuckOn,
     this.place,
     this.pausedAt,
     this.currentStepId,
@@ -63,6 +69,21 @@ class Person {
   final String? address;
   final String? notes;
 
+  /// Why they started. This and the five after it are a team member's own
+  /// profile, in their words; shown while they are on the team.
+  final String? why;
+
+  /// Their own goal, not one set for them.
+  final String? ownGoal;
+
+  /// "3 evenings a week".
+  final String? timeAvailable;
+  final String? wouldLoveTo;
+  final String? strengths;
+
+  /// Where they are stuck.
+  final String? stuckOn;
+
   /// Null when they follow no workflow.
   final WorkflowPlace? place;
 
@@ -91,6 +112,12 @@ class Person {
     profession: profession,
     address: address,
     notes: notes,
+    why: why,
+    ownGoal: ownGoal,
+    timeAvailable: timeAvailable,
+    wouldLoveTo: wouldLoveTo,
+    strengths: strengths,
+    stuckOn: stuckOn,
     place: place,
     pausedAt: pausedAt,
     currentStepId: currentStepId,
