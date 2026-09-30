@@ -22,7 +22,7 @@ void main() {
   ) async {
     await pumpLoomia(tester, size: const Size(390, 844));
 
-    expect(find.text('Loomia'), findsNothing);
+    expect(find.bySemanticsLabel('Loomia'), findsNothing);
     await tester.tap(find.byType(AccountButton));
     await tester.pumpAndSettle();
 
@@ -37,7 +37,7 @@ void main() {
     await pumpLoomia(tester, size: const Size(800, 1000));
 
     expect(find.byType(AccountButton), findsNothing);
-    expect(find.text('Loomia'), findsNothing);
+    expect(find.bySemanticsLabel('Loomia'), findsNothing);
     // Activated the way a screen reader would, through the semantics action.
     tester.semantics.tap(find.semantics.byLabel('Settings'));
     await tester.pumpAndSettle();
@@ -51,7 +51,7 @@ void main() {
   ) async {
     await pumpLoomia(tester, size: const Size(1440, 900));
 
-    expect(find.text('Loomia'), findsOneWidget);
+    expect(find.bySemanticsLabel('Loomia'), findsOneWidget);
     expect(find.byType(AccountButton), findsNothing);
     await tester.tap(find.text('Pauline'));
     await tester.pumpAndSettle();

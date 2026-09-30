@@ -5,6 +5,7 @@ import 'package:loomia/app/theme/app_colors.dart';
 import 'package:loomia/app/theme/app_spacing.dart';
 import 'package:loomia/core/layout/breakpoints.dart';
 import 'package:loomia/core/ui/loomia_avatar.dart';
+import 'package:loomia/core/ui/loomia_wordmark.dart';
 import 'package:loomia/features/auth/data/auth_repository.dart';
 import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
@@ -100,10 +101,11 @@ class _Sidebar extends ConsumerWidget {
                       AppSpacing.ms,
                       AppSpacing.lg,
                     ),
-                    // Set type until there is a real logo, as on /welcome.
-                    child: Text(
-                      'Loomia',
-                      style: Theme.of(context).textTheme.headlineSmall,
+                    child: Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: LoomiaWordmark(
+                        style: Theme.of(context).textTheme.headlineSmall!,
+                      ),
                     ),
                   ),
                 _SidebarItem(

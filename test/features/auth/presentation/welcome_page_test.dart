@@ -32,7 +32,7 @@ void main() {
   testWidgets('shows the Loomia name and slogan', (tester) async {
     await tester.pumpWidget(_host(FakeAuthRepository()));
 
-    expect(find.text('Loomia'), findsOneWidget);
+    expect(find.bySemanticsLabel('Loomia'), findsOneWidget);
     expect(find.text('Weave your network. Tend every thread.'), findsOneWidget);
   });
 
