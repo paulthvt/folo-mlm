@@ -6,6 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/app/router/app_router.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/core/ui/folo_top_bar.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/core/ui/pick_day.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
@@ -295,11 +296,17 @@ void main() {
 
     await _tapVisible(tester, find.text('Add a step'));
     await tester.enterText(
-      find.widgetWithText(TextFormField, 'What to do'),
+      find.descendant(
+        of: find.widgetWithText(LabeledField, 'What to do'),
+        matching: find.byType(TextFormField),
+      ),
       'Say thanks',
     );
     await tester.enterText(
-      find.widgetWithText(TextFormField, 'Days after the previous step'),
+      find.descendant(
+        of: find.widgetWithText(LabeledField, 'Days after the previous step'),
+        matching: find.byType(TextFormField),
+      ),
       '2',
     );
     await tester.tap(find.text('Save'));
@@ -322,11 +329,17 @@ void main() {
     await _tapVisible(tester, find.text('Send the samples'));
     expect(find.text('Step 2'), findsOneWidget);
     await tester.enterText(
-      find.widgetWithText(TextFormField, 'What to do'),
+      find.descendant(
+        of: find.widgetWithText(LabeledField, 'What to do'),
+        matching: find.byType(TextFormField),
+      ),
       'Send the kit',
     );
     await tester.enterText(
-      find.widgetWithText(TextFormField, 'Days after the previous step'),
+      find.descendant(
+        of: find.widgetWithText(LabeledField, 'Days after the previous step'),
+        matching: find.byType(TextFormField),
+      ),
       '3',
     );
     await tester.tap(find.text('Save'));

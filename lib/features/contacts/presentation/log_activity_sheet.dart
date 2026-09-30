@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/ui/folo_dialog.dart';
 import 'package:folo/core/ui/form_error.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/core/ui/pick_day.dart';
 import 'package:folo/features/contacts/domain/activity.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
@@ -113,29 +114,33 @@ class _LogActivityFormState extends ConsumerState<_LogActivityForm> {
                     ),
               ],
             ),
-            InkWell(
-              onTap: _pickDay,
-              child: InputDecorator(
-                decoration: InputDecoration(
-                  labelText: l10n.logWhen,
-                  suffixIcon: const Icon(Icons.calendar_today_outlined),
-                ),
-                child: Text(
-                  _day == currentDay
-                      ? l10n.logWhenToday(_day)
-                      : dayLabel(l10n, _day, currentDay),
+            LabeledField(
+              label: l10n.logWhen,
+              child: InkWell(
+                onTap: _pickDay,
+                child: InputDecorator(
+                  decoration: const InputDecoration(
+                    suffixIcon: Icon(Icons.calendar_today_outlined),
+                  ),
+                  child: Text(
+                    _day == currentDay
+                        ? l10n.logWhenToday(_day)
+                        : dayLabel(l10n, _day, currentDay),
+                  ),
                 ),
               ),
             ),
-            TextFormField(
-              controller: _text,
-              autofocus: true,
-              minLines: 2,
-              maxLines: 5,
-              textCapitalization: TextCapitalization.sentences,
-              validator: (value) =>
-                  (value ?? '').trim().isEmpty ? l10n.logWhatRequired : null,
-              decoration: InputDecoration(labelText: l10n.logWhat),
+            LabeledField(
+              label: l10n.logWhat,
+              child: TextFormField(
+                controller: _text,
+                autofocus: true,
+                minLines: 2,
+                maxLines: 5,
+                textCapitalization: TextCapitalization.sentences,
+                validator: (value) =>
+                    (value ?? '').trim().isEmpty ? l10n.logWhatRequired : null,
+              ),
             ),
           ],
         ),

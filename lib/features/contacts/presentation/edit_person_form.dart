@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/ui/folo_dialog.dart';
 import 'package:folo/core/ui/form_error.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
@@ -156,26 +157,28 @@ class _EditPersonFormState extends ConsumerState<_EditPersonForm> {
           children: [
             if (failure != null) FormError(peopleFailureCopy(l10n, failure)),
             for (final field in _Field.values)
-              TextFormField(
-                controller: _controllers[field],
-                decoration: InputDecoration(labelText: labels[field]),
-                textCapitalization: field == _Field.name
-                    ? TextCapitalization.words
-                    : TextCapitalization.sentences,
-                keyboardType: switch (field) {
-                  _Field.phone => TextInputType.phone,
-                  _Field.email => TextInputType.emailAddress,
-                  _Field.address || _Field.notes => TextInputType.multiline,
-                  _ => TextInputType.text,
-                },
-                maxLines: field == _Field.notes || field == _Field.address
-                    ? null
-                    : 1,
-                validator: field == _Field.name
-                    ? (value) => (value ?? '').trim().isEmpty
-                          ? l10n.addPersonNameRequired
-                          : null
-                    : null,
+              LabeledField(
+                label: labels[field]!,
+                child: TextFormField(
+                  controller: _controllers[field],
+                  textCapitalization: field == _Field.name
+                      ? TextCapitalization.words
+                      : TextCapitalization.sentences,
+                  keyboardType: switch (field) {
+                    _Field.phone => TextInputType.phone,
+                    _Field.email => TextInputType.emailAddress,
+                    _Field.address || _Field.notes => TextInputType.multiline,
+                    _ => TextInputType.text,
+                  },
+                  maxLines: field == _Field.notes || field == _Field.address
+                      ? null
+                      : 1,
+                  validator: field == _Field.name
+                      ? (value) => (value ?? '').trim().isEmpty
+                            ? l10n.addPersonNameRequired
+                            : null
+                      : null,
+                ),
               ),
           ],
         ),

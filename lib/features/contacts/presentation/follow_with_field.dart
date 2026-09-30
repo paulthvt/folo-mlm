@@ -1,4 +1,5 @@
 import 'package:folo/app/theme/app_spacing.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/core/ui/pick_day.dart';
 import 'package:folo/core/ui/section_header.dart';
 import 'package:folo/features/contacts/presentation/people_copy.dart';
@@ -83,21 +84,23 @@ class FollowWithField extends StatelessWidget {
         ),
         if (follow != null) ...[
           const SizedBox(height: AppSpacing.sm),
-          Semantics(
-            button: true,
-            child: InkWell(
-              onTap: () => _pickDay(context, follow),
-              child: InputDecorator(
-                decoration: InputDecoration(
-                  labelText:
-                      follow.workflow.steps.firstOrNull?.label ??
-                      follow.workflow.name,
-                  suffixIcon: const Icon(Icons.calendar_today_outlined),
-                ),
-                child: Text(
-                  follow.firstDue == today
-                      ? l10n.logWhenToday(today)
-                      : dayLabel(l10n, follow.firstDue, today),
+          LabeledField(
+            label:
+                follow.workflow.steps.firstOrNull?.label ??
+                follow.workflow.name,
+            child: Semantics(
+              button: true,
+              child: InkWell(
+                onTap: () => _pickDay(context, follow),
+                child: InputDecorator(
+                  decoration: const InputDecoration(
+                    suffixIcon: Icon(Icons.calendar_today_outlined),
+                  ),
+                  child: Text(
+                    follow.firstDue == today
+                        ? l10n.logWhenToday(today)
+                        : dayLabel(l10n, follow.firstDue, today),
+                  ),
                 ),
               ),
             ),

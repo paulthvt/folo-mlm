@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/core/ui/form_error.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/workflows/presentation/step_sheet.dart';
 import 'package:material_ui/material_ui.dart';
@@ -29,7 +30,10 @@ void main() {
     result: (_) {},
   );
 
-  Finder field(String label) => find.widgetWithText(TextFormField, label);
+  Finder field(String label) => find.descendant(
+    of: find.widgetWithText(LabeledField, label),
+    matching: find.byType(TextFormField),
+  );
 
   Iterable<String> writes(String name) =>
       workflows.calls.where((call) => call.startsWith(name));

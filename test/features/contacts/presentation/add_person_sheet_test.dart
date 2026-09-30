@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/core/ui/form_error.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/domain/person.dart';
 import 'package:folo/features/contacts/presentation/add_person_sheet.dart';
@@ -26,7 +27,10 @@ void main() {
     result: (value) => saved = value,
   );
 
-  Finder field(String label) => find.widgetWithText(TextFormField, label);
+  Finder field(String label) => find.descendant(
+    of: find.widgetWithText(LabeledField, label),
+    matching: find.byType(TextFormField),
+  );
 
   testWidgets('a name is required', (tester) async {
     await open(tester);

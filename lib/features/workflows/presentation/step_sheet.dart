@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/ui/folo_dialog.dart';
 import 'package:folo/core/ui/form_error.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
 import 'package:folo/features/contacts/presentation/people_copy.dart';
 import 'package:folo/features/workflows/domain/workflow.dart';
@@ -181,40 +182,48 @@ class _StepFormState extends State<StepForm> {
           spacing: AppSpacing.ms,
           children: [
             if (failure != null) FormError(peopleFailureCopy(l10n, failure)),
-            TextFormField(
-              controller: _label,
-              autofocus: widget.step == null,
-              textCapitalization: TextCapitalization.sentences,
-              validator: (value) =>
-                  (value ?? '').trim().isEmpty ? l10n.stepLabelRequired : null,
-              decoration: InputDecoration(labelText: l10n.stepLabel),
-            ),
-            TextFormField(
-              controller: _days,
-              keyboardType: TextInputType.number,
-              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-              // The hint follows what is typed.
-              onChanged: (_) => setState(() {}),
-              validator: (value) =>
-                  _parseDays(value ?? '') == null ? l10n.stepDaysInvalid : null,
-              decoration: InputDecoration(
-                labelText: first
-                    ? l10n.stepDaysAfterStart
-                    : l10n.stepDaysAfterPrevious,
-                helperText: days == null
-                    ? null
-                    : first
-                    ? l10n.stepDueAfterStart(days)
-                    : l10n.stepDueAfterPrevious(days, widget.number - 1),
-                helperMaxLines: 2,
+            LabeledField(
+              label: l10n.stepLabel,
+              child: TextFormField(
+                controller: _label,
+                autofocus: widget.step == null,
+                textCapitalization: TextCapitalization.sentences,
+                validator: (value) => (value ?? '').trim().isEmpty
+                    ? l10n.stepLabelRequired
+                    : null,
               ),
             ),
-            TextFormField(
-              controller: _note,
-              minLines: 2,
-              maxLines: 5,
-              textCapitalization: TextCapitalization.sentences,
-              decoration: InputDecoration(labelText: l10n.stepNote),
+            LabeledField(
+              label: first
+                  ? l10n.stepDaysAfterStart
+                  : l10n.stepDaysAfterPrevious,
+              child: TextFormField(
+                controller: _days,
+                keyboardType: TextInputType.number,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                // The hint follows what is typed.
+                onChanged: (_) => setState(() {}),
+                validator: (value) => _parseDays(value ?? '') == null
+                    ? l10n.stepDaysInvalid
+                    : null,
+                decoration: InputDecoration(
+                  helperText: days == null
+                      ? null
+                      : first
+                      ? l10n.stepDueAfterStart(days)
+                      : l10n.stepDueAfterPrevious(days, widget.number - 1),
+                  helperMaxLines: 2,
+                ),
+              ),
+            ),
+            LabeledField(
+              label: l10n.stepNote,
+              child: TextFormField(
+                controller: _note,
+                minLines: 2,
+                maxLines: 5,
+                textCapitalization: TextCapitalization.sentences,
+              ),
             ),
           ],
         ),

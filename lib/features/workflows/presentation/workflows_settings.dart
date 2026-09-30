@@ -8,6 +8,7 @@ import 'package:folo/core/layout/breakpoints.dart';
 import 'package:folo/core/ui/empty_state.dart';
 import 'package:folo/core/ui/folo_dialog.dart';
 import 'package:folo/core/ui/form_error.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/core/ui/section_header.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/contacts/domain/people_failure.dart';
@@ -237,14 +238,16 @@ class _NewWorkflowFormState extends ConsumerState<_NewWorkflowForm> {
           spacing: AppSpacing.ms,
           children: [
             if (failure != null) FormError(peopleFailureCopy(l10n, failure)),
-            TextFormField(
-              controller: _name,
-              autofocus: true,
-              textCapitalization: TextCapitalization.sentences,
-              validator: (value) => (value ?? '').trim().isEmpty
-                  ? l10n.workflowNameRequired
-                  : null,
-              decoration: InputDecoration(labelText: l10n.workflowName),
+            LabeledField(
+              label: l10n.workflowName,
+              child: TextFormField(
+                controller: _name,
+                autofocus: true,
+                textCapitalization: TextCapitalization.sentences,
+                validator: (value) => (value ?? '').trim().isEmpty
+                    ? l10n.workflowNameRequired
+                    : null,
+              ),
             ),
             SectionHeader(title: l10n.workflowsNewStage),
             Wrap(

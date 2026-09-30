@@ -104,11 +104,13 @@ abstract final class AppTheme {
 
       inputDecorationTheme: InputDecorationThemeData(
         filled: true,
-        fillColor: folo.surfaceSunken,
+        fillColor: folo.surfaceDefault,
         hintStyle: AppTypography.bodyLarge.copyWith(color: folo.textMuted),
+        // Drawn above the box by LabeledField; fields carry no labelText.
         labelStyle: AppTypography.label.copyWith(
           color: scheme.onSurfaceVariant,
         ),
+        helperStyle: AppTypography.caption.copyWith(color: folo.textMuted),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.ms,
@@ -235,6 +237,7 @@ abstract final class AppTheme {
   static InputDecoration search(BuildContext context) {
     final pill = BorderRadius.circular(AppRadii.pill);
     return InputDecoration(
+      fillColor: FoloColors.of(context).surfaceSunken,
       enabledBorder: OutlineInputBorder(
         borderRadius: pill,
         borderSide: BorderSide.none,
