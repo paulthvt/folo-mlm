@@ -152,7 +152,7 @@ person, and the largest numeral on the screen is smaller than the screen title
 
 ## 6. Auth — welcome, sign in, register, reset
 
-Added 2026-09-23 for [#21](https://github.com/paulthvt/folo-mlm/issues/21). Full
+Added 2026-09-23 for [#21](https://github.com/paulthvt/loomia/issues/21). Full
 design in
 [docs/superpowers/specs/2026-09-23-auth-login-design.md](../superpowers/specs/2026-09-23-auth-login-design.md).
 
@@ -184,7 +184,7 @@ there is no previous screen to return to.
 
 ## 7. Contacts, stages & workflows
 
-Added 2026-09-28 for [#53](https://github.com/paulthvt/folo-mlm/issues/53).
+Added 2026-09-28 for [#53](https://github.com/paulthvt/loomia/issues/53).
 Section `Contacts, stages & workflows` on both pages. It supersedes the filter
 chips of §2 and the detail layout of §3.
 
@@ -296,7 +296,7 @@ which shows the saved state again.
 
 ## 9. First run & import from the phone
 
-Added 2026-09-30 for [#61](https://github.com/paulthvt/folo-mlm/issues/61).
+Added 2026-09-30 for [#61](https://github.com/paulthvt/loomia/issues/61).
 Frames `First run — mobile`, `First run — web` and `Import contacts — mobile`.
 
 **First run** is one screen, shown once after sign-up, in the auth shape (one
