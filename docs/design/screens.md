@@ -138,6 +138,14 @@ constrained: no volumes, no ranks, no comparison, no "downline". A team member i
 a person who might need help, and the screen is built out of the same ActionItem
 and ContactRow as Contacts. The copy states the rule out loud.
 
+**Built** ([#101](https://github.com/paulthvt/loomia/issues/101)): the summary
+card and `EVERYONE` (#102); `WORTH A CHECK-IN` follows in #103. A row's second
+line is "Team · joined 3 weeks ago". Tapping a member opens their contact page
+under Contacts. Every size is one 624px column, like Today.
+
+Not built: "has not added a contact yet". It would read the member's own book,
+which stays private (#67).
+
 ## 5. Goals
 
 App bar (`11 DAYS LEFT IN SEPTEMBER` / "Goals") → GoalCard (1 840 of 2 800, "On
