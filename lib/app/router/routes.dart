@@ -13,6 +13,13 @@ abstract final class Routes {
   static String contactLocation(String id) =>
       '$contacts/${Uri.encodeComponent(id)}';
 
+  /// Their whole workflow, nested under the person so back returns to them.
+  static const String contactWorkflowSegment = 'workflow';
+  static const String contactWorkflowName = 'contactWorkflow';
+
+  static String contactWorkflowLocation(String id) =>
+      '${contactLocation(id)}/$contactWorkflowSegment';
+
   static const String settings = '/settings';
   static const String settingsName = 'settings';
 

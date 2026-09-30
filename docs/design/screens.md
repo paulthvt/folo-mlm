@@ -110,6 +110,16 @@ A tick completes the step today and waits for the server; on failure a SnackBar,
 and the card stays. There are no progress bars or streaks: the count "3 of 5"
 is where you are, not a score.
 
+**Tapping the card** (any state with a workflow) opens the whole workflow at
+`/contacts/:id/workflow`, above the person on mobile, in the pane on desktop.
+Eyebrow "Marie Dupont · Step 3 of 5" (or "· Finished"), the workflow name as
+title, then one rail row per step: before the current one greyed, the current
+one on the selected-row wash with its due label and note and the same tick (or
+"Paused since…" and `Resume`), after it "3 days later". Greyed means *before*,
+not *done*: the history keeps a step's label, not which step it was, so no
+done dates and no projected dates. Editing stays in Settings → Workflows.
+Figma: "Workflow timeline — mobile".
+
 The ⋯ menu adds `Change workflow` (the current one's name trailing) and
 `Pause — not now`, or `Resume` while paused. Change stage and Change workflow
 share the FOLLOW WITH block: the stage's workflows, "Nothing for now", and the
