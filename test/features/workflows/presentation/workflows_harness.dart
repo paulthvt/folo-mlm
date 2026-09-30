@@ -18,7 +18,7 @@ Future<ProviderContainer> openWorkflows(
   FakePeopleRepository? people,
   bool settle = true,
 }) async {
-  final container = await pumpFolo(
+  final container = await pumpLoomia(
     tester,
     size: size,
     workflows: workflows,

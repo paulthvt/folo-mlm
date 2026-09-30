@@ -126,7 +126,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('We could not reach Folo. Check your connection.'),
+      find.text('We could not reach Loomia. Check your connection.'),
       findsOneWidget,
     );
     expect(find.byType(SettingsPage), findsOneWidget);

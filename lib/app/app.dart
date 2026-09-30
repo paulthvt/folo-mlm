@@ -20,7 +20,7 @@ class LoomiaApp extends ConsumerWidget {
     );
     return MaterialApp.router(
       // A product name is not translated, so there is no appTitle key.
-      title: 'Folo',
+      title: 'Loomia',
       debugShowCheckedModeBanner: false,
       // Generated from the ARB files present, so a new locale needs no edit here.
       localizationsDelegates: localizationsDelegates,

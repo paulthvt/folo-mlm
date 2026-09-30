@@ -30,7 +30,7 @@ final phoneContactsProvider = FutureProvider.autoDispose<List<PhoneContact>?>(
 );
 
 /// Pick people from the phone's contacts and bring them in, all at one stage.
-/// Nobody is ticked to start with; someone who looks already in Folo says so,
+/// Nobody is ticked to start with; someone who looks already in Loomia says so,
 /// and can still be ticked.
 class ImportContactsPage extends ConsumerStatefulWidget {
   const ImportContactsPage({super.key});

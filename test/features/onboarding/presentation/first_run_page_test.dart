@@ -24,7 +24,7 @@ void main() {
     tester,
   ) async {
     final auth = _newAccount();
-    await pumpFolo(tester, size: _phone, auth: auth);
+    await pumpLoomia(tester, size: _phone, auth: auth);
     expect(find.byType(FirstRunPage), findsOneWidget);
 
     await tester.tap(find.text('Skip for now'));
@@ -36,7 +36,7 @@ void main() {
   });
 
   testWidgets('Import goes to the phone contacts', (tester) async {
-    await pumpFolo(tester, size: _phone, auth: _newAccount());
+    await pumpLoomia(tester, size: _phone, auth: _newAccount());
 
     await tester.tap(find.text('Import from your contacts'));
     await tester.pumpAndSettle();
@@ -50,7 +50,7 @@ void main() {
   });
 
   testWidgets('an onboarded account never sees it', (tester) async {
-    await pumpFolo(tester, size: _phone);
+    await pumpLoomia(tester, size: _phone);
 
     expect(find.byType(FirstRunPage), findsNothing);
   });

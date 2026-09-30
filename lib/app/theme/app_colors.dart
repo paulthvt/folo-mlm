@@ -1,6 +1,6 @@
 import 'package:material_ui/material_ui.dart';
 
-/// Colour tokens, mirroring the Figma collection `Folo/color`
+/// Colour tokens, mirroring the Figma collection `Loomia/color`
 /// (see `docs/design/design-system.md` §1). Figma is the source of truth; this
 /// file is its Dart projection, so token names match one-to-one.
 ///

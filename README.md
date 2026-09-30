@@ -1,4 +1,4 @@
-# Folo
+# Loomia
 
 A cross-platform productivity app for people who run their business on
 relationships: contacts, follow-ups, customers, prospects, team activity and
@@ -34,7 +34,7 @@ The Supabase project URL and publishable key are committed in
 design and Row Level Security is the boundary. Nothing to configure locally.
 
 Email confirmation, password recovery and Google sign-in return to
-`io.supabase.folo://login-callback/`. On web there is no custom scheme, so the
+`io.supabase.loomia://login-callback/`. On web there is no custom scheme, so the
 project's **Site URL** is where those links land: set it to the origin you
 develop on and run web on a fixed port (`flutter run -d chrome --web-port 5000`).
 Both that origin and the custom scheme must be listed under allowed redirect
@@ -140,7 +140,7 @@ Generated Dart (`lib/l10n/app_localizations*.dart`) is not committed. Run
 ## Tracking work
 
 Work is tracked on the
-[Folo project board](https://github.com/users/paulthvt/projects/2). Every change
+[Loomia project board](https://github.com/users/paulthvt/projects/2). Every change
 starts as an issue there.
 
 1. Pick (or create) an issue on the board — that number is the ticket.

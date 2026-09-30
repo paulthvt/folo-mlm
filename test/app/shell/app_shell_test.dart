@@ -20,9 +20,9 @@ void main() {
   testWidgets('mobile: no sidebar, Settings opens from the top bar', (
     tester,
   ) async {
-    await pumpFolo(tester, size: const Size(390, 844));
+    await pumpLoomia(tester, size: const Size(390, 844));
 
-    expect(find.text('Folo'), findsNothing);
+    expect(find.text('Loomia'), findsNothing);
     await tester.tap(find.byType(AccountButton));
     await tester.pumpAndSettle();
 
@@ -34,10 +34,10 @@ void main() {
     tester,
   ) async {
     final semantics = tester.ensureSemantics();
-    await pumpFolo(tester, size: const Size(800, 1000));
+    await pumpLoomia(tester, size: const Size(800, 1000));
 
     expect(find.byType(AccountButton), findsNothing);
-    expect(find.text('Folo'), findsNothing);
+    expect(find.text('Loomia'), findsNothing);
     // Activated the way a screen reader would, through the semantics action.
     tester.semantics.tap(find.semantics.byLabel('Settings'));
     await tester.pumpAndSettle();
@@ -49,9 +49,9 @@ void main() {
   testWidgets('desktop: the sidebar, its account block opens Settings', (
     tester,
   ) async {
-    await pumpFolo(tester, size: const Size(1440, 900));
+    await pumpLoomia(tester, size: const Size(1440, 900));
 
-    expect(find.text('Folo'), findsOneWidget);
+    expect(find.text('Loomia'), findsOneWidget);
     expect(find.byType(AccountButton), findsNothing);
     await tester.tap(find.text('Pauline'));
     await tester.pumpAndSettle();
@@ -61,7 +61,7 @@ void main() {
   });
 
   testWidgets('mobile: a bottom bar with Today and Contacts', (tester) async {
-    await pumpFolo(
+    await pumpLoomia(
       tester,
       size: const Size(390, 844),
       people: FakePeopleRepository([_marie]),
@@ -77,7 +77,7 @@ void main() {
   testWidgets('mobile: the bar stays on a contact, not on Settings', (
     tester,
   ) async {
-    await pumpFolo(
+    await pumpLoomia(
       tester,
       size: const Size(390, 844),
       people: FakePeopleRepository([_marie]),
@@ -100,7 +100,7 @@ void main() {
   });
 
   testWidgets('desktop: the sidebar has Contacts', (tester) async {
-    await pumpFolo(tester, size: const Size(1440, 900));
+    await pumpLoomia(tester, size: const Size(1440, 900));
 
     // On Today, the sidebar entry is the only "Contacts" on screen.
     await tester.tap(find.text('Contacts'));

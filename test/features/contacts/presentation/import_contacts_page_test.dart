@@ -24,7 +24,7 @@ Future<FakePeopleRepository> _openImport(
   FakePhoneContactsRepository phone,
 ) async {
   final people = FakePeopleRepository([_marie]);
-  final container = await pumpFolo(
+  final container = await pumpLoomia(
     tester,
     size: _phone,
     people: people,
@@ -49,7 +49,7 @@ void main() {
     );
 
     // Marie's number, saved under another name: flagged, not ticked.
-    expect(find.text('Already in Folo'), findsOneWidget);
+    expect(find.text('Already in Loomia'), findsOneWidget);
     expect(find.text('0 selected'.toUpperCase()), findsOneWidget);
     final import = find.widgetWithText(FilledButton, 'Import');
     expect(tester.widget<FilledButton>(import).onPressed, isNull);

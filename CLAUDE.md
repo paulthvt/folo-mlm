@@ -7,7 +7,7 @@ Quick reference. Full docs:
 
 ## What this project is
 
-Folo — cross-platform productivity app (Android / iOS / Web) for people running
+Loomia — cross-platform productivity app (Android / iOS / Web) for people running
 a business on relationships: contacts, follow-ups, customers, prospects, team
 activity, goals. Everything points at one question: **"What should I do today?"**
 
@@ -74,7 +74,7 @@ already-installed packages first.
 - **State**: Riverpod providers for anything shared or async; `setState` is fine
   for purely local widget state (a toggle, an animation). Providers live next to
   their consumer, not in a global folder.
-- **Imports**: `package:folo/...` always (`always_use_package_imports`).
+- **Imports**: `package:loomia/...` always (`always_use_package_imports`).
   Material comes from `package:material_ui/material_ui.dart`, never
   `flutter/material.dart` (frozen, and its classes don't match).
 - **Pickers** (date, time): Cupertino on iOS, Material on Android and Web.

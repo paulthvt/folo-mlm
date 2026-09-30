@@ -29,6 +29,13 @@ Widget _host(FakeAuthRepository fake, {double textScale = 1}) => ProviderScope(
 );
 
 void main() {
+  testWidgets('shows the Loomia name and slogan', (tester) async {
+    await tester.pumpWidget(_host(FakeAuthRepository()));
+
+    expect(find.text('Loomia'), findsOneWidget);
+    expect(find.text('Weave your network. Tend every thread.'), findsOneWidget);
+  });
+
   testWidgets('offers the identity paths and the register link', (
     tester,
   ) async {
@@ -44,7 +51,7 @@ void main() {
     expect(find.text('Continue with Apple'), findsNothing);
     expect(find.text('Continue with email'), findsOneWidget);
     expect(find.text('Create an account'), findsOneWidget);
-    expect(find.text('Know what to do next.'), findsOneWidget);
+    expect(find.text('Weave your network. Tend every thread.'), findsOneWidget);
   });
 
   testWidgets('Google calls the repository once', (tester) async {
@@ -65,7 +72,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('We could not reach Folo. Check your connection.'),
+      find.text('We could not reach Loomia. Check your connection.'),
       findsOneWidget,
     );
   });

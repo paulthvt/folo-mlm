@@ -94,7 +94,7 @@ void main() {
 
     expect(_location(router), '/');
     expect(
-      find.text('We could not reach Folo. Check your connection.'),
+      find.text('We could not reach Loomia. Check your connection.'),
       findsOneWidget,
     );
   });

@@ -102,7 +102,7 @@ class _Sidebar extends ConsumerWidget {
                     ),
                     // Set type until there is a real logo, as on /welcome.
                     child: Text(
-                      'Folo',
+                      'Loomia',
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                   ),

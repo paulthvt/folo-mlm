@@ -18,7 +18,7 @@ import '../features/workflows/fake_workflow_repository.dart';
 /// The whole app, signed in as Pauline unless [auth] says otherwise, at [size]. Returns the container so a
 /// test can drive `routerProvider` the way a URL would. With [settle] false it
 /// pumps one frame, for a load gated on purpose.
-Future<ProviderContainer> pumpFolo(
+Future<ProviderContainer> pumpLoomia(
   WidgetTester tester, {
   required Size size,
   FakePeopleRepository? people,

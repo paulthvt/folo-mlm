@@ -43,7 +43,7 @@ void main() {
     Size size = _phone,
   }) async {
     people = FakePeopleRepository([marie]);
-    final container = await pumpFolo(tester, size: size, people: people);
+    final container = await pumpLoomia(tester, size: size, people: people);
     container.read(routerProvider).go(Routes.contactWorkflowLocation('p1'));
     await tester.pumpAndSettle();
   }
@@ -115,7 +115,7 @@ void main() {
     tester,
   ) async {
     people = FakePeopleRepository([_marie(position: 1)]);
-    final container = await pumpFolo(tester, size: _phone, people: people);
+    final container = await pumpLoomia(tester, size: _phone, people: people);
     container.read(routerProvider).go(Routes.contacts);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Marie Dupont'));
@@ -133,7 +133,7 @@ void main() {
 
   testWidgets('no workflow: the card opens nothing', (tester) async {
     people = FakePeopleRepository([_marie()]);
-    final container = await pumpFolo(tester, size: _phone, people: people);
+    final container = await pumpLoomia(tester, size: _phone, people: people);
     container.read(routerProvider).go(Routes.contactLocation('p1'));
     await tester.pumpAndSettle();
 

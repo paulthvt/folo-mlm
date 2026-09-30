@@ -55,7 +55,7 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
           children: [
             // ponytail: the wordmark is set type until there is a real logo —
             // that is its own issue.
-            Text('Folo', style: text.displaySmall),
+            Text('Loomia', style: text.displaySmall),
             Text(l10n.authWelcomeHeadline, style: text.titleLarge),
             Text(l10n.authWelcomeBody, style: text.bodyMedium),
           ],

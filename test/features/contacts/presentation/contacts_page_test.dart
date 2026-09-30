@@ -74,7 +74,7 @@ void main() {
     Size size = _phone,
     FakeWorkflowRepository? workflows,
   }) async {
-    final container = await pumpFolo(
+    final container = await pumpLoomia(
       tester,
       size: size,
       people: people,
@@ -157,7 +157,7 @@ void main() {
   });
 
   testWidgets('missing person', (tester) async {
-    final container = await pumpFolo(tester, size: _phone, people: people);
+    final container = await pumpLoomia(tester, size: _phone, people: people);
     container.read(routerProvider).go(Routes.contactLocation('gone'));
     await tester.pumpAndSettle();
 
@@ -206,7 +206,7 @@ void main() {
   testWidgets('delete from a deep link replaces the page and deletes', (
     tester,
   ) async {
-    final container = await pumpFolo(tester, size: _phone, people: people);
+    final container = await pumpLoomia(tester, size: _phone, people: people);
     container.read(routerProvider).go(Routes.contactLocation('p1'));
     await tester.pumpAndSettle();
 
@@ -606,7 +606,7 @@ void main() {
       ..gate = Completer<void>();
     people.store['p1'] = _marieOn(1);
     // Today spins too while the workflows load: nothing settles, pump by hand.
-    final container = await pumpFolo(
+    final container = await pumpLoomia(
       tester,
       size: _phone,
       people: people,

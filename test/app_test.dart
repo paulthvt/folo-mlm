@@ -28,7 +28,7 @@ void main() {
   });
 
   testWidgets('a restored session lands on Today', (tester) async {
-    await pumpFolo(tester, size: const Size(390, 844));
+    await pumpLoomia(tester, size: const Size(390, 844));
 
     expect(find.byType(TodayPage), findsOneWidget);
     // "Good morning, Pauline", or afternoon, or evening: the clock decides.

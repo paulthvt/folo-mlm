@@ -1,7 +1,7 @@
 # Component library — v1
 
 24 components, built in Figma on page `Components`, every fill / stroke / padding
-/ radius bound to a `Folo/color` or `Folo/scale` variable.
+/ radius bound to a `Loomia/color` or `Loomia/scale` variable.
 
 Implemented in Flutter so far, in `lib/core/ui/` — Avatar (+ AvatarGroup), Chip,
 ProgressBar, SectionHeader, EmptyState, ActivityItem, StatTile, GoalCard,
@@ -150,7 +150,7 @@ chip moves to a fixed right column so names align.
 memory, not as an audit log — no edit metadata, no author.
 
 ### 15. TaskItem
-*Purpose:* something the user wrote down themselves (vs. an ActionItem, which Folo
+*Purpose:* something the user wrote down themselves (vs. an ActionItem, which Loomia
 suggested).
 *Anatomy:* 22px circular checkbox · `body-lg` label.
 *Variants:* `State` = Open | Done.
