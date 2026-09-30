@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/router/auth_redirect.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/auth/domain/auth_change.dart';
+import 'package:loomia/app/router/auth_redirect.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/auth/domain/auth_change.dart';
 
 import '../../features/auth/fake_auth_repository.dart';
 
@@ -52,6 +52,27 @@ void main() {
 
     test('is never pushed off reset-password', () {
       expect(redirect(Routes.resetPassword), isNull);
+    });
+  });
+
+  group('signed in, not onboarded yet', () {
+    String? redirect(String location) => authRedirect(
+      hasSession: true,
+      recoveringPassword: false,
+      location: location,
+      onboarded: false,
+    );
+
+    test('is sent to the first-run screen from anywhere else', () {
+      expect(redirect(Routes.today), Routes.start);
+      expect(redirect(Routes.contacts), Routes.start);
+      expect(redirect(Routes.login), Routes.start);
+    });
+
+    test('may go from the first-run screen to the import', () {
+      for (final path in Routes.onboardingPaths) {
+        expect(redirect(path), isNull, reason: path);
+      }
     });
   });
 

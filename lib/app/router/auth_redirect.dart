@@ -2,16 +2,17 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/auth/domain/auth_change.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/auth/domain/auth_change.dart';
 
-/// The whole guard, as a pure function of three facts — which is why it is
+/// The whole guard, as a pure function of five facts — which is why it is
 /// testable without a router, a widget tree or a client.
 String? authRedirect({
   required bool hasSession,
   required bool recoveringPassword,
   required String location,
+  bool onboarded = true,
 }) {
   // Recovery outranks everything: the link signs the user in before they choose
   // the new password, so "has a session" must not send them to Today.
@@ -23,15 +24,21 @@ String? authRedirect({
   }
   final isAuthRoute = Routes.authPaths.contains(location);
   if (!hasSession) return isAuthRoute ? null : Routes.welcome;
+  // A new account starts on the first-run screen, wherever it signed in to.
+  if (!onboarded) {
+    return Routes.onboardingPaths.contains(location) ? null : Routes.start;
+  }
   return isAuthRoute ? Routes.today : null;
 }
 
-/// The two pieces of session state the router needs, as a `Listenable` so
+/// The session state the router needs, as a `Listenable` so
 /// `GoRouter.refreshListenable` can re-run the redirect.
 class AuthStatus extends ChangeNotifier {
-  AuthStatus(AuthRepository repository) : _hasSession = repository.hasSession {
-    _subscription = repository.changes.listen(_apply);
+  AuthStatus(this._repository) : _hasSession = _repository.hasSession {
+    _subscription = _repository.changes.listen(_apply);
   }
+
+  final AuthRepository _repository;
 
   bool _hasSession;
   bool _recoveringPassword = false;
@@ -39,6 +46,9 @@ class AuthStatus extends ChangeNotifier {
 
   bool get hasSession => _hasSession;
   bool get recoveringPassword => _recoveringPassword;
+
+  /// Read live: saving it fires `userUpdated`, which re-runs the redirect.
+  bool get onboarded => _repository.account?.onboarded ?? true;
 
   void _apply(AuthChange change) {
     switch (change) {
@@ -48,7 +58,8 @@ class AuthStatus extends ChangeNotifier {
         _hasSession = true;
         _recoveringPassword = true;
       case AuthChange.userUpdated:
-        // The new password has been saved, so recovery is over.
+        // The new password has been saved, so recovery is over. Also where
+        // [onboarded] changes.
         _recoveringPassword = false;
       case AuthChange.signedOut:
         _hasSession = false;

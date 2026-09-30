@@ -1,15 +1,26 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_typography.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_typography.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The only place `ThemeData` is built. Component styling lives here so widgets
 /// stay style-free (`docs/design/design-system.md` §8).
 abstract final class AppTheme {
-  static ThemeData get light => _build(AppColors.light, FoloColors.light);
-  static ThemeData get dark => _build(AppColors.dark, FoloColors.dark);
+  static ThemeData get light => _build(AppColors.light, LoomiaColors.light);
+  static ThemeData get dark => _build(AppColors.dark, LoomiaColors.dark);
 
-  static ThemeData _build(ColorScheme scheme, FoloColors folo) {
+  /// The Tonal button (`docs/design/components.md` #2), for
+  /// `FilledButton.tonal`. Material's tonal reads `secondaryContainer`; ours is
+  /// `primary/container`, which a theme cannot tell apart from Primary.
+  static ButtonStyle tonal(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    return FilledButton.styleFrom(
+      backgroundColor: scheme.primaryContainer,
+      foregroundColor: scheme.onPrimaryContainer,
+    );
+  }
+
+  static ThemeData _build(ColorScheme scheme, LoomiaColors colors) {
     final text = AppTypography.textTheme(scheme);
     final pill = RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(AppRadii.pill),
@@ -17,7 +28,7 @@ abstract final class AppTheme {
 
     return ThemeData(
       colorScheme: scheme,
-      extensions: [folo],
+      extensions: [colors],
       fontFamily: AppTypography.fontFamily,
       textTheme: text,
       scaffoldBackgroundColor: scheme.surface,
@@ -28,15 +39,15 @@ abstract final class AppTheme {
       cardTheme: CardThemeData(
         elevation: 0,
         margin: EdgeInsets.zero,
-        color: folo.surfaceDefault,
+        color: colors.surfaceDefault,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(AppRadii.lg),
-          side: BorderSide(color: folo.borderSubtle),
+          side: BorderSide(color: colors.borderSubtle),
         ),
       ),
       dividerTheme: DividerThemeData(
-        color: folo.borderSubtle,
+        color: colors.borderSubtle,
         thickness: 1,
         space: 1,
       ),
@@ -51,11 +62,11 @@ abstract final class AppTheme {
       ),
 
       filledButtonTheme: FilledButtonThemeData(
+        // No fill colours: Material's defaults are Primary's, and setting them
+        // here would paint the tonal variant primary too.
         style: FilledButton.styleFrom(
-          backgroundColor: scheme.primary,
-          foregroundColor: scheme.onPrimary,
-          disabledBackgroundColor: folo.surfaceDisabled,
-          disabledForegroundColor: folo.textDisabled,
+          disabledBackgroundColor: colors.surfaceDisabled,
+          disabledForegroundColor: colors.textDisabled,
           textStyle: AppTypography.labelLarge,
           minimumSize: const Size(0, 48),
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -65,8 +76,8 @@ abstract final class AppTheme {
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: folo.primaryText,
-          side: BorderSide(color: folo.borderStrong),
+          foregroundColor: colors.primaryText,
+          side: BorderSide(color: colors.borderStrong),
           textStyle: AppTypography.labelLarge,
           minimumSize: const Size(0, 48),
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -75,7 +86,7 @@ abstract final class AppTheme {
       ),
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: folo.primaryText,
+          foregroundColor: colors.primaryText,
           textStyle: AppTypography.labelLarge,
           minimumSize: const Size(0, 44),
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.ms),
@@ -93,26 +104,31 @@ abstract final class AppTheme {
 
       inputDecorationTheme: InputDecorationThemeData(
         filled: true,
-        fillColor: folo.surfaceSunken,
-        hintStyle: AppTypography.bodyLarge.copyWith(color: folo.textMuted),
+        fillColor: colors.surfaceDefault,
+        hintStyle: AppTypography.bodyLarge.copyWith(color: colors.textMuted),
+        // Drawn above the box by LabeledField; fields carry no labelText.
         labelStyle: AppTypography.label.copyWith(
           color: scheme.onSurfaceVariant,
         ),
+        helperStyle: AppTypography.caption.copyWith(color: colors.textMuted),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
           vertical: AppSpacing.ms,
         ),
-        border: _inputBorder(folo.borderSubtle),
-        enabledBorder: _inputBorder(folo.borderSubtle),
-        focusedBorder: _inputBorder(folo.focus, width: 2),
+        border: _inputBorder(colors.borderSubtle),
+        enabledBorder: _inputBorder(colors.borderSubtle),
+        focusedBorder: _inputBorder(colors.focus, width: 2),
         errorBorder: _inputBorder(scheme.error),
         focusedErrorBorder: _inputBorder(scheme.error, width: 2),
       ),
 
       chipTheme: ChipThemeData(
-        backgroundColor: folo.surfaceSunken,
+        backgroundColor: colors.surfaceSunken,
         side: BorderSide.none,
-        labelStyle: AppTypography.caption,
+        showCheckmark: false,
+        labelPadding: EdgeInsets.zero,
+        // Without a colour the label paints white, invisible on light chips.
+        labelStyle: AppTypography.caption.copyWith(color: scheme.onSurface),
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.sm,
           vertical: AppSpacing.xs,
@@ -124,7 +140,7 @@ abstract final class AppTheme {
 
       progressIndicatorTheme: ProgressIndicatorThemeData(
         color: scheme.secondary,
-        linearTrackColor: folo.secondaryTrack,
+        linearTrackColor: colors.secondaryTrack,
         linearMinHeight: AppSpacing.sm,
         borderRadius: BorderRadius.circular(AppRadii.pill),
       ),
@@ -133,7 +149,7 @@ abstract final class AppTheme {
       // surface token instead, because shadow is invisible on a near-black
       // canvas.
       dialogTheme: DialogThemeData(
-        backgroundColor: folo.surfaceRaised,
+        backgroundColor: colors.surfaceRaised,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         titleTextStyle: text.titleLarge,
@@ -143,7 +159,7 @@ abstract final class AppTheme {
         ),
       ),
       bottomSheetTheme: BottomSheetThemeData(
-        backgroundColor: folo.surfaceRaised,
+        backgroundColor: colors.surfaceRaised,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         shape: const RoundedRectangleBorder(
@@ -153,7 +169,7 @@ abstract final class AppTheme {
         ),
       ),
       popupMenuTheme: PopupMenuThemeData(
-        color: folo.surfaceRaised,
+        color: colors.surfaceRaised,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         shape: RoundedRectangleBorder(
@@ -172,7 +188,7 @@ abstract final class AppTheme {
       ),
 
       navigationBarTheme: NavigationBarThemeData(
-        backgroundColor: folo.surfaceDefault,
+        backgroundColor: colors.surfaceDefault,
         surfaceTintColor: Colors.transparent,
         indicatorColor: scheme.primaryContainer,
         indicatorShape: pill,
@@ -190,7 +206,7 @@ abstract final class AppTheme {
         ),
       ),
       navigationDrawerTheme: NavigationDrawerThemeData(
-        backgroundColor: folo.surfaceSunken,
+        backgroundColor: colors.surfaceSunken,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         indicatorColor: scheme.primaryContainer,
@@ -213,6 +229,22 @@ abstract final class AppTheme {
           color: scheme.inverseSurface,
           borderRadius: BorderRadius.circular(AppRadii.sm),
         ),
+      ),
+    );
+  }
+
+  /// A search field: a pill with no hairline, the focus ring kept.
+  static InputDecoration search(BuildContext context) {
+    final pill = BorderRadius.circular(AppRadii.pill);
+    return InputDecoration(
+      fillColor: LoomiaColors.of(context).surfaceSunken,
+      enabledBorder: OutlineInputBorder(
+        borderRadius: pill,
+        borderSide: BorderSide.none,
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: pill,
+        borderSide: BorderSide(color: LoomiaColors.of(context).focus, width: 2),
       ),
     );
   }

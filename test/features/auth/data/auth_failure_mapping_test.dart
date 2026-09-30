@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/features/auth/data/auth_failure_mapping.dart';
-import 'package:folo/features/auth/domain/auth_failure.dart';
+import 'package:loomia/features/auth/data/auth_failure_mapping.dart';
+import 'package:loomia/features/auth/domain/auth_failure.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() {

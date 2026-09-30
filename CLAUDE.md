@@ -7,7 +7,7 @@ Quick reference. Full docs:
 
 ## What this project is
 
-Folo — cross-platform productivity app (Android / iOS / Web) for people running
+Loomia — cross-platform productivity app (Android / iOS / Web) for people running
 a business on relationships: contacts, follow-ups, customers, prospects, team
 activity, goals. Everything points at one question: **"What should I do today?"**
 
@@ -74,7 +74,7 @@ already-installed packages first.
 - **State**: Riverpod providers for anything shared or async; `setState` is fine
   for purely local widget state (a toggle, an animation). Providers live next to
   their consumer, not in a global folder.
-- **Imports**: `package:folo/...` always (`always_use_package_imports`).
+- **Imports**: `package:loomia/...` always (`always_use_package_imports`).
   Material comes from `package:material_ui/material_ui.dart`, never
   `flutter/material.dart` (frozen, and its classes don't match).
 - **Pickers** (date, time): Cupertino on iOS, Material on Android and Web.
@@ -83,6 +83,10 @@ already-installed packages first.
   test for domain logic. Every `@Preview` has a golden in `test/goldens/`,
   compared on Linux only; after a visual change, regenerate them through CI —
   procedure in README.md → *Golden tests*. Never commit locally made goldens.
+- **Copy**: English in `lib/l10n/app_en.arb` only, every key with a
+  description; other languages come from `tool/translate.dart` via the
+  *l10n sync* pull request. Informal register everywhere — French is *tu*,
+  never *vous*. See README.md → *Translations*.
 - **Commits**: Conventional Commits (`feat`/`fix`/`docs`/`style`/`refactor`/
   `perf`/`test`/`chore`). Branch off `main`, issue number first:
   `feature/<issue>-<slug>`, `fix/<issue>-<slug>`, `chore/<issue>-<slug>`.

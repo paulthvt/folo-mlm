@@ -1,13 +1,13 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/core/supabase/supabase_config.dart';
-import 'package:folo/core/supabase/supabase_provider.dart';
-import 'package:folo/features/auth/data/auth_failure_mapping.dart';
-import 'package:folo/features/auth/domain/account.dart';
-import 'package:folo/features/auth/domain/auth_change.dart';
+import 'package:loomia/core/supabase/supabase_config.dart';
+import 'package:loomia/core/supabase/supabase_provider.dart';
+import 'package:loomia/features/auth/data/auth_failure_mapping.dart';
+import 'package:loomia/features/auth/domain/account.dart';
+import 'package:loomia/features/auth/domain/auth_change.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-/// The only file in the app that imports `supabase_flutter`.
+/// Auth's side of the `supabase_flutter` boundary: only `data/` files import it.
 ///
 /// Every method throws [AuthFailure] and nothing else, so screens never see a
 /// `supabase_flutter` type. Callers pass an already-normalised email
@@ -36,6 +36,7 @@ class AuthRepository {
       locale: metadata['locale'] as String?,
       appearance:
           Appearance.values.asNameMap()[metadata['theme']] ?? Appearance.system,
+      onboarded: metadata['onboarded'] == true,
     );
   }
 
@@ -131,6 +132,10 @@ class AuthRepository {
       ),
     ),
   );
+
+  /// The first-run screen is done with, on every device.
+  Future<void> markOnboarded() =>
+      _guard(() => _auth.updateUser(UserAttributes(data: {'onboarded': true})));
 
   /// Deleting needs the secret key, so it happens in the `delete-account` Edge
   /// Function. The session is then dead server-side; sign out locally only —

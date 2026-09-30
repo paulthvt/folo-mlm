@@ -1,24 +1,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/layout/breakpoints.dart';
-import 'package:folo/core/ui/folo_avatar.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/layout/breakpoints.dart';
+import 'package:loomia/core/ui/loomia_avatar.dart';
+import 'package:loomia/core/ui/loomia_wordmark.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Chrome around every signed-in screen (`docs/design/components.md` #23).
 ///
 /// Desktop: the 248px sidebar. Tablet: the same sidebar collapsed to a 72px
-/// icon rail. Mobile: nothing — there is no bottom bar until a second real
-/// destination exists, and Settings is reached from [AccountButton] in the
-/// screen's top bar instead.
+/// icon rail. Mobile: a bottom bar with the destinations, except on Settings,
+/// which is reached from [AccountButton] and has its own back button. Team and
+/// Goals join when they exist, never as placeholders.
 ///
 /// ponytail: the design moves these edges to 840px (rail/bottom bar) and 1100px
-/// (rail/sidebar); size classes are used until the bottom bar exists and the
-/// difference is visible.
+/// (rail/sidebar); size classes are used until the difference is visible.
 class AppShell extends StatelessWidget {
   const AppShell({required this.location, required this.child, super.key});
 
@@ -29,7 +29,28 @@ class AppShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = context.screenSize;
-    if (!size.usesSideNavigation) return child;
+    if (!size.usesSideNavigation) {
+      if (location.startsWith(Routes.settings)) return child;
+      final l10n = AppLocalizations.of(context);
+      return Scaffold(
+        body: child,
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: location.startsWith(Routes.contacts) ? 1 : 0,
+          onDestinationSelected: (index) =>
+              context.go(index == 0 ? Routes.today : Routes.contacts),
+          destinations: [
+            NavigationDestination(
+              icon: const Icon(Icons.wb_sunny_outlined),
+              label: l10n.navToday,
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.people_outline),
+              label: l10n.navContacts,
+            ),
+          ],
+        ),
+      );
+    }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -53,16 +74,16 @@ class _Sidebar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final l10n = AppLocalizations.of(context);
     final account = ref.watch(accountProvider);
 
     return Material(
-      color: folo.surfaceSunken,
+      color: colors.surfaceSunken,
       child: Container(
         width: expanded ? _expandedWidth : _railWidth,
         decoration: BoxDecoration(
-          border: Border(right: BorderSide(color: folo.borderSubtle)),
+          border: Border(right: BorderSide(color: colors.borderSubtle)),
         ),
         child: SafeArea(
           right: false,
@@ -80,10 +101,11 @@ class _Sidebar extends ConsumerWidget {
                       AppSpacing.ms,
                       AppSpacing.lg,
                     ),
-                    // Set type until there is a real logo, as on /welcome.
-                    child: Text(
-                      'Folo',
-                      style: Theme.of(context).textTheme.headlineSmall,
+                    child: Align(
+                      alignment: AlignmentDirectional.centerStart,
+                      child: LoomiaWordmark(
+                        style: Theme.of(context).textTheme.headlineSmall!,
+                      ),
                     ),
                   ),
                 _SidebarItem(
@@ -93,10 +115,17 @@ class _Sidebar extends ConsumerWidget {
                   expanded: expanded,
                   onTap: () => context.go(Routes.today),
                 ),
+                _SidebarItem(
+                  icon: const Icon(Icons.people_outline),
+                  label: l10n.navContacts,
+                  selected: location.startsWith(Routes.contacts),
+                  expanded: expanded,
+                  onTap: () => context.go(Routes.contacts),
+                ),
                 const Spacer(),
                 if (account != null)
                   _SidebarItem(
-                    icon: FoloAvatar(
+                    icon: LoomiaAvatar(
                       name: account.displayName,
                       size: AvatarSize.dense,
                     ),
@@ -141,7 +170,7 @@ class _SidebarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     // Labels the content, not the tile: the tile keeps its own tap action and
     // selected state for screen readers.
     final content = Semantics(
@@ -160,7 +189,7 @@ class _SidebarItem extends StatelessWidget {
       selected: selected,
       selectedTileColor: scheme.primaryContainer,
       selectedColor: scheme.onPrimaryContainer,
-      hoverColor: folo.primaryMuted,
+      hoverColor: colors.primaryMuted,
       leading: expanded ? ExcludeSemantics(child: icon) : null,
       title: content,
       titleTextStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
@@ -185,7 +214,7 @@ class AccountButton extends ConsumerWidget {
       icon: Semantics(
         label: AppLocalizations.of(context).settingsTitle,
         excludeSemantics: true,
-        child: FoloAvatar(name: account.displayName, size: AvatarSize.dense),
+        child: LoomiaAvatar(name: account.displayName, size: AvatarSize.dense),
       ),
     );
   }

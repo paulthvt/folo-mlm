@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The import (#61) reads the address book; nothing is written to it. -->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <!-- enableOnBackInvokedCallback opts into predictive back, which is what
          makes the back gesture animate along with the finger instead of jumping
          at the end of it. Flutter already picks
@@ -6,7 +8,7 @@
          engine never receives the gesture progress. Android 14+ only, older
          versions fade forwards instead. -->
     <application
-        android:label="folo"
+        android:label="Loomia"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true">
@@ -32,12 +34,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
             <!-- Supabase email confirmation, password recovery and OAuth come
-                 back to io.supabase.folo://login-callback/ (SupabaseConfig). -->
+                 back to io.supabase.loomia://login-callback/ (SupabaseConfig). -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="io.supabase.folo"
+                <data android:scheme="io.supabase.loomia"
                       android:host="login-callback"/>
             </intent-filter>
         </activity>
@@ -56,6 +58,23 @@
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
+        </intent>
+        <!-- Message / Call and the email and Instagram facts (url_launcher). -->
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+            <data android:scheme="tel" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="sms" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.SENDTO" />
+            <data android:scheme="mailto" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
         </intent>
     </queries>
 </manifest>

@@ -21,7 +21,7 @@ decoration — initials over generic glyphs.
 
 ## 3. The app remembers, the user decides
 
-Folo holds the whole history so the user never has to. It shows a short list and
+Loomia holds the whole history so the user never has to. It shows a short list and
 keeps the rest one tap away.
 
 *In practice:* Today caps at ~5 suggested actions. History is chronological and
@@ -68,4 +68,9 @@ keyboard shortcuts, hover) is welcome; platform-specific visual identity is not.
 Never in UI copy: recruit, downline, upline, rank, prospect*ing*, close, pitch,
 leads, sales funnel, hustle.
 
-Use instead: contact, person, team, follow-up, conversation, customer, goal.
+Use instead: contact, person, team, follow-up, conversation, customer, prospect,
+goal.
+
+"Prospect" is allowed as a noun for a person at that stage — it is the word the
+people using Loomia already use for themselves. The activity ("prospecting") stays
+banned.

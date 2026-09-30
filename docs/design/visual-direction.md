@@ -1,6 +1,7 @@
 # Visual direction — three explorations
 
-Status: **locked** (2026-09-22) — Direction B, palette **N1 Forest → Olive**,
+Status: **locked** (2026-09-22) — Direction B, palette **N1 Forest → Olive**, replaced 2026-09-30 by the
+Loomia palette **L1 Ocre pale** (design-system.md §1),
 circular avatars, light and dark fully specified. The built system lives in
 [design-system.md](design-system.md), [components.md](components.md),
 [responsive-design.md](responsive-design.md) and [screens.md](screens.md). This
@@ -9,7 +10,7 @@ document is kept as the record of what was explored and why B/N1 won.
 Nothing is implemented in `lib/` yet; the placeholder seed theme in
 `lib/app/theme/` stays until the first feature needs the real one.
 
-Figma: [Folo](https://www.figma.com/design/spz2vsSK8gbt1Ok2rW1sdQ/Folo) → page
+Figma: [Loomia](https://www.figma.com/design/spz2vsSK8gbt1Ok2rW1sdQ/Loomia) → page
 `01 — Direction exploration`. Each direction has a palette block, a type
 specimen, and one Today screen at 390px. Same content in all three, so the only
 variable is the visual language.
@@ -344,7 +345,7 @@ neutral-ink treatment rather than amber).
 
 Cheap, provided the palette is never written as a literal:
 
-- **Figma:** one variable collection `Folo/color` with `Light` and `Dark` modes.
+- **Figma:** one variable collection `Loomia/color` with `Light` and `Dark` modes.
   Every fill, stroke and text colour in every component and screen binds to a
   semantic variable (`surface`, `primary`, `on-primary`, `primary-container`,
   `secondary`, `accent`, `border`, `text-primary`, …). A palette swap then means

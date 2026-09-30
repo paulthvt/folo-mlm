@@ -1,4 +1,4 @@
-/// Spacing scale, mirroring `Folo/scale` in Figma
+/// Spacing scale, mirroring `Loomia/scale` in Figma
 /// (`docs/design/design-system.md` §3). 4-based. Use these instead of literal
 /// numbers so density can be retuned in one place.
 abstract final class AppSpacing {

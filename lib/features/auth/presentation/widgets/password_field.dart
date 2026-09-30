@@ -1,5 +1,6 @@
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/core/ui/labeled_field.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// A password input with a reveal toggle.
@@ -35,29 +36,31 @@ class _PasswordFieldState extends State<PasswordField> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
 
-    return TextFormField(
-      controller: widget.controller,
-      obscureText: !_revealed,
-      enabled: widget.enabled,
-      validator: widget.validator,
-      onFieldSubmitted: widget.onSubmitted,
-      autofillHints: const [AutofillHints.password],
-      textInputAction: TextInputAction.done,
-      decoration: InputDecoration(
-        labelText: widget.label,
-        helperText: widget.helper,
-        suffixIcon: IconButton(
-          onPressed: () => setState(() => _revealed = !_revealed),
-          icon: AnimatedSwitcher(
-            duration: context.motion(AppMotion.fast),
-            child: Icon(
-              _revealed
-                  ? Icons.visibility_off_outlined
-                  : Icons.visibility_outlined,
-              key: ValueKey(_revealed),
+    return LabeledField(
+      label: widget.label,
+      child: TextFormField(
+        controller: widget.controller,
+        obscureText: !_revealed,
+        enabled: widget.enabled,
+        validator: widget.validator,
+        onFieldSubmitted: widget.onSubmitted,
+        autofillHints: const [AutofillHints.password],
+        textInputAction: TextInputAction.done,
+        decoration: InputDecoration(
+          helperText: widget.helper,
+          suffixIcon: IconButton(
+            onPressed: () => setState(() => _revealed = !_revealed),
+            icon: AnimatedSwitcher(
+              duration: context.motion(AppMotion.fast),
+              child: Icon(
+                _revealed
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
+                key: ValueKey(_revealed),
+              ),
             ),
+            tooltip: _revealed ? l10n.authHidePassword : l10n.authShowPassword,
           ),
-          tooltip: _revealed ? l10n.authHidePassword : l10n.authShowPassword,
         ),
       ),
     );

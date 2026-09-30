@@ -1,5 +1,5 @@
-name: folo
-description: "Folo — a cross-platform productivity app for people who manage relationships, follow-ups and personal goals."
+name: loomia
+description: "Loomia — a cross-platform productivity app for people who manage relationships, follow-ups and personal goals."
 publish_to: 'none'
 version: 0.1.0+1
 
@@ -7,8 +7,15 @@ environment:
   sdk: ^3.13.0
 
 dependencies:
+  # The iOS date wheel: system pickers follow the platform
+  # (docs/architecture.md → Design packages). Already brought by material_ui;
+  # direct because lib/ imports it.
+  cupertino_ui: ^1.1.0
   flutter:
     sdk: flutter
+  # Reads the phone's address book for the import (#61). Nothing in the SDK
+  # reaches it; Android and iOS only, so the web offers no import.
+  flutter_contacts: ^2.5.0
   # Imported by the code gen-l10n generates. The delegates the app registers come
   # from material_ui (lib/l10n/localizations_delegates.dart).
   flutter_localizations:
@@ -23,9 +30,16 @@ dependencies:
   # Material widgets and localizations. Since Flutter 3.47 they live here, not in
   # the framework, whose flutter/material.dart is frozen. Brings cupertino_ui.
   material_ui: ^1.4.0
+  # Reports uncaught errors from release builds. Uncaught Dart exceptions don't
+  # crash the app, so Play vitals never sees them. Chosen over Crashlytics
+  # because it covers Web and needs no Firebase (#47).
+  sentry_flutter: ^9.30.1
   # Auth, session persistence and email/OAuth deep links in one package, so
   # this feature needs no app_links, shared_preferences or provider SDKs.
   supabase_flutter: ^2.17.2
+  # Opens the dialer, SMS, email and Instagram from Message / Call. Nothing in
+  # the SDK launches another app.
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_lints: ^6.0.0

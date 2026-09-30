@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/l10n/app_localizations.dart';
-import 'package:folo/l10n/localizations_delegates.dart';
+import 'package:loomia/l10n/app_localizations.dart';
+import 'package:loomia/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
 
 Widget _host(Locale? locale) => MaterialApp(

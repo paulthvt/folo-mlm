@@ -1,8 +1,8 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/ui/folo_avatar.dart';
-import 'package:folo/core/ui/folo_chip.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/ui/loomia_avatar.dart';
+import 'package:loomia/core/ui/loomia_chip.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The unit of Today — a suggestion, not a task (`docs/design/components.md` #12).
@@ -13,6 +13,7 @@ class ActionItem extends StatelessWidget {
   const ActionItem({
     required this.name,
     required this.reason,
+    this.title,
     this.chip,
     this.onOpen,
     this.onResolve,
@@ -22,6 +23,9 @@ class ActionItem extends StatelessWidget {
 
   final String name;
   final String reason;
+
+  /// The first line; defaults to [name]. The avatar always reads [name].
+  final String? title;
 
   /// Usually an accent chip, and only when a real date drives the item.
   final Widget? chip;
@@ -39,34 +43,34 @@ class ActionItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final chipWidget = chip;
     final label = resolveLabel ?? AppLocalizations.of(context).actionMarkAsDone;
 
     return Material(
-      color: folo.surfaceDefault,
+      color: colors.surfaceDefault,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppRadii.lg),
-        side: BorderSide(color: folo.borderSubtle),
+        side: BorderSide(color: colors.borderSubtle),
       ),
       child: InkWell(
         onTap: onOpen,
         // Hover and press are the ink's own fade — the row states the wash to
         // use and lets `InkWell` time it (§7).
-        hoverColor: folo.surfaceSunken,
+        hoverColor: colors.surfaceSunken,
         borderRadius: BorderRadius.circular(AppRadii.lg),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.md),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FoloAvatar(name: name),
+              LoomiaAvatar(name: name),
               const SizedBox(width: AppSpacing.ms),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(name, style: theme.textTheme.titleMedium),
+                    Text(title ?? name, style: theme.textTheme.titleMedium),
                     const SizedBox(height: AppSpacing.xs),
                     Text(reason, style: theme.textTheme.bodySmall),
                     if (chipWidget != null) ...[
@@ -100,6 +104,9 @@ class DateChip extends StatelessWidget {
   final String label;
 
   @override
-  Widget build(BuildContext context) =>
-      FoloChip(label: label, tone: ChipTone.accent, icon: Icons.event_rounded);
+  Widget build(BuildContext context) => LoomiaChip(
+    label: label,
+    tone: ChipTone.accent,
+    icon: Icons.event_rounded,
+  );
 }

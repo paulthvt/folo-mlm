@@ -1,6 +1,6 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_typography.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_typography.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The only structural divider in the product (`docs/design/components.md` #10):
@@ -22,28 +22,42 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final label = actionLabel;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.ms),
+      // The action's own height stands in for part of the gap.
+      padding: EdgeInsets.only(
+        bottom: label != null && onAction != null
+            ? AppSpacing.xs
+            : AppSpacing.ms,
+      ),
       child: Row(
         children: [
           Expanded(
             child: Text(
               title.toUpperCase(),
-              style: AppTypography.overline.copyWith(color: folo.textMuted),
+              style: AppTypography.overline.copyWith(color: colors.textMuted),
             ),
           ),
           if (label != null)
             if (onAction == null)
               Text(
                 label,
-                style: AppTypography.caption.copyWith(color: folo.textMuted),
+                style: AppTypography.caption.copyWith(color: colors.textMuted),
               )
             else
+              // 32px, not the theme's 44: the header sits 16px tall in Figma,
+              // and 32 still clears the 24px minimum target.
               TextButton(
                 onPressed: onAction,
+                style: TextButton.styleFrom(
+                  minimumSize: const Size(0, 32),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                  ),
+                ),
                 child: Text(label, style: AppTypography.label),
               ),
         ],

@@ -2,7 +2,7 @@
 
 Five product screens plus the six auth screens, built in Figma from component
 instances only. Light on page `04 — Screens (Light)`, the same frames in dark on
-`05 — Screens (Dark)` (clones bound to the `Dark` mode of `Folo/color`, so they
+`05 — Screens (Dark)` (clones bound to the `Dark` mode of `Loomia/color`, so they
 are not a second design to maintain).
 
 | Frame | Size | Page |
@@ -30,31 +30,35 @@ screens read as one product and not as seven mockups.
 
 ## 1. Today — the home
 
-**Mobile**
+**Every size** — one column, 624px at most. Desktop keeps the sidebar and
+uses the large top bar; mobile keeps the account button and the bottom nav.
 
-TopAppBar (`MONDAY 22 SEPTEMBER` / "Good morning, Pauline") → TodayHero →
-`PRIORITY` + 3 ActionItems → `SEPTEMBER` + GoalCard + a two-up StatTile pair →
-BottomNav.
+Top bar (`TUESDAY, SEPTEMBER 29` / "Good morning, Pauline") → TodayHero →
+`PRIORITY` + the people whose workflow step is due today or late.
+
+The greeting follows the device clock: morning until noon, afternoon until
+6 pm, evening after. Without a first name it is "Good morning" alone.
 
 The hero says *"Three people are worth a message today"* — a sentence, not a
-number, so it cannot read as a quota. Below it, each ActionItem carries the reason
-it exists: "Said she would decide after her holiday — she is back today", "Her
-refill usually runs out around now", "Turns 42 tomorrow". The accent chip appears
-only on the two items a real date drives.
+number, so it cannot read as a quota. It counts everyone due, not only the
+rows shown.
 
-Everything the user needs in the first viewport: what today is, how far through it
-they are, and the first person to message. The goal is below the fold on purpose —
-it is context, not the job.
+Each ActionItem is a person: their name, then the reason it exists —
+"Send the samples · Samples, step 2 of 5". The accent chip appears only when
+the step is late ("2 days late"). The round button ticks the step, exactly as
+on the contact page; the row then leaves, or shows the next step if that one
+is due too. Tapping the row opens the person.
 
-**Desktop**
+Oldest first. Five rows on a phone or tablet, six on desktop, then
+`And 2 more waiting`, which shows the rest in place. Pull to refresh on every
+size.
 
-Sidebar → top bar (date eyebrow, `display` greeting, search, notifications,
-account avatar) → two columns: 624px left (hero, then four priority items) and
-400px right (GoalCard, stat pair, a team nudge card, "YOU TALKED TO").
+Loading is a spinner; a failed load says "Couldn't load today." with Try
+again; nobody due is "You are up to date".
 
-The extra width buys one more priority item and moves context beside the actions
-instead of below them. It is not the mobile column stretched: the right column
-exists only here.
+Goal, stats, "You talked to" and the desktop right column are gone until
+their features exist (goals, activity summaries). Nothing on Today is sample
+data.
 
 ## 2. Contacts
 
@@ -90,6 +94,37 @@ above the history because the history is memory, not homework. The app bar title
 is a back affordance, not a repeat of the name — the name is already the largest
 thing on the screen (principle #2).
 
+**`NEXT STEP`** sits between `WHERE IT STANDS` and `WHAT YOU KNOW`, on mobile and
+in the desktop pane. It follows the person's workflow, one step at a time:
+
+| State | Header | Card |
+| --- | --- | --- |
+| On a step | `NEXT STEP` · "Samples · 3 of 5" | The step as title; "Due today" / "Due in 3 days" / "2 days late", then the step's note; a round tick |
+| Done, prospect | `SAMPLES — DONE` | "How did it end with Sarah?" — `Became a customer`, `Not now` (pauses) |
+| Done, customer or team | `NEW CUSTOMER — DONE` | "All 4 steps are done with Claire." — `Follow with…` |
+| Paused | `NEXT STEP` | "Paused since July 12" — `Resume` |
+| No workflow | `NEXT STEP` | "Nothing planned" — `Follow with…` |
+| Loading / failed | `NEXT STEP` | A small spinner / "Couldn't load the workflows" — `Try again` |
+
+A tick completes the step today and waits for the server; on failure a SnackBar,
+and the card stays. There are no progress bars or streaks: the count "3 of 5"
+is where you are, not a score.
+
+**Tapping the card** (any state with a workflow) opens the whole workflow at
+`/contacts/:id/workflow`, above the person on mobile, in the pane on desktop.
+Eyebrow "Marie Dupont · Step 3 of 5" (or "· Finished"), the workflow name as
+title, then one rail row per step: before the current one greyed, the current
+one on the selected-row wash with its due label and note and the same tick (or
+"Paused since…" and `Resume`), after it "3 days later". Greyed means *before*,
+not *done*: the history keeps a step's label, not which step it was, so no
+done dates and no projected dates. Editing stays in Settings → Workflows.
+Figma: "Workflow timeline — mobile".
+
+The ⋯ menu adds `Change workflow` (the current one's name trailing) and
+`Pause — not now`, or `Resume` while paused. Change stage and Change workflow
+share the FOLLOW WITH block: the stage's workflows, "Nothing for now", and the
+first step's day.
+
 ## 4. Team
 
 App bar → a summary card ("6 people on your team" + AvatarGroup + "Two of them
@@ -117,7 +152,7 @@ person, and the largest numeral on the screen is smaller than the screen title
 
 ## 6. Auth — welcome, sign in, register, reset
 
-Added 2026-09-23 for [#21](https://github.com/paulthvt/folo-mlm/issues/21). Full
+Added 2026-09-23 for [#21](https://github.com/paulthvt/loomia/issues/21). Full
 design in
 [docs/superpowers/specs/2026-09-23-auth-login-design.md](../superpowers/specs/2026-09-23-auth-login-design.md).
 
@@ -147,6 +182,147 @@ the official flat `G` from developers.google.com/identity instead
 `Choose a new password` has no back button: it is reached by a deep link, so
 there is no previous screen to return to.
 
+## 7. Contacts, stages & workflows
+
+Added 2026-09-28 for [#53](https://github.com/paulthvt/loomia/issues/53).
+Section `Contacts, stages & workflows` on both pages. It supersedes the filter
+chips of §2 and the detail layout of §3.
+
+One person moves **prospect → customer → team**, one stage at a time, and their
+history follows them. Each stage has workflows: ordered steps, each due N days
+after the previous one is ticked. The next step of a person's workflow is what
+Today suggests.
+
+| Frame | Size |
+| --- | --- |
+| Contacts — mobile (stages) | 390 × 844 |
+| Contact detail — customer | 390 × 1107 |
+| Contact detail — prospect | 390 × 1239 |
+| Contact detail — team member | 390 × 1371 |
+| Contact detail — prospect, workflow done | 390 × 1275 |
+| Change stage sheet — mobile | 390 × 844 |
+| Add someone sheet — mobile | 390 × 844 |
+| Contact actions sheet — mobile | 390 × 844 |
+| Log something sheet — mobile | 390 × 844 |
+| Settings / Workflows — mobile | 390 × 844 |
+| Settings / Workflow editor — mobile | 390 × 844 |
+| Edit step sheet — mobile | 390 × 844 |
+| Contacts — desktop (stages) | 1440 × 900 |
+
+Detail frames are drawn full length where the screen scrolls.
+
+**Contacts.** Filters are the stages (`Everyone` / `Prospects` / `Customers` /
+`Team`). The stage is a neutral chip on each row. Grouping by need stays.
+
+**Contact detail.** The order is: header, `Message` / `Call` / ⋯, then
+`WHERE IT STANDS` for prospects only (Interested / Thinking it over / Not now /
+No reply), `NEXT STEP` with the workflow name and position ("Samples · 3 of 5"),
+`WHAT YOU KNOW` (FactRows, with Edit) and `HISTORY` (with Add). A team member
+also has `WHAT THEY ARE AIMING FOR` above `WHAT YOU KNOW`: their why, own goal,
+time they have, what they would love to do, strengths and where they are stuck,
+in their words. There is no rank and no volume.
+
+**Edit details** (from ⋯) is grouped as the page is: Name, then
+`WHAT THEY ARE AIMING FOR` (team only), then `WHAT YOU KNOW`. A section's own
+Edit asks only for that section's fields, titled with its name and without a
+header. Frames: `Edit details sheet — team member` (drawn full length) and
+`Edit sheet — what they are aiming for`.
+
+**When a prospect's workflow ends**, `NEXT STEP` becomes a "How did it end with
+Sarah?" card on `secondary/container` with no border. Its two choices ("Became a
+customer" / "Not now") are Text buttons, so they cannot be mistaken for the
+Message / Call pair above. This is the only place Loomia prompts a stage change.
+Customer → team is never prompted: moving someone to the team is always the
+user's own idea, from ⋯.
+
+**⋯ holds every other action**: Log something, Move to customers, Move to team,
+Change workflow, Pause — not now, Edit details, Delete. Delete is the only red
+item. `HISTORY → Add` opens the same Log something sheet (note / call / message /
+order / meeting, date, text). Ticking a step writes its own history entry.
+
+**Workflows have one version.** Everyone on a workflow follows its current
+steps. Done steps are history, with the label copied at tick time. Changing a
+step's days recalculates the due date from the last tick. Removing the current
+step moves the person to the next one. A step inserted before the current one is
+skipped. A rename applies at once.
+
+**Settings → Workflows** lists workflows by stage, with a default per stage. The
+editor is a list of WorkflowSteps, and each one opens the Edit step sheet (what
+to do, days after the previous step, note).
+
+**Desktop** reuses the §2 split: stage filters in the list column, and the
+detail pane holds `NEXT STEP` + `HISTORY` on the left and `WHAT YOU KNOW` on the
+right.
+
+Two components were added for these frames: `WorkflowStep` (number, label,
+timing) and `FactRow` (label over value, hugs its height). One token was added:
+`overlay/scrim`, black in both modes, used at 40% behind every sheet. The scrim
+was previously bound to `text/primary`, which turned light in dark mode.
+
+## 8. Settings → Workflows
+
+A row "Workflows" in its own group above Preferences. On desktop the list and
+the editor open in the Settings pane (the editor replaces the list, and its
+back arrow returns to it); elsewhere each is pushed.
+
+**List** — top bar "Workflows" → intro ("What you usually do with someone,
+step by step. Loomia puts the next step on Today when it comes due.") → one
+group per stage that has workflows (PROSPECTS, CUSTOMERS, TEAM), the default
+first, each row trailing "Default · 5 steps" or "4 steps" and a chevron → a
+tonal `New workflow` button. New workflow is a dialog (a bottom sheet on a
+phone): Name, STAGE chips with Prospect picked, Cancel / Create; Create opens
+the editor on it.
+
+**Editor** — the stage as eyebrow, the name as title → Name field, saved when
+it loses focus → STEPS with `Add a step`: a numbered row per step, "When you
+start" or "3 days after", a drag handle, Move up / Move down for screen
+readers → "Default for new prospects" switch → a footer on how steps come due
+→ a red "Delete workflow" row, which asks first and says how many people
+follow it. Opened after it was deleted elsewhere: "This workflow isn't here
+anymore" and `Back to workflows`.
+
+**Step** — "Step 2" or "New step": What to do, Days after the previous step
+("Days after starting" for step 1, 0 to 365) with a live "Comes due 3 days
+after you tick step 1." hint, an optional Note, a full-width `Save`, and
+`Remove this step` centred under it, without a confirmation: people on it move
+on and their history stays. No Cancel: the sheet closes by dragging it down.
+
+Nothing is optimistic. A control is disabled while its write is in flight; a
+failure says "Couldn't save. Check your connection and try again." — inline
+in a dialog, which keeps what was typed, and as a snack bar in the editor,
+which shows the saved state again.
+
+---
+
+## 9. First run & import from the phone
+
+Added 2026-09-30 for [#61](https://github.com/paulthvt/loomia/issues/61).
+Frames `First run — mobile`, `First run — web` and `Import contacts — mobile`.
+
+**First run** is one screen, shown once after sign-up, in the auth shape (one
+column capped at 400, no navigation): `Who do you already work with?`. On a
+phone: Import from your contacts (primary), Add someone, Skip for now. On the
+web there is no address book to read, so Add someone is the primary and the
+body says the phone app can import. Every way out — Skip included — marks the
+account (`onboarded` in the Supabase user metadata), so it never comes back,
+on any device. Importing stays in Contacts: an icon in the toolbar and a text
+button under the empty state, both absent on the web.
+
+**Import** is a full screen: the eyebrow counts what is ticked, a search, a
+reassurance line (`Only the people you tick are saved in Loomia.`), then one row
+per phone contact with a checkbox. Nobody starts ticked. Someone who looks
+already in Loomia — the same number (last nine digits), or with no number the
+same name — says `Already in Loomia` instead of their number, and can still be
+ticked: never merged. The footer picks one stage for everyone and imports them
+in a single write, all on that stage's default workflow.
+
+Refused access shows Open settings and reloads on return to the app. Only a
+name, the first number and the first email are read; nothing else leaves the
+phone.
+
+WhatsApp, Instagram and Messenger have no API that lists someone's contacts,
+so the phone's address book is the only source.
+
 ---
 
 ## Dark mode
@@ -167,9 +343,8 @@ set of values to keep in sync. Three things are worth looking at specifically:
 
 ## What these screens deliberately do not have
 
-No onboarding, no settings, no add/edit forms, no notification centre, no
-analytics view, no team performance comparison, no gamification of any kind. Each
-would need either a product decision or a feature that does not exist yet
+No onboarding tour beyond the one first-run screen, no notification centre, no analytics view, no team performance
+comparison, no gamification of any kind. Each would need either a product decision or a feature that does not exist yet
 (CLAUDE.md: don't scaffold for later).
 
 The screens are a design artefact. Implementation order, routing and state are not

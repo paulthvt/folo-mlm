@@ -1,7 +1,7 @@
 # Component library — v1
 
 24 components, built in Figma on page `Components`, every fill / stroke / padding
-/ radius bound to a `Folo/color` or `Folo/scale` variable.
+/ radius bound to a `Loomia/color` or `Loomia/scale` variable.
 
 Implemented in Flutter so far, in `lib/core/ui/` — Avatar (+ AvatarGroup), Chip,
 ProgressBar, SectionHeader, EmptyState, ActivityItem, StatTile, GoalCard,
@@ -78,7 +78,7 @@ row — filters use Primary for the active one.
 *Anatomy:* 8px pill track · pill bar · caption row (`pace` left, `time left`
 right).
 *Variants:* `Tone` = Primary | Secondary.
-*Rules:* Secondary is the default (olive on its own track). Primary tone exists
+*Rules:* Secondary is the default (`secondary/base` on its own track). Primary tone exists
 only inside the hero. The caption says how much time is left, never a verdict.
 
 ### 8. TextField
@@ -111,7 +111,7 @@ grouping (principle #6).
 ### 11. TodayHero
 *Purpose:* answer "what should I do today?" from arm's length.
 *Anatomy:* radius-20 `primary/base` block · `TODAY` eyebrow · one **sentence**
-(not a number) in `title-lg` · olive progress bar on a `primary/hover` track ·
+(not a number) in `title-lg` · white progress bar on a `primary/hover` track ·
 footer: progress left, effort in minutes right.
 *Props:* `eyebrow`, `headline`, `progressLabel`, `effortLabel`.
 *Responsive:* mobile full width; desktop the width of the left column, headline
@@ -150,7 +150,7 @@ chip moves to a fixed right column so names align.
 memory, not as an audit log — no edit metadata, no author.
 
 ### 15. TaskItem
-*Purpose:* something the user wrote down themselves (vs. an ActionItem, which Folo
+*Purpose:* something the user wrote down themselves (vs. an ActionItem, which Loomia
 suggested).
 *Anatomy:* 22px circular checkbox · `body-lg` label.
 *Variants:* `State` = Open | Done.
@@ -189,7 +189,9 @@ illustrations age, and childish ones are off-brief.
 actions right-aligned: Text (safe) then Primary filled with `semantic/error`.
 *Props:* `title`, `body`.
 *Responsive:* desktop = centred 352–480 dialog with a 40% scrim; mobile = bottom
-sheet, identical internals.
+sheet, identical internals, the two actions side by side sharing the width. The
+same frame carries short forms (Add someone, Log something, Change stage): their
+fields scroll when the keyboard is up, the title and the actions stay.
 *Rules:* the only component with a red fill. The safe action sits left so the
 destructive one is never the accidental tap. Escape / tapping the scrim cancels.
 

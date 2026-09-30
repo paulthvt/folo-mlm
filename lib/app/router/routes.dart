@@ -3,6 +3,23 @@ abstract final class Routes {
   static const String today = '/';
   static const String todayName = 'today';
 
+  static const String contacts = '/contacts';
+  static const String contactsName = 'contacts';
+
+  /// One person, nested under [contacts] so back returns to the list.
+  static const String contactSegment = ':id';
+  static const String contactName = 'contact';
+
+  static String contactLocation(String id) =>
+      '$contacts/${Uri.encodeComponent(id)}';
+
+  /// Their whole workflow, nested under the person so back returns to them.
+  static const String contactWorkflowSegment = 'workflow';
+  static const String contactWorkflowName = 'contactWorkflow';
+
+  static String contactWorkflowLocation(String id) =>
+      '${contactLocation(id)}/$contactWorkflowSegment';
+
   static const String settings = '/settings';
   static const String settingsName = 'settings';
 
@@ -20,6 +37,28 @@ abstract final class Routes {
   static const String settingsAppearance =
       '$settings/$settingsAppearanceSegment';
   static const String settingsAppearanceName = 'settingsAppearance';
+
+  static const String settingsWorkflowsSegment = 'workflows';
+  static const String settingsWorkflows = '$settings/$settingsWorkflowsSegment';
+  static const String settingsWorkflowsName = 'settingsWorkflows';
+
+  /// One workflow, nested under [settingsWorkflows] so back returns to it.
+  static const String settingsWorkflowSegment = ':id';
+  static const String settingsWorkflowName = 'settingsWorkflow';
+
+  static String settingsWorkflowLocation(String id) =>
+      '$settingsWorkflows/${Uri.encodeComponent(id)}';
+
+  /// First run: "Who do you already work with?", once per account.
+  static const String start = '/start';
+  static const String startName = 'start';
+
+  /// The phone's contacts, to tick and import. Not on web.
+  static const String importContacts = '/import-contacts';
+  static const String importContactsName = 'importContacts';
+
+  /// Reachable before the first-run screen is passed.
+  static const Set<String> onboardingPaths = {start, importContacts};
 
   static const String welcome = '/welcome';
   static const String welcomeName = 'welcome';

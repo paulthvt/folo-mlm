@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/auth/domain/auth_failure.dart';
-import 'package:folo/features/auth/presentation/forgot_password_page.dart';
-import 'package:folo/l10n/app_localizations.dart';
-import 'package:folo/l10n/localizations_delegates.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/auth/domain/auth_failure.dart';
+import 'package:loomia/features/auth/presentation/forgot_password_page.dart';
+import 'package:loomia/l10n/app_localizations.dart';
+import 'package:loomia/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../fake_auth_repository.dart';
@@ -94,7 +94,7 @@ void main() {
 
     expect(_location(router), '/');
     expect(
-      find.text('We could not reach Folo. Check your connection.'),
+      find.text('We could not reach Loomia. Check your connection.'),
       findsOneWidget,
     );
   });

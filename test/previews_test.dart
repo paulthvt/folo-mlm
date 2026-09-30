@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/theme/theme_preview.dart';
-import 'package:folo/core/ui/ui_preview.dart';
-import 'package:folo/features/today/presentation/today_preview.dart';
+import 'package:loomia/app/theme/theme_preview.dart';
+import 'package:loomia/core/ui/ui_preview.dart';
+import 'package:loomia/features/contacts/presentation/contacts_preview.dart';
+import 'package:loomia/features/today/presentation/today_preview.dart';
+import 'package:loomia/features/workflows/presentation/workflows_preview.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Every `@Preview`, rendered at its preview size and compared against a
@@ -25,8 +27,17 @@ void main() {
     'today_desktop_light': (const Size(1440, 900), todayDesktopLight),
     'today_desktop_dark': (const Size(1440, 900), todayDesktopDark),
     'today_empty_light': (const Size(390, 844), todayEmptyLight),
-    'components_light': (const Size(420, 1400), uiComponentsLight),
-    'components_dark': (const Size(420, 1400), uiComponentsDark),
+    'contacts_mobile_light': (const Size(390, 844), contactsMobileLight),
+    'contacts_mobile_dark': (const Size(390, 844), contactsMobileDark),
+    'contact_mobile_light': (const Size(390, 844), contactMobileLight),
+    'contact_mobile_dark': (const Size(390, 844), contactMobileDark),
+    'team_member_mobile_light': (const Size(390, 844), teamMemberMobileLight),
+    'contacts_desktop_light': (const Size(1440, 900), contactsDesktopLight),
+    'workflows_list_light': (const Size(390, 844), workflowsListLight),
+    'workflow_editor_light': (const Size(390, 844), workflowEditorLight),
+    'workflow_step_light': (const Size(390, 844), workflowStepLight),
+    'components_light': (const Size(420, 1800), uiComponentsLight),
+    'components_dark': (const Size(420, 1800), uiComponentsDark),
     'tokens_colour_light': (const Size(420, 900), colourTokensLight),
     'tokens_colour_dark': (const Size(420, 900), colourTokensDark),
     'tokens_type_light': (const Size(420, 900), typeRampLight),

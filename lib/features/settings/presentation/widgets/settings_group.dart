@@ -1,4 +1,4 @@
-import 'package:folo/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_colors.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// One group of Settings rows (`SettingsRow` in Figma): a flat hairline card,
@@ -16,11 +16,16 @@ class SettingsGroup extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: ListTileTheme.merge(
         shape: const RoundedRectangleBorder(),
-        titleTextStyle: theme.textTheme.bodyLarge,
+        titleTextStyle: theme.textTheme.bodyLarge?.copyWith(
+          color: theme.colorScheme.onSurface,
+        ),
+        leadingAndTrailingTextStyle: theme.textTheme.bodyMedium?.copyWith(
+          color: LoomiaColors.of(context).textMuted,
+        ),
         subtitleTextStyle: theme.textTheme.bodyMedium?.copyWith(
           color: theme.colorScheme.onSurfaceVariant,
         ),
-        selectedTileColor: FoloColors.of(context).primaryMuted,
+        selectedTileColor: LoomiaColors.of(context).primaryMuted,
         selectedColor: theme.colorScheme.onSurface,
         child: Column(
           children: ListTile.divideTiles(

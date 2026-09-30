@@ -1,8 +1,8 @@
 import 'package:flutter/widget_previews.dart';
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/app/theme/app_typography.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/app/theme/app_typography.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Token sheets for `flutter widget-preview start`. This is the visual check on
@@ -62,7 +62,7 @@ class _Group extends StatelessWidget {
           child: Text(
             title.toUpperCase(),
             style: AppTypography.overline.copyWith(
-              color: FoloColors.of(context).textMuted,
+              color: LoomiaColors.of(context).textMuted,
             ),
           ),
         ),
@@ -81,7 +81,7 @@ class _Swatch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: AppSpacing.xs),
       child: Row(
@@ -93,7 +93,7 @@ class _Swatch extends StatelessWidget {
             decoration: BoxDecoration(
               color: color,
               borderRadius: BorderRadius.circular(AppRadii.sm),
-              border: Border.all(color: folo.borderSubtle),
+              border: Border.all(color: colors.borderSubtle),
             ),
             child: ink == null
                 ? null
@@ -103,7 +103,7 @@ class _Swatch extends StatelessWidget {
           Expanded(child: Text(name, style: AppTypography.bodySmall)),
           Text(
             '#${(color.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0').toUpperCase()}',
-            style: AppTypography.caption.copyWith(color: folo.textMuted),
+            style: AppTypography.caption.copyWith(color: colors.textMuted),
           ),
         ],
       ),
@@ -117,70 +117,79 @@ class _ColourSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        _Group('brand', [_Swatch('brand/base', colors.brand)]),
         _Group('surface', [
           _Swatch('surface/canvas', scheme.surface, ink: scheme.onSurface),
           _Swatch(
             'surface/default',
-            folo.surfaceDefault,
+            colors.surfaceDefault,
             ink: scheme.onSurface,
           ),
-          _Swatch('surface/raised', folo.surfaceRaised, ink: scheme.onSurface),
-          _Swatch('surface/sunken', folo.surfaceSunken, ink: scheme.onSurface),
-          _Swatch('surface/disabled', folo.surfaceDisabled),
+          _Swatch(
+            'surface/raised',
+            colors.surfaceRaised,
+            ink: scheme.onSurface,
+          ),
+          _Swatch(
+            'surface/sunken',
+            colors.surfaceSunken,
+            ink: scheme.onSurface,
+          ),
+          _Swatch('surface/disabled', colors.surfaceDisabled),
         ]),
         _Group('border', [
-          _Swatch('border/subtle', folo.borderSubtle),
-          _Swatch('border/strong', folo.borderStrong),
+          _Swatch('border/subtle', colors.borderSubtle),
+          _Swatch('border/strong', colors.borderStrong),
         ]),
         _Group('text', [
           _Swatch('text/primary', scheme.onSurface),
           _Swatch('text/secondary', scheme.onSurfaceVariant),
-          _Swatch('text/muted', folo.textMuted),
-          _Swatch('text/disabled', folo.textDisabled),
+          _Swatch('text/muted', colors.textMuted),
+          _Swatch('text/disabled', colors.textDisabled),
         ]),
         _Group('primary', [
           _Swatch('primary/base', scheme.primary, ink: scheme.onPrimary),
-          _Swatch('primary/hover', folo.primaryHover, ink: scheme.onPrimary),
-          _Swatch('primary/text', folo.primaryText),
+          _Swatch('primary/hover', colors.primaryHover, ink: scheme.onPrimary),
+          _Swatch('primary/text', colors.primaryText),
           _Swatch(
             'primary/container',
             scheme.primaryContainer,
             ink: scheme.onPrimaryContainer,
           ),
-          _Swatch('primary/muted', folo.primaryMuted),
+          _Swatch('primary/muted', colors.primaryMuted),
         ]),
         _Group('secondary', [
           _Swatch('secondary/base', scheme.secondary, ink: scheme.onSecondary),
-          _Swatch('secondary/text', folo.secondaryText),
+          _Swatch('secondary/text', colors.secondaryText),
           _Swatch(
             'secondary/container',
             scheme.secondaryContainer,
             ink: scheme.onSecondaryContainer,
           ),
-          _Swatch('secondary/track', folo.secondaryTrack),
+          _Swatch('secondary/track', colors.secondaryTrack),
         ]),
         _Group('accent — dates only', [
-          _Swatch('accent/base', folo.accent),
+          _Swatch('accent/base', colors.accent),
           _Swatch(
             'accent/container',
-            folo.accentContainer,
-            ink: folo.onAccentContainer,
+            colors.accentContainer,
+            ink: colors.onAccentContainer,
           ),
         ]),
         _Group('semantic', [
-          _Swatch('success', folo.success),
-          _Swatch('success/container', folo.successContainer),
-          _Swatch('warning', folo.warning),
-          _Swatch('warning/container', folo.warningContainer),
+          _Swatch('success', colors.success),
+          _Swatch('success/container', colors.successContainer),
+          _Swatch('warning', colors.warning),
+          _Swatch('warning/container', colors.warningContainer),
           _Swatch('error', scheme.error, ink: scheme.onError),
           _Swatch('error/container', scheme.errorContainer),
-          _Swatch('info', folo.info),
-          _Swatch('info/container', folo.infoContainer),
-          _Swatch('state/focus', folo.focus),
+          _Swatch('info', colors.info),
+          _Swatch('info/container', colors.infoContainer),
+          _Swatch('state/focus', colors.focus),
         ]),
       ],
     );
@@ -219,7 +228,7 @@ class _TypeSheet extends StatelessWidget {
                   Text(
                     name,
                     style: AppTypography.caption.copyWith(
-                      color: FoloColors.of(context).textMuted,
+                      color: LoomiaColors.of(context).textMuted,
                     ),
                   ),
                   Text(
@@ -248,7 +257,7 @@ class _ScaleSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     const spacing = <(String, double)>[
       ('xs', AppSpacing.xs),
       ('sm', AppSpacing.sm),
@@ -284,7 +293,7 @@ class _ScaleSheet extends StatelessWidget {
                   Text(
                     '${value.toInt()}',
                     style: AppTypography.caption.copyWith(
-                      color: folo.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                 ],
@@ -302,8 +311,8 @@ class _ScaleSheet extends StatelessWidget {
                   height: 56,
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: folo.surfaceSunken,
-                    border: Border.all(color: folo.borderStrong),
+                    color: colors.surfaceSunken,
+                    border: Border.all(color: colors.borderStrong),
                     borderRadius: BorderRadius.circular(value),
                   ),
                   child: Text(name, style: AppTypography.label),
@@ -324,7 +333,7 @@ class _ScaleSheet extends StatelessWidget {
                   margin: const EdgeInsets.only(right: AppSpacing.md),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: folo.surfaceRaised,
+                    color: colors.surfaceRaised,
                     borderRadius: BorderRadius.circular(AppRadii.md),
                     boxShadow: shadow,
                   ),
@@ -343,7 +352,7 @@ class _ComponentSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -385,9 +394,9 @@ class _ComponentSheet extends StatelessWidget {
                     children: [
                       Chip(
                         label: const Text('Birthday Friday'),
-                        backgroundColor: folo.accentContainer,
+                        backgroundColor: colors.accentContainer,
                         labelStyle: AppTypography.caption.copyWith(
-                          color: folo.onAccentContainer,
+                          color: colors.onAccentContainer,
                         ),
                       ),
                       const Chip(label: Text('Customer')),

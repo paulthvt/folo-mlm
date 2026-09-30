@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/features/auth/domain/auth_validation.dart';
+import 'package:loomia/features/auth/domain/auth_validation.dart';
 
 void main() {
   group('normalizeEmail', () {

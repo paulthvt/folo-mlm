@@ -1,8 +1,8 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/app/theme/app_typography.dart';
-import 'package:folo/core/ui/folo_progress_bar.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/app/theme/app_typography.dart';
+import 'package:loomia/core/ui/loomia_progress_bar.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Own intent vs. own progress (`docs/design/components.md` #17). Pace is never
@@ -38,7 +38,7 @@ class GoalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
 
     return Card(
       child: Padding(
@@ -57,7 +57,7 @@ class GoalCard extends StatelessWidget {
                   duration: context.motion(AppMotion.quick),
                   curve: AppMotion.standard,
                   style: AppTypography.caption.copyWith(
-                    color: behindPace ? folo.secondaryText : folo.textMuted,
+                    color: behindPace ? colors.secondaryText : colors.textMuted,
                   ),
                   child: Text(pace),
                 ),
@@ -77,12 +77,12 @@ class GoalCard extends StatelessWidget {
                 const SizedBox(width: AppSpacing.xs),
                 Text(
                   'of $target',
-                  style: AppTypography.body.copyWith(color: folo.textMuted),
+                  style: AppTypography.body.copyWith(color: colors.textMuted),
                 ),
               ],
             ),
             const SizedBox(height: AppSpacing.ms),
-            FoloProgressBar(
+            LoomiaProgressBar(
               value: target == 0 ? 0 : value / target,
               trailingLabel: timeLeft,
             ),

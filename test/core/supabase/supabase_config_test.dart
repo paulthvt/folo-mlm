@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/core/supabase/supabase_config.dart';
+import 'package:loomia/core/supabase/supabase_config.dart';
 
 void main() {
-  test('url points at the Folo project', () {
+  test('url points at the Loomia project', () {
     expect(SupabaseConfig.url, 'https://cskjeqspecsyqioietrj.supabase.co');
   });
 
@@ -14,6 +14,6 @@ void main() {
   });
 
   test('the redirect url matches the registered deep link', () {
-    expect(SupabaseConfig.redirectUrl, 'io.supabase.folo://login-callback/');
+    expect(SupabaseConfig.redirectUrl, 'io.supabase.loomia://login-callback/');
   });
 }

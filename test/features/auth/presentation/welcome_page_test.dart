@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/auth/domain/auth_failure.dart';
-import 'package:folo/features/auth/presentation/welcome_page.dart';
-import 'package:folo/l10n/app_localizations.dart';
-import 'package:folo/l10n/localizations_delegates.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/auth/domain/auth_failure.dart';
+import 'package:loomia/features/auth/presentation/welcome_page.dart';
+import 'package:loomia/l10n/app_localizations.dart';
+import 'package:loomia/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../fake_auth_repository.dart';
@@ -29,6 +29,13 @@ Widget _host(FakeAuthRepository fake, {double textScale = 1}) => ProviderScope(
 );
 
 void main() {
+  testWidgets('shows the Loomia name and slogan', (tester) async {
+    await tester.pumpWidget(_host(FakeAuthRepository()));
+
+    expect(find.bySemanticsLabel('Loomia'), findsOneWidget);
+    expect(find.text('Weave your network. Tend every thread.'), findsOneWidget);
+  });
+
   testWidgets('offers the identity paths and the register link', (
     tester,
   ) async {
@@ -44,7 +51,7 @@ void main() {
     expect(find.text('Continue with Apple'), findsNothing);
     expect(find.text('Continue with email'), findsOneWidget);
     expect(find.text('Create an account'), findsOneWidget);
-    expect(find.text('Know what to do next.'), findsOneWidget);
+    expect(find.text('Weave your network. Tend every thread.'), findsOneWidget);
   });
 
   testWidgets('Google calls the repository once', (tester) async {
@@ -65,7 +72,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('We could not reach Folo. Check your connection.'),
+      find.text('We could not reach Loomia. Check your connection.'),
       findsOneWidget,
     );
   });
