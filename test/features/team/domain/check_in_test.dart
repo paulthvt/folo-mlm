@@ -69,6 +69,9 @@ void main() {
     final lateEvening = DateTime(2026, 9, 29, 23, 30).toUtc();
 
     expect(joinedOn(_member('A', lateEvening)), DateTime(2026, 9, 29));
+    // Just past midnight in Paris is still yesterday in UTC.
+    final earlyMorning = DateTime(2026, 9, 30, 0, 30).toUtc();
+    expect(joinedOn(_member('A', earlyMorning)), DateTime(2026, 9, 30));
     expect(
       talkedSinceJoining(_member('A', lateEvening, DateTime(2026, 9, 29))),
       isTrue,

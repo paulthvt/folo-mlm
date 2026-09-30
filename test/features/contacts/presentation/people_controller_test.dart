@@ -640,6 +640,29 @@ void main() {
       expect(reloaded.single.lastContactOn, isNull);
     });
 
+    test('a sheet closed while saving still reloads the book', () async {
+      final world = _world([_person('p1', 'Marie')]);
+      final book = _book(world.container);
+      // The Log sheet is the history's only listener, as on Team.
+      final sheet = world.container.listen(historyProvider('p1'), (_, _) {});
+      await world.container.read(book.future);
+      await world.container.read(historyProvider('p1').future);
+      final gate = world.activities.gate = Completer<void>();
+
+      final saving = world.container.read(historyProvider('p1').notifier).add((
+        kind: ActivityKind.call,
+        happenedOn: DateTime(2026, 9, 29),
+        text: 'Hi',
+      ));
+      sheet.close();
+      await Future<void>.delayed(Duration.zero);
+      gate.complete();
+      await saving;
+      final reloaded = await world.container.read(book.future);
+
+      expect(reloaded.single.lastContactOn, DateTime(2026, 9, 29));
+    });
+
     test('a stage change is no contact', () async {
       final world = _world([_person('p1', 'Marie')]);
       world.activities.recordStage('p1', Stage.team);

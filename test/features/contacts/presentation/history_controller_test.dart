@@ -118,9 +118,16 @@ void main() {
 
   test('closed while a save is in flight: nothing throws', () async {
     final activities = FakeActivityRepository();
+    final auth = FakeAuthRepository()..session = true;
+    addTearDown(auth.dispose);
     final container = ProviderContainer.test(
-      overrides: [activityRepositoryProvider.overrideWithValue(activities)],
+      overrides: [
+        activityRepositoryProvider.overrideWithValue(activities),
+        authRepositoryProvider.overrideWithValue(auth),
+        peopleRepositoryProvider.overrideWithValue(FakePeopleRepository()),
+      ],
     );
+    // The only listener, as when the page is the last one open.
     final subscription = container.listen(historyProvider('p1'), (_, _) {});
     await container.read(historyProvider('p1').future);
     activities.gate = Completer<void>();
