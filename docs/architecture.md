@@ -72,13 +72,16 @@ those extension points inline.
 
 Signed-in screens sit in a `ShellRoute` whose `AppShell` (`lib/app/shell/`)
 picks its chrome from `context.screenSize`: a sidebar on desktop, the same
-sidebar as an icon rail on tablet, nothing on mobile. Settings is not a
-destination — it opens from the account block at the bottom of the sidebar, or
-from the avatar in the top bar on mobile. Its sections (`/settings/account`,
+sidebar as an icon rail on tablet, a bottom bar on mobile (hidden on
+Settings). Settings is not a destination — it opens from the account block at
+the bottom of the sidebar, or from the avatar in the top bar on mobile. Its sections (`/settings/account`,
 `/settings/language`, `/settings/appearance`) are nested routes: on desktop they fill a pane beside the
 Settings list without a transition; on mobile and tablet each is its own pushed
-screen. The mobile bottom bar and a
-`StatefulShellRoute` (one stack per tab) arrive with the second destination.
+screen.
+
+`/contacts` nests a second `ShellRoute` so that on desktop the list stays built
+beside a pane that follows the URL. There is no `StatefulShellRoute`: a tab does not
+keep its own stack, and nothing so far needs it to.
 
 ### Theming
 
@@ -136,7 +139,41 @@ The project itself is described by `supabase/` (#28), not by the dashboard:
   never values.
 - `supabase/migrations/` is the only way the schema changes. CI replays every
   migration onto an empty database, so a migration that does not apply cleanly
-  fails the PR.
+  fails the PR, then runs the pgTAP tests in `supabase/tests/`.
+
+Every table follows the same conventions (#48), first applied to `person`:
+
+- RLS enabled, with one policy per command checking
+  `owner_id = (select auth.uid())`. The `(select …)` form is evaluated once per
+  query. Team visibility is a later decision.
+- `id uuid primary key default gen_random_uuid()`.
+- `owner_id uuid not null default auth.uid() references auth.users on delete
+  cascade`, which is how `delete-account` removes everything a user owns.
+- `created_at` and `updated_at timestamptz not null default now()`;
+  `updated_at` is kept current by the shared `set_updated_at()` trigger.
+- A table whose rows are never edited (`activity`) drops `updated_at` and has
+  no UPDATE grant.
+- Hard delete. A state such as "Not now" is a column, not a hidden row.
+- A calendar day is `date`, an instant is `timestamptz`. "Today" is computed
+  on the device, never on the server.
+- A rule every reader must agree on lives in Postgres, once (#58). Where a
+  person is in their workflow and when that step is due are the computed
+  fields `current_step_id(person)` and `due_on(person)`, which PostgREST
+  selects as `*, current_step_id, due_on`; `complete_step` moves on by the
+  same rule and refuses a step that is no longer current. The device compares
+  `due_on` with its own today and never recomputes a step, so Today, the
+  contact page and a future push job cannot disagree. The test fake in
+  `test/features/workflows/server_rule.dart` is the only other copy; the
+  pgTAP tests pin the real one.
+- Default workflows are seeded once per account, ever (#59). `seed_workflows`
+  writes a `workflow_seeded` row the first time and no-ops whenever that row
+  exists, even after the user has deleted every workflow. The device asks on
+  every workflows load and keeps no memory of having asked; the server
+  decides.
+- Default privileges are revoked from both `anon` and `authenticated`; only
+  SELECT, INSERT, UPDATE, DELETE are granted to `authenticated`.
+- Enums are Postgres enum types; a new value is a migration.
+- Each table's RLS gets a pgTAP test in `supabase/tests/`.
 
 Anything the client must not do with its own key runs in an Edge Function in
 `supabase/functions/` — so far only `delete-account`, which deletes the caller
@@ -149,7 +186,7 @@ migrations: a deploy job would be more secrets than it saves. Automate it when e
 
 ### Not yet present, by design
 
-Firebase Cloud Messaging, database tables (a `profiles` table included — the
-user's first name lives in auth `user_metadata` until something needs more),
+Firebase Cloud Messaging, a `profiles` table (the user's first name lives in
+auth `user_metadata` until something needs more),
 local persistence beyond the Supabase session, analytics.
 Each will be added when the feature that needs it is built.

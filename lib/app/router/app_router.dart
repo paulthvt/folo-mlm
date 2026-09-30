@@ -9,6 +9,8 @@ import 'package:folo/features/auth/presentation/login_page.dart';
 import 'package:folo/features/auth/presentation/register_page.dart';
 import 'package:folo/features/auth/presentation/reset_password_page.dart';
 import 'package:folo/features/auth/presentation/welcome_page.dart';
+import 'package:folo/features/contacts/presentation/contact_page.dart';
+import 'package:folo/features/contacts/presentation/contacts_page.dart';
 import 'package:folo/features/settings/presentation/settings_page.dart';
 import 'package:folo/features/today/presentation/today_page.dart';
 import 'package:go_router/go_router.dart';
@@ -18,8 +20,10 @@ import 'package:material_ui/material_ui.dart';
 /// `redirect` unauthenticated users.
 ///
 /// Signed-in screens sit inside a `ShellRoute` so [AppShell] draws the sidebar
-/// around them. A plain `ShellRoute` is enough while Today is the only
-/// destination; a `StatefulShellRoute` (one stack per tab) comes with the second.
+/// or the bottom bar around them. `/contacts` has its own nested `ShellRoute`:
+/// on desktop it keeps the list built while the pane beside it follows the
+/// URL. Tabs do not keep a stack each (no `StatefulShellRoute`): going back to
+/// Contacts shows the list.
 final routerProvider = Provider<GoRouter>((ref) {
   final status = ref.watch(authStatusProvider);
 
@@ -43,6 +47,35 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: Routes.todayName,
             builder: (context, state) => const TodayPage(),
           ),
+          // On desktop the list stays built around a pane that swaps with the
+          // selection; elsewhere the list and a person are separate screens.
+          ShellRoute(
+            builder: (context, state, child) => context.screenSize.isDesktop
+                ? ContactsPage(
+                    pane: child,
+                    selectedId: state.pathParameters['id'],
+                  )
+                : child,
+            routes: [
+              GoRoute(
+                path: Routes.contacts,
+                name: Routes.contactsName,
+                pageBuilder: (context, state) =>
+                    _contactsPage(context, state, null),
+                routes: [
+                  GoRoute(
+                    path: Routes.contactSegment,
+                    name: Routes.contactName,
+                    pageBuilder: (context, state) => _contactsPage(
+                      context,
+                      state,
+                      state.pathParameters['id'],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
           GoRoute(
             path: Routes.settings,
             name: Routes.settingsName,
@@ -65,6 +98,24 @@ final routerProvider = Provider<GoRouter>((ref) {
                 name: Routes.settingsAppearanceName,
                 pageBuilder: (context, state) =>
                     _settingsPage(context, state, SettingsSection.appearance),
+              ),
+              GoRoute(
+                path: Routes.settingsWorkflowsSegment,
+                name: Routes.settingsWorkflowsName,
+                pageBuilder: (context, state) =>
+                    _settingsPage(context, state, SettingsSection.workflows),
+                routes: [
+                  GoRoute(
+                    path: Routes.settingsWorkflowSegment,
+                    name: Routes.settingsWorkflowName,
+                    pageBuilder: (context, state) => _settingsPage(
+                      context,
+                      state,
+                      SettingsSection.workflows,
+                      workflowId: state.pathParameters['id'],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -116,9 +167,10 @@ final routerProvider = Provider<GoRouter>((ref) {
 Page<void> _settingsPage(
   BuildContext context,
   GoRouterState state,
-  SettingsSection section,
-) {
-  final child = SettingsPage(section: section);
+  SettingsSection section, {
+  String? workflowId,
+}) {
+  final child = SettingsPage(section: section, workflowId: workflowId);
   return context.screenSize.isDesktop
       ? NoTransitionPage<void>(
           key: state.pageKey,
@@ -126,4 +178,27 @@ Page<void> _settingsPage(
           child: child,
         )
       : MaterialPage<void>(key: state.pageKey, name: state.name, child: child);
+}
+
+/// Desktop: the pane beside the list, swapped without a transition (see
+/// [_settingsPage]). Elsewhere: the list, or a person pushed above it.
+Page<void> _contactsPage(
+  BuildContext context,
+  GoRouterState state,
+  String? id,
+) {
+  if (context.screenSize.isDesktop) {
+    return NoTransitionPage<void>(
+      key: state.pageKey,
+      name: state.name,
+      child: Scaffold(
+        body: id == null ? const ContactsNoSelection() : ContactPane(id: id),
+      ),
+    );
+  }
+  return MaterialPage<void>(
+    key: state.pageKey,
+    name: state.name,
+    child: id == null ? const ContactsPage() : ContactPage(id: id),
+  );
 }

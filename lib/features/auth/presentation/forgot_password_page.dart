@@ -2,13 +2,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/back.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/app/theme/app_spacing.dart';
+import 'package:folo/core/ui/form_error.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/domain/auth_failure.dart';
 import 'package:folo/features/auth/domain/auth_validation.dart';
 import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
 import 'package:folo/features/auth/presentation/auth_validation_copy.dart';
 import 'package:folo/features/auth/presentation/widgets/auth_scaffold.dart';
-import 'package:folo/features/auth/presentation/widgets/form_error.dart';
 import 'package:folo/features/auth/presentation/widgets/submit_button.dart';
 import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -95,14 +96,16 @@ class _ForgotPasswordPageState extends ConsumerState<ForgotPasswordPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: AppSpacing.md,
             children: [
-              TextFormField(
-                controller: _email,
-                enabled: !_busy,
-                validator: (value) => emailFieldError(l10n, value),
-                keyboardType: TextInputType.emailAddress,
-                autofillHints: const [AutofillHints.email],
-                onFieldSubmitted: (_) => _busy ? null : _submit(),
-                decoration: InputDecoration(labelText: l10n.authEmailLabel),
+              LabeledField(
+                label: l10n.authEmailLabel,
+                child: TextFormField(
+                  controller: _email,
+                  enabled: !_busy,
+                  validator: (value) => emailFieldError(l10n, value),
+                  keyboardType: TextInputType.emailAddress,
+                  autofillHints: const [AutofillHints.email],
+                  onFieldSubmitted: (_) => _busy ? null : _submit(),
+                ),
               ),
               SubmitButton(
                 label: l10n.authSendResetLinkAction,

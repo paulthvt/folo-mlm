@@ -189,7 +189,9 @@ illustrations age, and childish ones are off-brief.
 actions right-aligned: Text (safe) then Primary filled with `semantic/error`.
 *Props:* `title`, `body`.
 *Responsive:* desktop = centred 352–480 dialog with a 40% scrim; mobile = bottom
-sheet, identical internals.
+sheet, identical internals, the two actions side by side sharing the width. The
+same frame carries short forms (Add someone, Log something, Change stage): their
+fields scroll when the keyboard is up, the title and the actions stay.
 *Rules:* the only component with a red fill. The safe action sits left so the
 destructive one is never the accidental tap. Escape / tapping the scrim cancels.
 

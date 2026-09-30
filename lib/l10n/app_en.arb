@@ -219,6 +219,56 @@
   "@todayEmptyBody": {
     "description": "Body of the Today screen's empty state. Reassuring, never a reprimand."
   },
+  "todayDate": "{day}",
+  "@todayDate": {
+    "description": "Eyebrow above the Today greeting, shown uppercased: the weekday and the date, e.g. 'Monday, September 29'; the format follows the locale.",
+    "placeholders": {
+      "day": { "type": "DateTime", "format": "MMMMEEEEd" }
+    }
+  },
+  "todayGreeting": "{part, select, morning{Good morning} afternoon{Good afternoon} other{Good evening}}",
+  "@todayGreeting": {
+    "description": "Today's title when the account has no first name. part is the time of day on the device: morning before noon, afternoon before 6 pm, evening after.",
+    "placeholders": {
+      "part": { "type": "String" }
+    }
+  },
+  "todayGreetingNamed": "{part, select, morning{Good morning, {name}} afternoon{Good afternoon, {name}} other{Good evening, {name}}}",
+  "@todayGreetingNamed": {
+    "description": "Today's title, with the account's first name. part is the time of day on the device: morning before noon, afternoon before 6 pm, evening after.",
+    "placeholders": {
+      "part": { "type": "String" },
+      "name": { "type": "String", "example": "Pauline" }
+    }
+  },
+  "todayHeadline": "{count, plural, =1{One person is worth a message today} other{{count} people are worth a message today}}",
+  "@todayHeadline": {
+    "description": "The sentence in the Today hero: a sentence, not a number, so it never reads as a quota. count is everyone due today or late, including rows not shown yet.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "todayReason": "{step} · {workflow}, step {index} of {total}",
+  "@todayReason": {
+    "description": "Line under a person's name on Today: the step to do, then the workflow and where they are in it, e.g. 'Send the samples · Samples, step 2 of 5'.",
+    "placeholders": {
+      "step": { "type": "String", "example": "Send the samples" },
+      "workflow": { "type": "String", "example": "Samples" },
+      "index": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "todayShowMore": "{count, plural, =1{And one more waiting} other{And {count} more waiting}}",
+  "@todayShowMore": {
+    "description": "Button under the first rows on Today; shows the rest in place. count is how many are not shown yet.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "todayLoadFailed": "Couldn't load today.",
+  "@todayLoadFailed": {
+    "description": "Heading in place of Today when the contacts or the workflows could not be loaded. Above contactsLoadErrorBody and a Try again button."
+  },
   "actionMarkAsDone": "Mark as done",
   "@actionMarkAsDone": {
     "description": "Default label of the button that clears a suggested follow-up from the list."
@@ -295,5 +345,753 @@
   "settingsDeleteConfirm": "Delete",
   "@settingsDeleteConfirm": {
     "description": "Destructive button in the account deletion confirmation dialog that deletes the account."
+  },
+  "navContacts": "Contacts",
+  "@navContacts": {
+    "description": "Navigation destination (bottom bar, sidebar) that opens the list of people."
+  },
+  "contactsTitle": "Contacts",
+  "@contactsTitle": {
+    "description": "Title of the list of people."
+  },
+  "contactsAdd": "Add someone",
+  "@contactsAdd": {
+    "description": "Button on the Contacts list, and on its empty state, that opens the form to add a person."
+  },
+  "contactsAddShort": "Add",
+  "@contactsAddShort": {
+    "description": "Short label of the button at the top of the Contacts list on desktop, which opens the form to add a person."
+  },
+  "contactsRefresh": "Refresh",
+  "@contactsRefresh": {
+    "description": "Tooltip of the icon button that reloads the Contacts list, shown where there is no pull to refresh (mouse)."
+  },
+  "contactsSearchHint": "Search by name",
+  "@contactsSearchHint": {
+    "description": "Placeholder of the search field above the Contacts list."
+  },
+  "contactsFilterEveryone": "Everyone",
+  "@contactsFilterEveryone": {
+    "description": "Filter chip on the Contacts list that shows every person, whatever their stage."
+  },
+  "contactsFilterProspects": "Prospects",
+  "@contactsFilterProspects": {
+    "description": "Filter chip on the Contacts list that shows only prospects: people who have not bought yet."
+  },
+  "contactsFilterCustomers": "Customers",
+  "@contactsFilterCustomers": {
+    "description": "Filter chip on the Contacts list that shows only customers."
+  },
+  "contactsFilterTeam": "Team",
+  "@contactsFilterTeam": {
+    "description": "Filter chip on the Contacts list that shows only people in the user's team."
+  },
+  "stageProspect": "Prospect",
+  "@stageProspect": {
+    "description": "Stage of a person who has not bought yet. Shown on a chip and in 'Prospect since March 2026'."
+  },
+  "stageCustomer": "Customer",
+  "@stageCustomer": {
+    "description": "Stage of a person who buys. Shown on a chip and in 'Customer since March 2026'."
+  },
+  "stageTeam": "Team",
+  "@stageTeam": {
+    "description": "Stage of a person who works with the user. Shown on a chip and in 'Team since March 2026'."
+  },
+  "contactsEmptyTitle": "No one here yet",
+  "@contactsEmptyTitle": {
+    "description": "Title of the Contacts list when the user has not added anyone."
+  },
+  "contactsEmptyBody": "Add the people you talk to, and Folo helps you keep in touch.",
+  "@contactsEmptyBody": {
+    "description": "Body of the Contacts list when the user has not added anyone."
+  },
+  "contactsNoMatch": "Nobody matches.",
+  "@contactsNoMatch": {
+    "description": "One line shown on the Contacts list when the search or the filter leaves no one."
+  },
+  "contactsLoadError": "Couldn't load your contacts.",
+  "@contactsLoadError": {
+    "description": "Message in place of the Contacts list when it could not be loaded."
+  },
+  "contactsLoadErrorBody": "Check your connection, then try again.",
+  "@contactsLoadErrorBody": {
+    "description": "Body under contactsLoadError."
+  },
+  "contactsRetry": "Try again",
+  "@contactsRetry": {
+    "description": "Button under contactsLoadError that loads the list again."
+  },
+  "contactsRefreshFailed": "Couldn't refresh. You're seeing the last loaded list.",
+  "@contactsRefreshFailed": {
+    "description": "Snackbar when pull to refresh fails; the list already on screen stays."
+  },
+  "peopleFailureNetwork": "Couldn't save. Check your connection and try again.",
+  "@peopleFailureNetwork": {
+    "description": "Error when a change to a person could not reach the server."
+  },
+  "peopleFailureUnknown": "Something went wrong. Try again.",
+  "@peopleFailureUnknown": {
+    "description": "Error when a change to a person failed for any other reason."
+  },
+  "contactSince": "{stage} since {date}",
+  "@contactSince": {
+    "description": "Under a person's name on their detail screen: their stage and the month it began, e.g. 'Prospect since March 2026'.",
+    "placeholders": {
+      "stage": { "type": "String" },
+      "date": { "type": "DateTime", "format": "yMMMM" }
+    }
+  },
+  "contactMessage": "Message",
+  "@contactMessage": {
+    "description": "Button on a person's detail screen that opens a text message (or Instagram) to them."
+  },
+  "contactCall": "Call",
+  "@contactCall": {
+    "description": "Button on a person's detail screen that opens the phone dialer with their number."
+  },
+  "contactMore": "More",
+  "@contactMore": {
+    "description": "Tooltip of the ⋯ button on a person's detail screen that opens more actions."
+  },
+  "contactSectionWhereItStands": "Where it stands",
+  "@contactSectionWhereItStands": {
+    "description": "Section header above a prospect's status chips (Interested, Thinking about it…)."
+  },
+  "statusInterested": "Interested",
+  "@statusInterested": {
+    "description": "Status of a prospect who wants to know more."
+  },
+  "statusThinking": "Thinking about it",
+  "@statusThinking": {
+    "description": "Status of a prospect who is deciding."
+  },
+  "statusNotNow": "Not now",
+  "@statusNotNow": {
+    "description": "Status of a prospect who said no for the moment. Neutral, never a judgement."
+  },
+  "statusNoReply": "No reply",
+  "@statusNoReply": {
+    "description": "Status of a prospect who has not answered."
+  },
+  "contactSectionWhatYouKnow": "What you know",
+  "@contactSectionWhatYouKnow": {
+    "description": "Section header above the facts about a person: needs, products, job, contact details, notes."
+  },
+  "contactEdit": "Edit",
+  "@contactEdit": {
+    "description": "Action of the 'What you know' section header that opens the edit form."
+  },
+  "contactNothingYet": "Nothing yet.",
+  "@contactNothingYet": {
+    "description": "Shown in 'What you know' when no fact about the person is filled in."
+  },
+  "factNeeds": "Needs",
+  "@factNeeds": {
+    "description": "Label of what a person is looking for (e.g. 'Sleep, stress'). Also the edit form field."
+  },
+  "factProducts": "Uses",
+  "@factProducts": {
+    "description": "Label of the products a person already uses. Also the edit form field."
+  },
+  "factProfession": "Works as",
+  "@factProfession": {
+    "description": "Label of a person's job. Also the edit form field."
+  },
+  "factPhone": "Phone",
+  "@factPhone": {
+    "description": "Label of a person's phone number. Also the edit form field."
+  },
+  "factEmail": "Email",
+  "@factEmail": {
+    "description": "Label of a person's email address. Also the edit form field."
+  },
+  "factInstagram": "Instagram",
+  "@factInstagram": {
+    "description": "Label of a person's Instagram handle. Also the edit form field."
+  },
+  "factAddress": "Address",
+  "@factAddress": {
+    "description": "Label of a person's postal address. Also the edit form field."
+  },
+  "factNotes": "Notes",
+  "@factNotes": {
+    "description": "Label of free notes about a person. Also the edit form field."
+  },
+  "contactSectionAimingFor": "What they are aiming for",
+  "@contactSectionAimingFor": {
+    "description": "Section header on a team member's detail, above what you know: their own goal and profile, in their words."
+  },
+  "factWhy": "Their why",
+  "@factWhy": {
+    "description": "Label of why a team member started, in their words. Also the edit form field."
+  },
+  "factOwnGoal": "Their own goal",
+  "@factOwnGoal": {
+    "description": "Label of the goal a team member set for themselves, not one set for them. Also the edit form field."
+  },
+  "factTimeAvailable": "Time they have",
+  "@factTimeAvailable": {
+    "description": "Label of how much time a team member has for it, e.g. 3 evenings a week. Also the edit form field."
+  },
+  "factWouldLoveTo": "Would love to",
+  "@factWouldLoveTo": {
+    "description": "Label of what a team member would love to do, e.g. host a workshop. Also the edit form field."
+  },
+  "factStrengths": "Strengths",
+  "@factStrengths": {
+    "description": "Label of a team member's strengths. Also the edit form field."
+  },
+  "factStuckOn": "Where they are stuck",
+  "@factStuckOn": {
+    "description": "Label of what a team member is stuck on right now. Also the edit form field."
+  },
+  "contactEditDetails": "Edit details",
+  "@contactEditDetails": {
+    "description": "Item of the ⋯ menu on a person's detail screen that opens the edit form."
+  },
+  "contactDeleteTitle": "Delete {name}?",
+  "@contactDeleteTitle": {
+    "description": "Title of the confirmation before deleting a person.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "contactDeleteBody": "Their details are removed for good.",
+  "@contactDeleteBody": {
+    "description": "Body of the confirmation before deleting a person. Gender-neutral."
+  },
+  "contactDeleteConfirm": "Delete",
+  "@contactDeleteConfirm": {
+    "description": "Destructive button of the confirmation that deletes the person."
+  },
+  "contactMissingTitle": "This person isn't here anymore",
+  "@contactMissingTitle": {
+    "description": "Title shown when a person's page is opened but they no longer exist (deleted elsewhere, or a bad link)."
+  },
+  "contactMissingBody": "They may have been deleted on another device.",
+  "@contactMissingBody": {
+    "description": "Body under contactMissingTitle. Gender-neutral."
+  },
+  "contactBackToContacts": "Back to contacts",
+  "@contactBackToContacts": {
+    "description": "Button under contactMissingTitle that returns to the list."
+  },
+  "contactLaunchFailed": "Couldn't open that app.",
+  "@contactLaunchFailed": {
+    "description": "Snackbar when Call, Message, an email address or Instagram could not be opened on the device."
+  },
+  "contactNoSelectionTitle": "Pick someone",
+  "@contactNoSelectionTitle": {
+    "description": "Desktop only: title of the pane beside the Contacts list when no one is selected."
+  },
+  "contactNoSelectionBody": "Their details open here.",
+  "@contactNoSelectionBody": {
+    "description": "Desktop only: body of the pane beside the Contacts list when no one is selected."
+  },
+  "addPersonTitle": "Add someone",
+  "@addPersonTitle": {
+    "description": "Title of the form that adds a person."
+  },
+  "addPersonName": "Name",
+  "@addPersonName": {
+    "description": "Label of the name field when adding or editing a person."
+  },
+  "addPersonNameRequired": "Enter a name.",
+  "@addPersonNameRequired": {
+    "description": "Validation error under the name field when it is empty."
+  },
+  "addPersonReach": "Phone, email or Instagram",
+  "@addPersonReach": {
+    "description": "Label of the single optional field in Add someone; the app recognises which one was typed."
+  },
+  "editPersonTitle": "Edit details",
+  "@editPersonTitle": {
+    "description": "Title of the form that edits a person's details."
+  },
+  "contactLogSomething": "Log something",
+  "@contactLogSomething": {
+    "description": "Item of the ⋯ menu on a person's detail screen that opens Log something."
+  },
+  "contactMoveToProspects": "Move to prospects",
+  "@contactMoveToProspects": {
+    "description": "Item of the ⋯ menu, and the confirm button of the Change stage sheet, that makes the person a prospect again."
+  },
+  "contactMoveToCustomers": "Move to customers",
+  "@contactMoveToCustomers": {
+    "description": "Item of the ⋯ menu, and the confirm button of the Change stage sheet, that makes the person a customer."
+  },
+  "contactMoveToTeam": "Move to team",
+  "@contactMoveToTeam": {
+    "description": "Item of the ⋯ menu, and the confirm button of the Change stage sheet, that puts the person on the user's team."
+  },
+  "contactDeleteName": "Delete {name}",
+  "@contactDeleteName": {
+    "description": "Destructive item of the ⋯ menu on a person's detail screen, with their first name, e.g. 'Delete Sarah'.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "changeStageToProspect": "{name} is a prospect again",
+  "@changeStageToProspect": {
+    "description": "Title of the sheet confirming a move back to prospects, with the person's first name.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "changeStageToCustomer": "{name} is now a customer",
+  "@changeStageToCustomer": {
+    "description": "Title of the sheet confirming a move to customers, with the person's first name.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "changeStageToTeam": "{name} is now on your team",
+  "@changeStageToTeam": {
+    "description": "Title of the sheet confirming a move to the user's team, with the person's first name.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "changeStageBody": "Everything you noted stays with them.",
+  "@changeStageBody": {
+    "description": "Body of the Change stage sheet. Gender-neutral."
+  },
+  "changeStageBodyCleared": "Everything you noted stays with them. Where it stands is cleared.",
+  "@changeStageBodyCleared": {
+    "description": "Body of the Change stage sheet when a prospect with a status (Interested, Thinking about it…) leaves prospects: the status goes. 'Where it stands' is the section title of the status. Gender-neutral."
+  },
+  "logTitle": "Log something with {name}",
+  "@logTitle": {
+    "description": "Title of the form that adds an entry to a person's history, with their first name.",
+    "placeholders": { "name": { "type": "String" } }
+  },
+  "activityKindNote": "Note",
+  "@activityKindNote": {
+    "description": "Kind of history entry: something the user wants to remember."
+  },
+  "activityKindCall": "Call",
+  "@activityKindCall": {
+    "description": "Kind of history entry: a phone call with the person."
+  },
+  "activityKindMessage": "Message",
+  "@activityKindMessage": {
+    "description": "Kind of history entry: a text or DM exchanged with the person."
+  },
+  "activityKindOrder": "Order",
+  "@activityKindOrder": {
+    "description": "Kind of history entry: the person bought something."
+  },
+  "activityKindMeeting": "Meeting",
+  "@activityKindMeeting": {
+    "description": "Kind of history entry: the user met the person."
+  },
+  "activityKindStep": "Step",
+  "@activityKindStep": {
+    "description": "Kind of history entry: a workflow step the user marked done. The entry's title is the step's name."
+  },
+  "logWhen": "When",
+  "@logWhen": {
+    "description": "Label of the day field in Log something."
+  },
+  "logWhenToday": "Today, {date}",
+  "@logWhenToday": {
+    "description": "Value of the day field in Log something when it is today, e.g. 'Today, September 28'; the day format follows the locale.",
+    "placeholders": {
+      "date": { "type": "DateTime", "format": "MMMMd" }
+    }
+  },
+  "logWhat": "What happened",
+  "@logWhat": {
+    "description": "Label of the text field in Log something."
+  },
+  "logWhatRequired": "Say what happened.",
+  "@logWhatRequired": {
+    "description": "Validation error under the text field of Log something when it is empty."
+  },
+  "historyTitle": "History",
+  "@historyTitle": {
+    "description": "Section title on a person's detail screen: what happened with them, latest first."
+  },
+  "historyAdd": "Add",
+  "@historyAdd": {
+    "description": "Action of the History section header; opens Log something."
+  },
+  "historySeeAll": "See all {count}",
+  "@historySeeAll": {
+    "description": "Button under the latest history entries that shows every entry; count is the total.",
+    "placeholders": { "count": { "type": "int" } }
+  },
+  "historyEmpty": "Nothing logged yet.",
+  "@historyEmpty": {
+    "description": "The History section when it has no entry."
+  },
+  "historyLoadError": "Couldn't load the history.",
+  "@historyLoadError": {
+    "description": "The History section when it failed to load; a Try again button follows."
+  },
+  "historyBackToProspects": "Back to prospects",
+  "@historyBackToProspects": {
+    "description": "History entry recorded when the person became a prospect again."
+  },
+  "historyBecameCustomer": "Became a customer",
+  "@historyBecameCustomer": {
+    "description": "History entry recorded when the person became a customer."
+  },
+  "historyJoinedTeam": "Joined your team",
+  "@historyJoinedTeam": {
+    "description": "History entry recorded when the person joined the user's team."
+  },
+  "historyDay": "{day}",
+  "@historyDay": {
+    "description": "Day of a history entry in the current year, e.g. 'October 13'; the format follows the locale.",
+    "placeholders": {
+      "day": { "type": "DateTime", "format": "MMMMd" }
+    }
+  },
+  "historyDayWithYear": "{day}",
+  "@historyDayWithYear": {
+    "description": "Day of a history entry in an earlier year, e.g. 'October 13, 2024'; the format follows the locale.",
+    "placeholders": {
+      "day": { "type": "DateTime", "format": "yMMMMd" }
+    }
+  },
+  "historyMeta": "{day} · {kind}",
+  "@historyMeta": {
+    "description": "Line under a history entry: its day, then its kind, e.g. 'October 13 · Call'.",
+    "placeholders": {
+      "day": { "type": "String" },
+      "kind": { "type": "String" }
+    }
+  },
+  "historyDeleteTitle": "Delete this entry?",
+  "@historyDeleteTitle": {
+    "description": "Title of the confirmation before deleting a history entry."
+  },
+  "historyDeleteConfirm": "Delete",
+  "@historyDeleteConfirm": {
+    "description": "Destructive button that deletes a history entry; also the screen-reader action on an entry."
+  },
+  "nextStepTitle": "Next step",
+  "@nextStepTitle": {
+    "description": "Header of the card on a contact that shows the next thing to do with them in their workflow. Shown uppercased."
+  },
+  "nextStepProgress": "{workflow} · {index} of {total}",
+  "@nextStepProgress": {
+    "description": "Trailing text of the Next step header: the workflow's name and which step this is, e.g. 'Samples · 3 of 5'.",
+    "placeholders": {
+      "workflow": { "type": "String" },
+      "index": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "nextStepDueToday": "Due today",
+  "@nextStepDueToday": {
+    "description": "When the next step is due: today."
+  },
+  "nextStepDueTomorrow": "Due tomorrow",
+  "@nextStepDueTomorrow": {
+    "description": "When the next step is due: tomorrow."
+  },
+  "nextStepDueInDays": "Due in {days} days",
+  "@nextStepDueInDays": {
+    "description": "When the next step is due, 2 to 6 days from now.",
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "nextStepDueOn": "Due {day}",
+  "@nextStepDueOn": {
+    "description": "When the next step is due, a week or more from now, e.g. 'Due October 2'.",
+    "placeholders": {
+      "day": { "type": "DateTime", "format": "MMMMd" }
+    }
+  },
+  "nextStepLate": "{days, plural, =1{1 day late} other{{days} days late}}",
+  "@nextStepLate": {
+    "description": "The next step's due day has passed, by this many days.",
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "nextStepWithNote": "{due} — {note}",
+  "@nextStepWithNote": {
+    "description": "Second line of the next step: when it is due, then the note the user wrote on the step.",
+    "placeholders": {
+      "due": { "type": "String" },
+      "note": { "type": "String" }
+    }
+  },
+  "nextStepMarkDone": "Mark \"{step}\" done",
+  "@nextStepMarkDone": {
+    "description": "Screen-reader label of the round button that marks the next step as done.",
+    "placeholders": {
+      "step": { "type": "String" }
+    }
+  },
+  "nextStepDoneTitle": "{workflow} — done",
+  "@nextStepDoneTitle": {
+    "description": "Header of the card once every step of the workflow is done. Shown uppercased.",
+    "placeholders": {
+      "workflow": { "type": "String" }
+    }
+  },
+  "nextStepHowDidItEnd": "How did it end with {name}?",
+  "@nextStepHowDidItEnd": {
+    "description": "Title of the card once a prospect's workflow is done: asks what came of it. The name is the person's first name.",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "nextStepAllDoneProspect": "{count, plural, =1{The step is done. Their notes and history stay whatever you pick.} other{All {count} steps are done. Their notes and history stay whatever you pick.}}",
+  "@nextStepAllDoneProspect": {
+    "description": "Body of the card once a prospect's workflow is done, above 'Became a customer' and 'Not now'. 'Their' is the person; never a gendered pronoun.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "nextStepBecameCustomer": "Became a customer",
+  "@nextStepBecameCustomer": {
+    "description": "Button on the done card of a prospect: opens the move to customers."
+  },
+  "nextStepAllDoneWith": "{count, plural, =1{The step is done with {name}.} other{All {count} steps are done with {name}.}}",
+  "@nextStepAllDoneWith": {
+    "description": "Body of the card once a customer's or team member's workflow is done. The name is the person's first name.",
+    "placeholders": {
+      "count": { "type": "int" },
+      "name": { "type": "String" }
+    }
+  },
+  "nextStepFollowWith": "Follow with…",
+  "@nextStepFollowWith": {
+    "description": "Button that opens the choice of the workflow to follow next."
+  },
+  "nextStepPausedSince": "Paused since {day}",
+  "@nextStepPausedSince": {
+    "description": "Card on a paused contact: the day it was paused, e.g. 'Paused since July 12'. Above a Resume button.",
+    "placeholders": {
+      "day": { "type": "DateTime", "format": "MMMMd" }
+    }
+  },
+  "nextStepNothingPlanned": "Nothing planned",
+  "@nextStepNothingPlanned": {
+    "description": "Card on a contact who follows no workflow."
+  },
+  "nextStepLoadFailed": "Couldn't load the workflows",
+  "@nextStepLoadFailed": {
+    "description": "Error inside the Next step card when the workflows failed to load; a Try again button follows."
+  },
+  "followWithTitle": "Follow with",
+  "@followWithTitle": {
+    "description": "Label above the choice of the workflow to follow, in Change stage and Change workflow."
+  },
+  "followWithSteps": "{count, plural, =1{1 step} other{{count} steps}}",
+  "@followWithSteps": {
+    "description": "How many steps a workflow has, under its name in the choice.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "followWithSuggestedSteps": "Suggested · {steps}",
+  "@followWithSuggestedSteps": {
+    "description": "Under the stage's default workflow in the choice: 'Suggested · 4 steps'. {steps} is the step count text.",
+    "placeholders": {
+      "steps": { "type": "String" }
+    }
+  },
+  "followWithNothing": "Nothing for now",
+  "@followWithNothing": {
+    "description": "Last option of the choice: follow no workflow."
+  },
+  "changeStageWorkflowEnds": "The {workflow} workflow ends here.",
+  "@changeStageWorkflowEnds": {
+    "description": "Added to the Change stage body when the person was following a workflow.",
+    "placeholders": {
+      "workflow": { "type": "String" }
+    }
+  },
+  "changeWorkflowTitle": "Change {name}'s workflow",
+  "@changeWorkflowTitle": {
+    "description": "Title of the sheet that picks another workflow for a person. The name is their first name.",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "contactChangeWorkflow": "Change workflow",
+  "@contactChangeWorkflow": {
+    "description": "Row in a contact's More menu; the current workflow's name follows it."
+  },
+  "contactPause": "Pause — not now",
+  "@contactPause": {
+    "description": "Row in a contact's More menu: hides their next step until resumed."
+  },
+  "contactResume": "Resume",
+  "@contactResume": {
+    "description": "Row in a paused contact's More menu, and button on their Paused card: brings the next step back."
+  },
+  "contactPaused": "Paused in {month}",
+  "@contactPaused": {
+    "description": "Second line of a paused person in the contacts list, e.g. 'Paused in July'.",
+    "placeholders": {
+      "month": { "type": "DateTime", "format": "MMMM" }
+    }
+  },
+  "contactPausedNotNow": "Not now · paused in {month}",
+  "@contactPausedNotNow": {
+    "description": "Second line of a paused prospect whose status is Not now, e.g. 'Not now · paused in July'.",
+    "placeholders": {
+      "month": { "type": "DateTime", "format": "MMMM" }
+    }
+  },
+  "settingsSectionWorkflows": "Workflows",
+  "@settingsSectionWorkflows": {
+    "description": "Settings row, and the title of the screen listing the user's workflows: what they do with someone, step by step."
+  },
+  "workflowsIntro": "What you usually do with someone, step by step. Folo puts the next step on Today when it comes due.",
+  "@workflowsIntro": {
+    "description": "Intro at the top of Settings → Workflows."
+  },
+  "workflowsDefaultSteps": "Default · {steps}",
+  "@workflowsDefaultSteps": {
+    "description": "Trailing text on the row of a stage's default workflow: 'Default · 5 steps'. {steps} is the step count text (followWithSteps).",
+    "placeholders": {
+      "steps": { "type": "String" }
+    }
+  },
+  "workflowsNew": "New workflow",
+  "@workflowsNew": {
+    "description": "Button under the workflows, and the title of the dialog it opens."
+  },
+  "workflowName": "Name",
+  "@workflowName": {
+    "description": "Label of a workflow's name field, in New workflow and in the editor."
+  },
+  "workflowNameRequired": "Enter a name.",
+  "@workflowNameRequired": {
+    "description": "Error under the name field of New workflow when it is empty."
+  },
+  "workflowsNewStage": "Stage",
+  "@workflowsNewStage": {
+    "description": "Header above the stage choice in New workflow; shown in capitals."
+  },
+  "workflowsCreate": "Create",
+  "@workflowsCreate": {
+    "description": "Confirms New workflow."
+  },
+  "workflowMissingTitle": "This workflow isn't here anymore",
+  "@workflowMissingTitle": {
+    "description": "Shown when an open workflow no longer exists (deleted elsewhere, or a bad link)."
+  },
+  "workflowMissingBody": "It may have been deleted on another device.",
+  "@workflowMissingBody": {
+    "description": "Body under workflowMissingTitle."
+  },
+  "workflowBackToList": "Back to workflows",
+  "@workflowBackToList": {
+    "description": "Button under workflowMissingTitle that returns to the list."
+  },
+  "stepTitle": "Step {number}",
+  "@stepTitle": {
+    "description": "Title of the sheet editing one step of a workflow.",
+    "placeholders": {
+      "number": { "type": "int" }
+    }
+  },
+  "stepNew": "New step",
+  "@stepNew": {
+    "description": "Title of the sheet adding a step at the end of a workflow."
+  },
+  "stepLabel": "What to do",
+  "@stepLabel": {
+    "description": "Label of a step's text field: the action, e.g. 'Send the samples'."
+  },
+  "stepLabelRequired": "Enter what to do.",
+  "@stepLabelRequired": {
+    "description": "Error under stepLabel when it is empty."
+  },
+  "stepDaysAfterPrevious": "Days after the previous step",
+  "@stepDaysAfterPrevious": {
+    "description": "Label of the days field, for every step but the first."
+  },
+  "stepDaysAfterStart": "Days after starting",
+  "@stepDaysAfterStart": {
+    "description": "Label of the days field for step 1, which counts from the day the person starts the workflow."
+  },
+  "stepDaysInvalid": "Enter a number from 0 to 365.",
+  "@stepDaysInvalid": {
+    "description": "Error under the days field when it is empty or above 365."
+  },
+  "stepDueAfterPrevious": "{days, plural, =0{Comes due the same day you tick step {previous}.} =1{Comes due 1 day after you tick step {previous}.} other{Comes due {days} days after you tick step {previous}.}}",
+  "@stepDueAfterPrevious": {
+    "description": "Live hint under the days field: when this step comes due. {previous} is the number of the step before.",
+    "placeholders": {
+      "days": { "type": "int" },
+      "previous": { "type": "int" }
+    }
+  },
+  "stepDueAfterStart": "{days, plural, =0{Comes due the same day you start.} =1{Comes due 1 day after you start.} other{Comes due {days} days after you start.}}",
+  "@stepDueAfterStart": {
+    "description": "Live hint under the days field of step 1.",
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "stepNote": "Note",
+  "@stepNote": {
+    "description": "Label of a step's optional note field."
+  },
+  "stepRemove": "Remove this step",
+  "@stepRemove": {
+    "description": "Button in the step sheet. No confirmation: people on the step move on, and their history stays."
+  },
+  "workflowSteps": "Steps",
+  "@workflowSteps": {
+    "description": "Header above a workflow's steps in the editor; shown in capitals."
+  },
+  "workflowAddStep": "Add a step",
+  "@workflowAddStep": {
+    "description": "Action beside workflowSteps: adds a step at the end."
+  },
+  "workflowStepWhenYouStart": "When you start",
+  "@workflowStepWhenYouStart": {
+    "description": "Under step 1 when it is due the day the person starts the workflow."
+  },
+  "workflowStepDaysAfter": "{days, plural, =0{Same day} =1{1 day after} other{{days} days after}}",
+  "@workflowStepDaysAfter": {
+    "description": "Under a step: how long after the step before (after the start, for step 1) it comes due.",
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "workflowNoSteps": "No steps yet.",
+  "@workflowNoSteps": {
+    "description": "In place of the steps when a workflow has none."
+  },
+  "workflowDefaultFor": "{stage, select, prospect{Default for new prospects} customer{Default for new customers} other{Default for new team members}}",
+  "@workflowDefaultFor": {
+    "description": "Switch in the editor: someone new at this stage starts this workflow. {stage} is prospect, customer or team.",
+    "placeholders": {
+      "stage": { "type": "String" }
+    }
+  },
+  "workflowFooter": "Each step comes due a number of days after you tick the one before. Changes apply to everyone on this workflow — steps already done stay in their history.",
+  "@workflowFooter": {
+    "description": "Explanation under the default switch in the editor."
+  },
+  "workflowDelete": "Delete workflow",
+  "@workflowDelete": {
+    "description": "Danger row at the bottom of the editor."
+  },
+  "workflowDeleteTitle": "Delete {name}?",
+  "@workflowDeleteTitle": {
+    "description": "Title of the confirmation before deleting a workflow. {name} is the workflow's name.",
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "workflowDeleteBody": "{count, plural, =0{No one follows it.} =1{1 person follows it. They'll have nothing planned; their history stays.} other{{count} people follow it. They'll have nothing planned; their history stays.}}",
+  "@workflowDeleteBody": {
+    "description": "Body of the confirmation before deleting a workflow: how many people are on it now.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "workflowDeleteBodyUnknown": "They'll have nothing planned; their history stays.",
+  "@workflowDeleteBodyUnknown": {
+    "description": "Body of the confirmation before deleting a workflow, when the people could not be loaded to count who is on it."
+  },
+  "workflowDeleteConfirm": "Delete",
+  "@workflowDeleteConfirm": {
+    "description": "Confirms deleting a workflow."
   }
 }

@@ -12,13 +12,12 @@ import 'package:material_ui/material_ui.dart';
 /// Chrome around every signed-in screen (`docs/design/components.md` #23).
 ///
 /// Desktop: the 248px sidebar. Tablet: the same sidebar collapsed to a 72px
-/// icon rail. Mobile: nothing — there is no bottom bar until a second real
-/// destination exists, and Settings is reached from [AccountButton] in the
-/// screen's top bar instead.
+/// icon rail. Mobile: a bottom bar with the destinations, except on Settings,
+/// which is reached from [AccountButton] and has its own back button. Team and
+/// Goals join when they exist, never as placeholders.
 ///
 /// ponytail: the design moves these edges to 840px (rail/bottom bar) and 1100px
-/// (rail/sidebar); size classes are used until the bottom bar exists and the
-/// difference is visible.
+/// (rail/sidebar); size classes are used until the difference is visible.
 class AppShell extends StatelessWidget {
   const AppShell({required this.location, required this.child, super.key});
 
@@ -29,7 +28,28 @@ class AppShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = context.screenSize;
-    if (!size.usesSideNavigation) return child;
+    if (!size.usesSideNavigation) {
+      if (location.startsWith(Routes.settings)) return child;
+      final l10n = AppLocalizations.of(context);
+      return Scaffold(
+        body: child,
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: location.startsWith(Routes.contacts) ? 1 : 0,
+          onDestinationSelected: (index) =>
+              context.go(index == 0 ? Routes.today : Routes.contacts),
+          destinations: [
+            NavigationDestination(
+              icon: const Icon(Icons.wb_sunny_outlined),
+              label: l10n.navToday,
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.people_outline),
+              label: l10n.navContacts,
+            ),
+          ],
+        ),
+      );
+    }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -92,6 +112,13 @@ class _Sidebar extends ConsumerWidget {
                   selected: location == Routes.today,
                   expanded: expanded,
                   onTap: () => context.go(Routes.today),
+                ),
+                _SidebarItem(
+                  icon: const Icon(Icons.people_outline),
+                  label: l10n.navContacts,
+                  selected: location.startsWith(Routes.contacts),
+                  expanded: expanded,
+                  onTap: () => context.go(Routes.contacts),
                 ),
                 const Spacer(),
                 if (account != null)

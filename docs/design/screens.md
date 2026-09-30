@@ -30,31 +30,35 @@ screens read as one product and not as seven mockups.
 
 ## 1. Today — the home
 
-**Mobile**
+**Every size** — one column, 624px at most. Desktop keeps the sidebar and
+uses the large top bar; mobile keeps the account button and the bottom nav.
 
-TopAppBar (`MONDAY 22 SEPTEMBER` / "Good morning, Pauline") → TodayHero →
-`PRIORITY` + 3 ActionItems → `SEPTEMBER` + GoalCard + a two-up StatTile pair →
-BottomNav.
+Top bar (`TUESDAY, SEPTEMBER 29` / "Good morning, Pauline") → TodayHero →
+`PRIORITY` + the people whose workflow step is due today or late.
+
+The greeting follows the device clock: morning until noon, afternoon until
+6 pm, evening after. Without a first name it is "Good morning" alone.
 
 The hero says *"Three people are worth a message today"* — a sentence, not a
-number, so it cannot read as a quota. Below it, each ActionItem carries the reason
-it exists: "Said she would decide after her holiday — she is back today", "Her
-refill usually runs out around now", "Turns 42 tomorrow". The accent chip appears
-only on the two items a real date drives.
+number, so it cannot read as a quota. It counts everyone due, not only the
+rows shown.
 
-Everything the user needs in the first viewport: what today is, how far through it
-they are, and the first person to message. The goal is below the fold on purpose —
-it is context, not the job.
+Each ActionItem is a person: their name, then the reason it exists —
+"Send the samples · Samples, step 2 of 5". The accent chip appears only when
+the step is late ("2 days late"). The round button ticks the step, exactly as
+on the contact page; the row then leaves, or shows the next step if that one
+is due too. Tapping the row opens the person.
 
-**Desktop**
+Oldest first. Five rows on a phone or tablet, six on desktop, then
+`And 2 more waiting`, which shows the rest in place. Pull to refresh on every
+size.
 
-Sidebar → top bar (date eyebrow, `display` greeting, search, notifications,
-account avatar) → two columns: 624px left (hero, then four priority items) and
-400px right (GoalCard, stat pair, a team nudge card, "YOU TALKED TO").
+Loading is a spinner; a failed load says "Couldn't load today." with Try
+again; nobody due is "You are up to date".
 
-The extra width buys one more priority item and moves context beside the actions
-instead of below them. It is not the mobile column stretched: the right column
-exists only here.
+Goal, stats, "You talked to" and the desktop right column are gone until
+their features exist (goals, activity summaries). Nothing on Today is sample
+data.
 
 ## 2. Contacts
 
@@ -89,6 +93,27 @@ The screen answers one question: *what do I say to this person?* The next step i
 above the history because the history is memory, not homework. The app bar title
 is a back affordance, not a repeat of the name — the name is already the largest
 thing on the screen (principle #2).
+
+**`NEXT STEP`** sits between `WHERE IT STANDS` and `WHAT YOU KNOW`, on mobile and
+in the desktop pane. It follows the person's workflow, one step at a time:
+
+| State | Header | Card |
+| --- | --- | --- |
+| On a step | `NEXT STEP` · "Samples · 3 of 5" | The step as title; "Due today" / "Due in 3 days" / "2 days late", then the step's note; a round tick |
+| Done, prospect | `SAMPLES — DONE` | "How did it end with Sarah?" — `Became a customer`, `Not now` (pauses) |
+| Done, customer or team | `NEW CUSTOMER — DONE` | "All 4 steps are done with Claire." — `Follow with…` |
+| Paused | `NEXT STEP` | "Paused since July 12" — `Resume` |
+| No workflow | `NEXT STEP` | "Nothing planned" — `Follow with…` |
+| Loading / failed | `NEXT STEP` | A small spinner / "Couldn't load the workflows" — `Try again` |
+
+A tick completes the step today and waits for the server; on failure a SnackBar,
+and the card stays. There are no progress bars or streaks: the count "3 of 5"
+is where you are, not a score.
+
+The ⋯ menu adds `Change workflow` (the current one's name trailing) and
+`Pause — not now`, or `Resume` while paused. Change stage and Change workflow
+share the FOLLOW WITH block: the stage's workflows, "Nothing for now", and the
+first step's day.
 
 ## 4. Team
 
@@ -182,9 +207,16 @@ Detail frames are drawn full length where the screen scrolls.
 **Contact detail.** The order is: header, `Message` / `Call` / ⋯, then
 `WHERE IT STANDS` for prospects only (Interested / Thinking it over / Not now /
 No reply), `NEXT STEP` with the workflow name and position ("Samples · 3 of 5"),
-`WHAT YOU KNOW` (FactRows, with Edit) and `HISTORY` (with Add). On a team member,
-`WHAT YOU KNOW` holds their own why, goal, time per week, strengths and where
-they're stuck, in their words. There is no rank and no volume.
+`WHAT YOU KNOW` (FactRows, with Edit) and `HISTORY` (with Add). A team member
+also has `WHAT THEY ARE AIMING FOR` above `WHAT YOU KNOW`: their why, own goal,
+time they have, what they would love to do, strengths and where they are stuck,
+in their words. There is no rank and no volume.
+
+**Edit details** (from ⋯) is grouped as the page is: Name, then
+`WHAT THEY ARE AIMING FOR` (team only), then `WHAT YOU KNOW`. A section's own
+Edit asks only for that section's fields, titled with its name and without a
+header. Frames: `Edit details sheet — team member` (drawn full length) and
+`Edit sheet — what they are aiming for`.
 
 **When a prospect's workflow ends**, `NEXT STEP` becomes a "How did it end with
 Sarah?" card on `secondary/container` with no border. Its two choices ("Became a
@@ -216,6 +248,39 @@ Two components were added for these frames: `WorkflowStep` (number, label,
 timing) and `FactRow` (label over value, hugs its height). One token was added:
 `overlay/scrim`, black in both modes, used at 40% behind every sheet. The scrim
 was previously bound to `text/primary`, which turned light in dark mode.
+
+## 8. Settings → Workflows
+
+A row "Workflows" in its own group above Preferences. On desktop the list and
+the editor open in the Settings pane (the editor replaces the list, and its
+back arrow returns to it); elsewhere each is pushed.
+
+**List** — top bar "Workflows" → intro ("What you usually do with someone,
+step by step. Folo puts the next step on Today when it comes due.") → one
+group per stage that has workflows (PROSPECTS, CUSTOMERS, TEAM), the default
+first, each row trailing "Default · 5 steps" or "4 steps" and a chevron → a
+tonal `New workflow` button. New workflow is a dialog (a bottom sheet on a
+phone): Name, STAGE chips with Prospect picked, Cancel / Create; Create opens
+the editor on it.
+
+**Editor** — the stage as eyebrow, the name as title → Name field, saved when
+it loses focus → STEPS with `Add a step`: a numbered row per step, "When you
+start" or "3 days after", a drag handle, Move up / Move down for screen
+readers → "Default for new prospects" switch → a footer on how steps come due
+→ a red "Delete workflow" row, which asks first and says how many people
+follow it. Opened after it was deleted elsewhere: "This workflow isn't here
+anymore" and `Back to workflows`.
+
+**Step** — "Step 2" or "New step": What to do, Days after the previous step
+("Days after starting" for step 1, 0 to 365) with a live "Comes due 3 days
+after you tick step 1." hint, an optional Note, a full-width `Save`, and
+`Remove this step` centred under it, without a confirmation: people on it move
+on and their history stays. No Cancel: the sheet closes by dragging it down.
+
+Nothing is optimistic. A control is disabled while its write is in flight; a
+failure says "Couldn't save. Check your connection and try again." — inline
+in a dialog, which keeps what was typed, and as a snack bar in the editor,
+which shows the saved state again.
 
 ---
 

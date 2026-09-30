@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/theme/app_spacing.dart';
+import 'package:folo/core/ui/form_error.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
-import 'package:folo/features/auth/presentation/widgets/form_error.dart';
 import 'package:folo/features/settings/presentation/settings_action.dart';
 import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
 import 'package:folo/features/settings/presentation/widgets/settings_option.dart';

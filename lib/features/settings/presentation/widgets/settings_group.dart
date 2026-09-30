@@ -16,7 +16,12 @@ class SettingsGroup extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: ListTileTheme.merge(
         shape: const RoundedRectangleBorder(),
-        titleTextStyle: theme.textTheme.bodyLarge,
+        titleTextStyle: theme.textTheme.bodyLarge?.copyWith(
+          color: theme.colorScheme.onSurface,
+        ),
+        leadingAndTrailingTextStyle: theme.textTheme.bodyMedium?.copyWith(
+          color: FoloColors.of(context).textMuted,
+        ),
         subtitleTextStyle: theme.textTheme.bodyMedium?.copyWith(
           color: theme.colorScheme.onSurfaceVariant,
         ),

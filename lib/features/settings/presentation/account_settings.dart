@@ -1,10 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/ui/folo_dialog.dart';
+import 'package:folo/core/ui/form_error.dart';
+import 'package:folo/core/ui/labeled_field.dart';
 import 'package:folo/features/auth/data/auth_repository.dart';
 import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
 import 'package:folo/features/auth/presentation/auth_validation_copy.dart';
-import 'package:folo/features/auth/presentation/widgets/form_error.dart';
 import 'package:folo/features/settings/presentation/settings_action.dart';
 import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
 import 'package:folo/l10n/app_localizations.dart';
@@ -152,15 +153,17 @@ class _NameFormState extends State<_NameForm> {
             child: Text(material.saveButtonLabel),
           ),
         ],
-        child: TextFormField(
-          controller: _name,
-          autofocus: true,
-          validator: (value) => firstNameFieldError(l10n, value),
-          textCapitalization: TextCapitalization.words,
-          autofillHints: const [AutofillHints.givenName],
-          textInputAction: TextInputAction.done,
-          onFieldSubmitted: (_) => _submit(),
-          decoration: InputDecoration(labelText: l10n.authFirstNameLabel),
+        child: LabeledField(
+          label: l10n.authFirstNameLabel,
+          child: TextFormField(
+            controller: _name,
+            autofocus: true,
+            validator: (value) => firstNameFieldError(l10n, value),
+            textCapitalization: TextCapitalization.words,
+            autofillHints: const [AutofillHints.givenName],
+            textInputAction: TextInputAction.done,
+            onFieldSubmitted: (_) => _submit(),
+          ),
         ),
       ),
     );

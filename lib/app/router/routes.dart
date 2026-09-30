@@ -3,6 +3,16 @@ abstract final class Routes {
   static const String today = '/';
   static const String todayName = 'today';
 
+  static const String contacts = '/contacts';
+  static const String contactsName = 'contacts';
+
+  /// One person, nested under [contacts] so back returns to the list.
+  static const String contactSegment = ':id';
+  static const String contactName = 'contact';
+
+  static String contactLocation(String id) =>
+      '$contacts/${Uri.encodeComponent(id)}';
+
   static const String settings = '/settings';
   static const String settingsName = 'settings';
 
@@ -20,6 +30,17 @@ abstract final class Routes {
   static const String settingsAppearance =
       '$settings/$settingsAppearanceSegment';
   static const String settingsAppearanceName = 'settingsAppearance';
+
+  static const String settingsWorkflowsSegment = 'workflows';
+  static const String settingsWorkflows = '$settings/$settingsWorkflowsSegment';
+  static const String settingsWorkflowsName = 'settingsWorkflows';
+
+  /// One workflow, nested under [settingsWorkflows] so back returns to it.
+  static const String settingsWorkflowSegment = ':id';
+  static const String settingsWorkflowName = 'settingsWorkflow';
+
+  static String settingsWorkflowLocation(String id) =>
+      '$settingsWorkflows/${Uri.encodeComponent(id)}';
 
   static const String welcome = '/welcome';
   static const String welcomeName = 'welcome';
