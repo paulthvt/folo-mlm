@@ -172,7 +172,84 @@ the official flat `G` from developers.google.com/identity instead
 `Choose a new password` has no back button: it is reached by a deep link, so
 there is no previous screen to return to.
 
-## 7. Settings → Workflows
+## 7. Contacts, stages & workflows
+
+Added 2026-09-28 for [#53](https://github.com/paulthvt/folo-mlm/issues/53).
+Section `Contacts, stages & workflows` on both pages. It supersedes the filter
+chips of §2 and the detail layout of §3.
+
+One person moves **prospect → customer → team**, one stage at a time, and their
+history follows them. Each stage has workflows: ordered steps, each due N days
+after the previous one is ticked. The next step of a person's workflow is what
+Today suggests.
+
+| Frame | Size |
+| --- | --- |
+| Contacts — mobile (stages) | 390 × 844 |
+| Contact detail — customer | 390 × 1107 |
+| Contact detail — prospect | 390 × 1239 |
+| Contact detail — team member | 390 × 1371 |
+| Contact detail — prospect, workflow done | 390 × 1275 |
+| Change stage sheet — mobile | 390 × 844 |
+| Add someone sheet — mobile | 390 × 844 |
+| Contact actions sheet — mobile | 390 × 844 |
+| Log something sheet — mobile | 390 × 844 |
+| Settings / Workflows — mobile | 390 × 844 |
+| Settings / Workflow editor — mobile | 390 × 844 |
+| Edit step sheet — mobile | 390 × 844 |
+| Contacts — desktop (stages) | 1440 × 900 |
+
+Detail frames are drawn full length where the screen scrolls.
+
+**Contacts.** Filters are the stages (`Everyone` / `Prospects` / `Customers` /
+`Team`). The stage is a neutral chip on each row. Grouping by need stays.
+
+**Contact detail.** The order is: header, `Message` / `Call` / ⋯, then
+`WHERE IT STANDS` for prospects only (Interested / Thinking it over / Not now /
+No reply), `NEXT STEP` with the workflow name and position ("Samples · 3 of 5"),
+`WHAT YOU KNOW` (FactRows, with Edit) and `HISTORY` (with Add). A team member
+also has `WHAT THEY ARE AIMING FOR` above `WHAT YOU KNOW`: their why, own goal,
+time they have, what they would love to do, strengths and where they are stuck,
+in their words. There is no rank and no volume.
+
+**Edit details** (from ⋯) is grouped as the page is: Name, then
+`WHAT THEY ARE AIMING FOR` (team only), then `WHAT YOU KNOW`. A section's own
+Edit asks only for that section's fields, titled with its name and without a
+header. Frames: `Edit details sheet — team member` (drawn full length) and
+`Edit sheet — what they are aiming for`.
+
+**When a prospect's workflow ends**, `NEXT STEP` becomes a "How did it end with
+Sarah?" card on `secondary/container` with no border. Its two choices ("Became a
+customer" / "Not now") are Text buttons, so they cannot be mistaken for the
+Message / Call pair above. This is the only place Folo prompts a stage change.
+Customer → team is never prompted: moving someone to the team is always the
+user's own idea, from ⋯.
+
+**⋯ holds every other action**: Log something, Move to customers, Move to team,
+Change workflow, Pause — not now, Edit details, Delete. Delete is the only red
+item. `HISTORY → Add` opens the same Log something sheet (note / call / message /
+order / meeting, date, text). Ticking a step writes its own history entry.
+
+**Workflows have one version.** Everyone on a workflow follows its current
+steps. Done steps are history, with the label copied at tick time. Changing a
+step's days recalculates the due date from the last tick. Removing the current
+step moves the person to the next one. A step inserted before the current one is
+skipped. A rename applies at once.
+
+**Settings → Workflows** lists workflows by stage, with a default per stage. The
+editor is a list of WorkflowSteps, and each one opens the Edit step sheet (what
+to do, days after the previous step, note).
+
+**Desktop** reuses the §2 split: stage filters in the list column, and the
+detail pane holds `NEXT STEP` + `HISTORY` on the left and `WHAT YOU KNOW` on the
+right.
+
+Two components were added for these frames: `WorkflowStep` (number, label,
+timing) and `FactRow` (label over value, hugs its height). One token was added:
+`overlay/scrim`, black in both modes, used at 40% behind every sheet. The scrim
+was previously bound to `text/primary`, which turned light in dark mode.
+
+## 8. Settings → Workflows
 
 A row "Workflows" in its own group above Preferences. On desktop the list and
 the editor open in the Settings pane (the editor replaces the list, and its
@@ -225,9 +302,8 @@ set of values to keep in sync. Three things are worth looking at specifically:
 
 ## What these screens deliberately do not have
 
-No onboarding, no settings, no add/edit forms, no notification centre, no
-analytics view, no team performance comparison, no gamification of any kind. Each
-would need either a product decision or a feature that does not exist yet
+No onboarding, no notification centre, no analytics view, no team performance
+comparison, no gamification of any kind. Each would need either a product decision or a feature that does not exist yet
 (CLAUDE.md: don't scaffold for later).
 
 The screens are a design artefact. Implementation order, routing and state are not
