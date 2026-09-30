@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
 import 'package:loomia/features/contacts/data/activity_repository.dart';
 import 'package:loomia/features/contacts/domain/activity.dart';
+import 'package:loomia/features/contacts/presentation/people_controller.dart';
 
 /// One person's history, fetched when their page opens and dropped when it
 /// closes. Keyed by person id: ids are uuids, so no account ever reads another
@@ -29,6 +31,7 @@ class HistoryController extends AsyncNotifier<List<Activity>> {
   Future<void> add(ActivityDraft draft) async {
     final activity = await _repository.add(personId, draft);
     _change((entries) => [...entries, activity]);
+    _reloadBook();
   }
 
   /// Gone at once, deleted behind. A failure puts it back and rethrows.
@@ -42,6 +45,13 @@ class HistoryController extends AsyncNotifier<List<Activity>> {
       );
       rethrow;
     }
+    _reloadBook();
+  }
+
+  /// Last contact is the server's answer: the book re-reads it.
+  void _reloadBook() {
+    if (!ref.mounted) return;
+    ref.invalidate(peopleProvider(ref.read(accountProvider)?.email));
   }
 
   void _change(List<Activity> Function(List<Activity> entries) change) {

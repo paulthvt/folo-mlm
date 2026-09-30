@@ -43,6 +43,7 @@ class Person {
     this.pausedAt,
     this.currentStepId,
     this.dueOn,
+    this.lastContactOn,
   }) : assert(
          prospectStatus == null || stage == Stage.prospect,
          'Only prospects have a status',
@@ -98,6 +99,10 @@ class Person {
   /// Null while paused, with no workflow, or done. Read-only.
   final DateTime? dueOn;
 
+  /// The server's answer (`last_contact_on`): the latest day anything was
+  /// logged with them, stage changes aside. Local midnight. Read-only.
+  final DateTime? lastContactOn;
+
   Person withStatus(ProspectStatus? status) => Person(
     id: id,
     name: name,
@@ -122,6 +127,7 @@ class Person {
     pausedAt: pausedAt,
     currentStepId: currentStepId,
     dueOn: dueOn,
+    lastContactOn: lastContactOn,
   );
 }
 

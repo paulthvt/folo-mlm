@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:loomia/features/contacts/data/people_repository.dart';
+import 'package:loomia/features/contacts/domain/activity.dart';
 import 'package:loomia/features/contacts/domain/people_failure.dart';
 import 'package:loomia/features/contacts/domain/person.dart';
 import 'package:loomia/features/workflows/domain/workflow.dart';
@@ -36,7 +37,18 @@ class FakePeopleRepository implements PeopleRepository {
   /// them: every person returned gets them from here, as the database would.
   List<Workflow> workflows = FakeWorkflowRepository.samples();
 
-  Person _served(Person person) => withServerFields(person, workflows);
+  Person _served(Person person) {
+    final served = withServerFields(person, workflows);
+    final history = activities;
+    if (history == null) return served;
+    // As last_contact_on: the latest entry that is not a stage change.
+    final days = [
+      for (final entry in history.store)
+        if (entry.personId == person.id && entry.kind != ActivityKind.stage)
+          entry.happenedOn,
+    ]..sort();
+    return withLastContact(served, days.lastOrNull);
+  }
 
   var _next = 0;
 
