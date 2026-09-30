@@ -121,6 +121,7 @@ class _ColourSheet extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        _Group('brand', [_Swatch('brand/base', colors.brand)]),
         _Group('surface', [
           _Swatch('surface/canvas', scheme.surface, ink: scheme.onSurface),
           _Swatch(

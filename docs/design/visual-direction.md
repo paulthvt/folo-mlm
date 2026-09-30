@@ -1,6 +1,7 @@
 # Visual direction — three explorations
 
-Status: **locked** (2026-09-22) — Direction B, palette **N1 Forest → Olive**,
+Status: **locked** (2026-09-22) — Direction B, palette **N1 Forest → Olive**, replaced 2026-09-30 by the
+Loomia palette **L1 Ocre pale** (design-system.md §1),
 circular avatars, light and dark fully specified. The built system lives in
 [design-system.md](design-system.md), [components.md](components.md),
 [responsive-design.md](responsive-design.md) and [screens.md](screens.md). This

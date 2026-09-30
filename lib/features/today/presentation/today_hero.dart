@@ -1,3 +1,4 @@
+import 'package:loomia/app/theme/app_colors.dart';
 import 'package:loomia/app/theme/app_spacing.dart';
 import 'package:loomia/app/theme/app_typography.dart';
 import 'package:material_ui/material_ui.dart';
@@ -18,7 +19,7 @@ class TodayHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final quiet = scheme.onPrimary.withValues(alpha: 0.78);
+    final quiet = scheme.onPrimary.withValues(alpha: AppColors.quietOnPrimary);
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
