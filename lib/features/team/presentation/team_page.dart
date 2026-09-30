@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loomia/app/shell/app_shell.dart';
 import 'package:loomia/app/theme/app_colors.dart';
 import 'package:loomia/app/theme/app_spacing.dart';
 import 'package:loomia/app/theme/app_typography.dart';
@@ -8,8 +9,12 @@ import 'package:loomia/core/ui/empty_state.dart';
 import 'package:loomia/core/ui/loomia_avatar.dart';
 import 'package:loomia/core/ui/loomia_chip.dart';
 import 'package:loomia/core/ui/loomia_top_bar.dart';
+import 'package:loomia/core/ui/pick_day.dart';
 import 'package:loomia/core/ui/section_header.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
 import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/contacts_page.dart';
+import 'package:loomia/features/contacts/presentation/people_controller.dart';
 import 'package:loomia/features/contacts/presentation/people_copy.dart';
 import 'package:loomia/features/workflows/domain/progress.dart';
 import 'package:loomia/l10n/app_localizations.dart';
@@ -26,6 +31,31 @@ String joinedLabel(AppLocalizations l10n, DateTime since, DateTime today) {
     <= 56 && final days => l10n.teamJoinedWeeksAgo(days ~/ 7),
     _ => l10n.teamJoinedIn(local),
   };
+}
+
+/// The team, read from the book the Contacts tab already holds.
+class TeamPage extends ConsumerWidget {
+  const TeamPage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final book = peopleProvider(ref.watch(accountProvider)?.email);
+    return TeamView(
+      people: ref.watch(book),
+      today: today(),
+      // With a sidebar, Settings is its account block instead.
+      accountAction: context.screenSize.usesSideNavigation
+          ? IconButton(
+              onPressed: () => refreshPeople(context, ref),
+              tooltip: AppLocalizations.of(context).contactsRefresh,
+              icon: const Icon(Icons.refresh_rounded),
+            )
+          : const AccountButton(),
+      onOpen: (person) => openContact(context, person.id),
+      onRetry: () => ref.invalidate(book),
+      onRefresh: () => refreshPeople(context, ref),
+    );
+  }
 }
 
 /// Who on the team might need the user, never who is performing

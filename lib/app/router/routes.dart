@@ -20,6 +20,9 @@ abstract final class Routes {
   static String contactWorkflowLocation(String id) =>
       '${contactLocation(id)}/$contactWorkflowSegment';
 
+  static const String team = '/team';
+  static const String teamName = 'team';
+
   static const String settings = '/settings';
   static const String settingsName = 'settings';
 

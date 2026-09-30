@@ -14,8 +14,8 @@ import 'package:material_ui/material_ui.dart';
 ///
 /// Desktop: the 248px sidebar. Tablet: the same sidebar collapsed to a 72px
 /// icon rail. Mobile: a bottom bar with the destinations, except on Settings,
-/// which is reached from [AccountButton] and has its own back button. Team and
-/// Goals join when they exist, never as placeholders.
+/// which is reached from [AccountButton] and has its own back button. Goals
+/// joins when it exists, never as a placeholder.
 ///
 /// ponytail: the design moves these edges to 840px (rail/bottom bar) and 1100px
 /// (rail/sidebar); size classes are used until the difference is visible.
@@ -32,12 +32,18 @@ class AppShell extends StatelessWidget {
     if (!size.usesSideNavigation) {
       if (location.startsWith(Routes.settings)) return child;
       final l10n = AppLocalizations.of(context);
+      const tabs = [Routes.today, Routes.contacts, Routes.team];
+      final selected = tabs.lastIndexWhere(
+        (path) => path == Routes.today
+            ? location == Routes.today
+            : location.startsWith(path),
+      );
       return Scaffold(
         body: child,
         bottomNavigationBar: NavigationBar(
-          selectedIndex: location.startsWith(Routes.contacts) ? 1 : 0,
-          onDestinationSelected: (index) =>
-              context.go(index == 0 ? Routes.today : Routes.contacts),
+          // A pushed page outside the tabs keeps Today marked, as before.
+          selectedIndex: selected < 0 ? 0 : selected,
+          onDestinationSelected: (index) => context.go(tabs[index]),
           destinations: [
             NavigationDestination(
               icon: const Icon(Icons.wb_sunny_outlined),
@@ -46,6 +52,10 @@ class AppShell extends StatelessWidget {
             NavigationDestination(
               icon: const Icon(Icons.people_outline),
               label: l10n.navContacts,
+            ),
+            NavigationDestination(
+              icon: const Icon(Icons.diversity_3_outlined),
+              label: l10n.navTeam,
             ),
           ],
         ),
@@ -121,6 +131,13 @@ class _Sidebar extends ConsumerWidget {
                   selected: location.startsWith(Routes.contacts),
                   expanded: expanded,
                   onTap: () => context.go(Routes.contacts),
+                ),
+                _SidebarItem(
+                  icon: const Icon(Icons.diversity_3_outlined),
+                  label: l10n.navTeam,
+                  selected: location.startsWith(Routes.team),
+                  expanded: expanded,
+                  onTap: () => context.go(Routes.team),
                 ),
                 const Spacer(),
                 if (account != null)

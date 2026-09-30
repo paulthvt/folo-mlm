@@ -3,10 +3,14 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:loomia/app/theme/app_theme.dart';
 import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/contact_page.dart';
 import 'package:loomia/features/team/presentation/team_page.dart';
 import 'package:loomia/l10n/app_localizations.dart';
 import 'package:loomia/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
+
+import '../../app/app_harness.dart';
+import '../contacts/fake_people_repository.dart';
 
 final _today = DateTime(2026, 9, 30);
 
@@ -169,5 +173,24 @@ void main() {
     await _pump(tester, const AsyncLoading());
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
+
+  testWidgets('in the app: a team member opens their contact page', (
+    tester,
+  ) async {
+    await pumpLoomia(
+      tester,
+      size: const Size(390, 844),
+      people: FakePeopleRepository([
+        _person('p1', 'Bruno Keller', Stage.team, DateTime.utc(2026, 9, 9)),
+      ]),
+    );
+    await tester.tap(find.text('Team'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Bruno Keller'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ContactPage), findsOneWidget);
   });
 }

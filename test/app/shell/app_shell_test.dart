@@ -4,6 +4,7 @@ import 'package:loomia/features/contacts/domain/person.dart';
 import 'package:loomia/features/contacts/presentation/contact_list.dart';
 import 'package:loomia/features/contacts/presentation/contact_page.dart';
 import 'package:loomia/features/settings/presentation/settings_page.dart';
+import 'package:loomia/features/team/presentation/team_page.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../features/contacts/fake_people_repository.dart';
@@ -108,5 +109,27 @@ void main() {
 
     expect(find.byType(ContactList), findsOneWidget);
     expect(find.byType(NavigationBar), findsNothing);
+  });
+
+  testWidgets('mobile: Team is the third tab and opens the team', (
+    tester,
+  ) async {
+    await pumpLoomia(tester, size: const Size(390, 844));
+
+    await tester.tap(find.text('Team'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(TeamPage), findsOneWidget);
+    final bar = tester.widget<NavigationBar>(find.byType(NavigationBar));
+    expect(bar.selectedIndex, 2);
+  });
+
+  testWidgets('desktop: the sidebar opens the team', (tester) async {
+    await pumpLoomia(tester, size: const Size(1440, 900));
+
+    await tester.tap(find.text('Team'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(TeamPage), findsOneWidget);
   });
 }
