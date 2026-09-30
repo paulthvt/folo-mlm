@@ -153,7 +153,11 @@ class ContactPane extends ConsumerWidget {
     if (context.screenSize.isDesktop) {
       context.go(Routes.contacts);
     } else {
+      // Removed once the page is off screen: a removal during the pop would
+      // rebuild the outgoing page without them.
+      final leaving = ModalRoute.of(context);
       backOr(context, Routes.contacts);
+      await leaving?.completed;
     }
     try {
       await controller.remove(id);

@@ -183,6 +183,44 @@ void main() {
     expect(people.store.containsKey('p1'), isFalse);
   });
 
+  testWidgets('delete never shows the missing state while leaving', (
+    tester,
+  ) async {
+    await openMarie(tester);
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete Marie'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
+    // Every frame of the pop, not just the settled one.
+    do {
+      await tester.pump(const Duration(milliseconds: 16));
+      expect(find.text("This person isn't here anymore"), findsNothing);
+    } while (tester.binding.hasScheduledFrame);
+
+    expect(find.byType(ContactList), findsOneWidget);
+    expect(people.store.containsKey('p1'), isFalse);
+  });
+
+  testWidgets('delete from a deep link replaces the page and deletes', (
+    tester,
+  ) async {
+    final container = await pumpFolo(tester, size: _phone, people: people);
+    container.read(routerProvider).go(Routes.contactLocation('p1'));
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Delete Marie'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(FilledButton, 'Delete'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(ContactList), findsOneWidget);
+    expect(people.store.containsKey('p1'), isFalse);
+  });
+
   testWidgets('a failed delete says so and keeps the person', (tester) async {
     await openMarie(tester);
     people.failWith = PeopleFailure.unknown;
