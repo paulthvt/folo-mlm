@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:loomia/app/router/routes.dart';
 import 'package:loomia/app/theme/app_spacing.dart';
 import 'package:loomia/core/ui/form_error.dart';
+import 'package:loomia/core/ui/loomia_wordmark.dart';
 import 'package:loomia/features/auth/data/auth_repository.dart';
 import 'package:loomia/features/auth/domain/auth_failure.dart';
 import 'package:loomia/features/auth/presentation/auth_failure_copy.dart';
@@ -53,9 +54,10 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           spacing: AppSpacing.ms,
           children: [
-            // ponytail: the wordmark is set type until there is a real logo —
-            // that is its own issue.
-            Text('Loomia', style: text.displaySmall),
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: LoomiaWordmark(style: text.displaySmall!),
+            ),
             Text(l10n.authWelcomeHeadline, style: text.titleLarge),
             Text(l10n.authWelcomeBody, style: text.bodyMedium),
           ],

@@ -111,6 +111,14 @@ Open the PNGs and check them before committing — `--update-goldens` accepts
 whatever renders. When the PR's CI fails on a golden, the diff images are in the
 run's `golden-failures` artifact.
 
+### App icons
+
+Every launcher icon, the favicon and the web icons are rendered from one
+geometry by `tool/brand/icons.sh` (needs `rsvg-convert`). Android 8.0+ draws the
+same mark as a vector, `drawable/ic_launcher_foreground.xml`; the in-app
+wordmark paints it in `lib/core/ui/loomia_wordmark.dart`. Change all three
+together — the source is Figma `07 — Loomia logo`, E5b.
+
 ## Translations
 
 English lives in `lib/l10n/app_en.arb` and is the source of truth. Every other

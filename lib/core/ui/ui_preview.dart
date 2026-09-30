@@ -11,6 +11,7 @@ import 'package:loomia/core/ui/loomia_avatar.dart';
 import 'package:loomia/core/ui/loomia_chip.dart';
 import 'package:loomia/core/ui/loomia_progress_bar.dart';
 import 'package:loomia/core/ui/loomia_top_bar.dart';
+import 'package:loomia/core/ui/loomia_wordmark.dart';
 import 'package:loomia/core/ui/section_header.dart';
 import 'package:loomia/core/ui/stat_tile.dart';
 import 'package:loomia/l10n/app_localizations.dart';
@@ -46,6 +47,16 @@ class _Gallery extends StatelessWidget {
       padding: const EdgeInsets.all(AppSpacing.md),
       children: [
         const LoomiaTopBar(eyebrow: 'Monday 22 September', title: 'Components'),
+        const SectionHeader(title: 'Wordmark'),
+        Wrap(
+          spacing: AppSpacing.lg,
+          crossAxisAlignment: WrapCrossAlignment.end,
+          children: [
+            LoomiaWordmark(style: Theme.of(context).textTheme.displaySmall!),
+            LoomiaWordmark(style: Theme.of(context).textTheme.headlineSmall!),
+          ],
+        ),
+        const SizedBox(height: AppSpacing.lg),
         const SectionHeader(title: 'Avatar'),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
