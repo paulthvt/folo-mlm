@@ -12,6 +12,7 @@ import 'package:folo/features/auth/presentation/welcome_page.dart';
 import 'package:folo/features/contacts/presentation/contact_page.dart';
 import 'package:folo/features/contacts/presentation/contacts_page.dart';
 import 'package:folo/features/contacts/presentation/import_contacts_page.dart';
+import 'package:folo/features/contacts/presentation/workflow_timeline_page.dart';
 import 'package:folo/features/onboarding/presentation/first_run_page.dart';
 import 'package:folo/features/settings/presentation/settings_page.dart';
 import 'package:folo/features/today/presentation/today_page.dart';
@@ -74,6 +75,17 @@ final routerProvider = Provider<GoRouter>((ref) {
                       state,
                       state.pathParameters['id'],
                     ),
+                    routes: [
+                      GoRoute(
+                        path: Routes.contactWorkflowSegment,
+                        name: Routes.contactWorkflowName,
+                        pageBuilder: (context, state) => _workflowPage(
+                          context,
+                          state,
+                          state.pathParameters['id']!,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -214,4 +226,17 @@ Page<void> _contactsPage(
     name: state.name,
     child: id == null ? const ContactsPage() : ContactPage(id: id),
   );
+}
+
+/// A person's whole workflow: in the pane on desktop, like [_contactsPage];
+/// elsewhere pushed above the person.
+Page<void> _workflowPage(BuildContext context, GoRouterState state, String id) {
+  final child = WorkflowTimelinePage(id: id);
+  return context.screenSize.isDesktop
+      ? NoTransitionPage<void>(
+          key: state.pageKey,
+          name: state.name,
+          child: child,
+        )
+      : MaterialPage<void>(key: state.pageKey, name: state.name, child: child);
 }

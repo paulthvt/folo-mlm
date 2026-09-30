@@ -10,6 +10,7 @@ class ActivityItem extends StatelessWidget {
     required this.title,
     required this.meta,
     this.showRailLine = true,
+    this.dimmed = false,
     super.key,
   });
 
@@ -20,6 +21,9 @@ class ActivityItem extends StatelessWidget {
 
   /// Off on the last item in a list.
   final bool showRailLine;
+
+  /// Greyed, for what is behind: a workflow's steps before the current one.
+  final bool dimmed;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +45,7 @@ class ActivityItem extends StatelessWidget {
                   width: AppSpacing.sm,
                   height: AppSpacing.sm,
                   decoration: BoxDecoration(
-                    color: folo.borderStrong,
+                    color: dimmed ? folo.borderSubtle : folo.borderStrong,
                     shape: BoxShape.circle,
                   ),
                 ),
@@ -64,14 +68,16 @@ class ActivityItem extends StatelessWidget {
                   Text(
                     title,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onSurface,
+                      color: dimmed
+                          ? folo.textDisabled
+                          : theme.colorScheme.onSurface,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
                     meta,
                     style: AppTypography.caption.copyWith(
-                      color: folo.textMuted,
+                      color: dimmed ? folo.textDisabled : folo.textMuted,
                     ),
                   ),
                 ],

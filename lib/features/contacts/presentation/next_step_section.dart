@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:folo/app/router/routes.dart';
 import 'package:folo/app/theme/app_colors.dart';
 import 'package:folo/app/theme/app_spacing.dart';
 import 'package:folo/core/ui/action_item.dart';
@@ -17,6 +18,7 @@ import 'package:folo/features/workflows/domain/progress.dart';
 import 'package:folo/features/workflows/domain/workflow.dart';
 import 'package:folo/features/workflows/presentation/workflows_controller.dart';
 import 'package:folo/l10n/app_localizations.dart';
+import 'package:go_router/go_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// `NEXT STEP` on a contact: what to do next in their workflow, or what comes
@@ -58,12 +60,15 @@ class _NextStepSectionState extends ConsumerState<NextStepSection> {
       );
     }
 
+    final workflow = findWorkflow(list ?? const [], person.place?.workflowId);
     return NextStepCard(
       person: person,
-      progress: progressOf(
-        person,
-        findWorkflow(list ?? const [], person.place?.workflowId),
-      ),
+      progress: progressOf(person, workflow),
+      onOpen: workflow == null
+          ? null
+          : () => unawaited(
+              context.push(Routes.contactWorkflowLocation(person.id)),
+            ),
       today: today(),
       busy: _busy,
       onTick: (step) => unawaited(
@@ -116,6 +121,7 @@ class NextStepCard extends StatelessWidget {
     required this.onNotNow,
     required this.onFollowWith,
     required this.onBecameCustomer,
+    this.onOpen,
     this.busy = false,
     super.key,
   });
@@ -132,6 +138,9 @@ class NextStepCard extends StatelessWidget {
   final VoidCallback onNotNow;
   final VoidCallback onFollowWith;
   final VoidCallback onBecameCustomer;
+
+  /// Opens the whole workflow; null with none to show.
+  final VoidCallback? onOpen;
 
   /// A write is in flight: no tick, buttons disabled.
   final bool busy;
@@ -150,6 +159,7 @@ class NextStepCard extends StatelessWidget {
     return switch (progress) {
       final OnStep on => _step(l10n, on),
       Done(:final workflow) when person.stage == Stage.prospect => _Panel(
+        onOpen: onOpen,
         header: l10n.nextStepDoneTitle(workflow.name),
         title: l10n.nextStepHowDidItEnd(name),
         body: l10n.nextStepAllDoneProspect(workflow.steps.length),
@@ -165,11 +175,13 @@ class NextStepCard extends StatelessWidget {
         ],
       ),
       Done(:final workflow) => _Panel(
+        onOpen: onOpen,
         header: l10n.nextStepDoneTitle(workflow.name),
         body: l10n.nextStepAllDoneWith(workflow.steps.length, name),
         actions: [followWith],
       ),
       Paused(:final since) => _Panel(
+        onOpen: onOpen,
         header: l10n.nextStepTitle,
         body: l10n.nextStepPausedSince(since.toLocal()),
         actions: [
@@ -207,6 +219,7 @@ class NextStepCard extends StatelessWidget {
             final note? => l10n.nextStepWithNote(due, note),
             null => due,
           },
+          onOpen: onOpen,
           onResolve: busy ? null : () => onTick(on),
           resolveLabel: l10n.nextStepMarkDone(on.step.label),
         ),
@@ -222,9 +235,11 @@ class _Panel extends StatelessWidget {
     required this.actions,
     this.title,
     this.body,
+    this.onOpen,
   });
 
   final String header;
+  final VoidCallback? onOpen;
   final String? title;
   final String? body;
   final List<Widget> actions;
@@ -241,27 +256,31 @@ class _Panel extends StatelessWidget {
         SectionHeader(title: header),
         Card(
           margin: EdgeInsets.zero,
-          child: Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: AppSpacing.sm,
-              children: [
-                if (heading != null)
-                  Text(heading, style: theme.textTheme.titleMedium),
-                if (text != null)
-                  Text(
-                    text,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: FoloColors.of(context).textMuted,
+          clipBehavior: Clip.antiAlias,
+          child: InkWell(
+            onTap: onOpen,
+            child: Padding(
+              padding: const EdgeInsets.all(AppSpacing.md),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                spacing: AppSpacing.sm,
+                children: [
+                  if (heading != null)
+                    Text(heading, style: theme.textTheme.titleMedium),
+                  if (text != null)
+                    Text(
+                      text,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: FoloColors.of(context).textMuted,
+                      ),
                     ),
+                  Wrap(
+                    spacing: AppSpacing.sm,
+                    runSpacing: AppSpacing.sm,
+                    children: actions,
                   ),
-                Wrap(
-                  spacing: AppSpacing.sm,
-                  runSpacing: AppSpacing.sm,
-                  children: actions,
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

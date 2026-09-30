@@ -867,6 +867,43 @@
   "@nextStepNothingPlanned": {
     "description": "Card on a contact who follows no workflow."
   },
+  "workflowTimelineStep": "{name} · Step {index} of {total}",
+  "@workflowTimelineStep": {
+    "description": "Eyebrow of a person's workflow timeline while they are on a step. name is the person's name.",
+    "placeholders": {
+      "name": {"type": "String"},
+      "index": {"type": "int"},
+      "total": {"type": "int"}
+    }
+  },
+  "workflowTimelineDone": "{name} · Finished",
+  "@workflowTimelineDone": {
+    "description": "Eyebrow of a person's workflow timeline once every step is done. name is the person's name.",
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "workflowTimelineDaysLater": "{days, plural, =0{Right away} =1{1 day later} other{{days} days later}}",
+  "@workflowTimelineDaysLater": {
+    "description": "Under a step of the workflow timeline: how long after the previous step it comes.",
+    "placeholders": {
+      "days": {"type": "int"}
+    }
+  },
+  "workflowTimelineGoneBody": "{name} doesn't follow a workflow anymore.",
+  "@workflowTimelineGoneBody": {
+    "description": "On a person's workflow timeline when they were taken off it elsewhere. name is their first name.",
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
+  "workflowTimelineBackTo": "Back to {name}",
+  "@workflowTimelineBackTo": {
+    "description": "Button under workflowTimelineGoneBody, back to the person. name is their first name.",
+    "placeholders": {
+      "name": {"type": "String"}
+    }
+  },
   "nextStepLoadFailed": "Couldn't load the workflows",
   "@nextStepLoadFailed": {
     "description": "Error inside the Next step card when the workflows failed to load; a Try again button follows."
