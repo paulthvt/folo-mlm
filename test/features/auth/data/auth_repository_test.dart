@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/auth/domain/auth_change.dart';
-import 'package:folo/features/auth/domain/auth_failure.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/auth/domain/auth_change.dart';
+import 'package:loomia/features/auth/domain/auth_failure.dart';
 
 import '../fake_auth_repository.dart';
 

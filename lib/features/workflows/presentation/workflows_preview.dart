@@ -1,16 +1,16 @@
 import 'package:flutter/widget_previews.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/features/settings/presentation/widgets/settings_scroll.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
-import 'package:folo/features/workflows/presentation/step_sheet.dart';
-import 'package:folo/features/workflows/presentation/workflow_editor.dart';
-import 'package:folo/features/workflows/presentation/workflows_settings.dart';
-import 'package:folo/l10n/app_localizations.dart';
-import 'package:folo/l10n/localizations_delegates.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/features/settings/presentation/widgets/settings_scroll.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/workflows/presentation/step_sheet.dart';
+import 'package:loomia/features/workflows/presentation/workflow_editor.dart';
+import 'package:loomia/features/workflows/presentation/workflows_settings.dart';
+import 'package:loomia/l10n/app_localizations.dart';
+import 'package:loomia/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Settings → Workflows, for `flutter widget-preview start`.

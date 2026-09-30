@@ -1,5 +1,5 @@
-import 'package:folo/features/contacts/data/phone_contacts_repository.dart';
-import 'package:folo/features/contacts/domain/phone_contact.dart';
+import 'package:loomia/features/contacts/data/phone_contacts_repository.dart';
+import 'package:loomia/features/contacts/domain/phone_contact.dart';
 
 /// A phone whose address book is [contacts]; null is access refused.
 class FakePhoneContactsRepository implements PhoneContactsRepository {

@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/core/ui/form_error.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/change_workflow_sheet.dart';
+import 'package:loomia/core/ui/form_error.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/change_workflow_sheet.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../fake_people_repository.dart';

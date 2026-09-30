@@ -1,15 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/ui/folo_dialog.dart';
-import 'package:folo/core/ui/form_error.dart';
-import 'package:folo/core/ui/labeled_field.dart';
-import 'package:folo/core/ui/section_header.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/people_controller.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/ui/form_error.dart';
+import 'package:loomia/core/ui/labeled_field.dart';
+import 'package:loomia/core/ui/loomia_dialog.dart';
+import 'package:loomia/core/ui/section_header.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/people_controller.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Which fields the form asks for: all of them from ⋯, or one section's from
@@ -31,7 +31,7 @@ Future<void> showEditPerson(
   BuildContext context,
   Person person, [
   EditPart part = EditPart.everything,
-]) => FoloDialog.show<void>(context, (_) => _EditPersonForm(person, part));
+]) => LoomiaDialog.show<void>(context, (_) => _EditPersonForm(person, part));
 
 // In the detail page's order.
 enum _Field {
@@ -222,7 +222,7 @@ class _EditPersonFormState extends ConsumerState<_EditPersonForm> {
 
     return Form(
       key: _form,
-      child: FoloDialog(
+      child: LoomiaDialog(
         title: switch (widget.part) {
           EditPart.everything => l10n.editPersonTitle,
           EditPart.aims => l10n.contactSectionAimingFor,

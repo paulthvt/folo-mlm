@@ -1,6 +1,6 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_typography.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_typography.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The four sizes the product uses (`docs/design/components.md` #4): inline in a
@@ -25,8 +25,12 @@ enum AvatarSize {
 
 /// A person. Circular at every size, initials never a generic glyph
 /// (design principle #2).
-class FoloAvatar extends StatelessWidget {
-  const FoloAvatar({required this.name, this.size = AvatarSize.row, super.key});
+class LoomiaAvatar extends StatelessWidget {
+  const LoomiaAvatar({
+    required this.name,
+    this.size = AvatarSize.row,
+    super.key,
+  });
 
   final String name;
   final AvatarSize size;
@@ -68,15 +72,15 @@ class FoloAvatar extends StatelessWidget {
 
 /// A group of people as one object — team contexts only, never a row about one
 /// person (#5).
-class FoloAvatarGroup extends StatelessWidget {
-  const FoloAvatarGroup({required this.names, this.max = 3, super.key});
+class LoomiaAvatarGroup extends StatelessWidget {
+  const LoomiaAvatarGroup({required this.names, this.max = 3, super.key});
 
   final List<String> names;
   final int max;
 
   @override
   Widget build(BuildContext context) {
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final shown = names.take(max).toList();
     final overflow = names.length - shown.length;
     const overlap = 10.0;
@@ -97,11 +101,11 @@ class FoloAvatarGroup extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(ring),
                 decoration: BoxDecoration(
-                  color: folo.surfaceDefault,
+                  color: colors.surfaceDefault,
                   shape: BoxShape.circle,
                 ),
                 child: ExcludeSemantics(
-                  child: FoloAvatar(name: name, size: AvatarSize.dense),
+                  child: LoomiaAvatar(name: name, size: AvatarSize.dense),
                 ),
               ),
             ),
@@ -113,12 +117,12 @@ class FoloAvatarGroup extends StatelessWidget {
                 vertical: AppSpacing.xs,
               ),
               decoration: BoxDecoration(
-                color: folo.surfaceSunken,
+                color: colors.surfaceSunken,
                 borderRadius: BorderRadius.circular(AppRadii.pill),
               ),
               child: Text(
                 '+$overflow',
-                style: AppTypography.caption.copyWith(color: folo.textMuted),
+                style: AppTypography.caption.copyWith(color: colors.textMuted),
               ),
             ),
         ],

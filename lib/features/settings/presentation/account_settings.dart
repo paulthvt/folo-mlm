@@ -1,14 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/ui/folo_dialog.dart';
-import 'package:folo/core/ui/form_error.dart';
-import 'package:folo/core/ui/labeled_field.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
-import 'package:folo/features/auth/presentation/auth_validation_copy.dart';
-import 'package:folo/features/settings/presentation/settings_action.dart';
-import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/ui/form_error.dart';
+import 'package:loomia/core/ui/labeled_field.dart';
+import 'package:loomia/core/ui/loomia_dialog.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/auth/presentation/auth_failure_copy.dart';
+import 'package:loomia/features/auth/presentation/auth_validation_copy.dart';
+import 'package:loomia/features/settings/presentation/settings_action.dart';
+import 'package:loomia/features/settings/presentation/widgets/settings_group.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Name, email, delete account.
@@ -25,7 +25,7 @@ class AccountSettings extends ConsumerStatefulWidget {
 class _AccountSettingsState extends ConsumerState<AccountSettings>
     with SettingsAction {
   Future<void> _editName(String current) async {
-    final name = await FoloDialog.show<String>(
+    final name = await LoomiaDialog.show<String>(
       context,
       (context) => _NameForm(initial: current),
     );
@@ -35,10 +35,10 @@ class _AccountSettingsState extends ConsumerState<AccountSettings>
   }
 
   Future<void> _confirmDelete() async {
-    final confirmed = await FoloDialog.show<bool>(context, (context) {
+    final confirmed = await LoomiaDialog.show<bool>(context, (context) {
       final l10n = AppLocalizations.of(context);
       final scheme = Theme.of(context).colorScheme;
-      return FoloDialog(
+      return LoomiaDialog(
         title: l10n.settingsDeleteTitle,
         body: l10n.settingsDeleteBody,
         actions: [
@@ -141,7 +141,7 @@ class _NameFormState extends State<_NameForm> {
     final material = MaterialLocalizations.of(context);
     return Form(
       key: _form,
-      child: FoloDialog(
+      child: LoomiaDialog(
         title: l10n.settingsEditNameTitle,
         actions: [
           TextButton(

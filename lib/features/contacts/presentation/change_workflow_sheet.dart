@@ -1,25 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/ui/folo_dialog.dart';
-import 'package:folo/core/ui/form_error.dart';
-import 'package:folo/core/ui/pick_day.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/follow_with_field.dart';
-import 'package:folo/features/contacts/presentation/people_controller.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/features/workflows/domain/progress.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
-import 'package:folo/features/workflows/presentation/workflows_controller.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/ui/form_error.dart';
+import 'package:loomia/core/ui/loomia_dialog.dart';
+import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/follow_with_field.dart';
+import 'package:loomia/features/contacts/presentation/people_controller.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/features/workflows/domain/progress.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/workflows/presentation/workflows_controller.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Picks what [person] follows next: a sheet on mobile, a dialog elsewhere.
 /// Saving starts the picked workflow from its first step, even the current
 /// one. Closes once saved.
 Future<void> showChangeWorkflow(BuildContext context, Person person) =>
-    FoloDialog.show<void>(context, (_) => _ChangeWorkflow(person));
+    LoomiaDialog.show<void>(context, (_) => _ChangeWorkflow(person));
 
 class _ChangeWorkflow extends ConsumerStatefulWidget {
   const _ChangeWorkflow(this.person);
@@ -81,7 +81,7 @@ class _ChangeWorkflowState extends ConsumerState<_ChangeWorkflow> {
     final now = today();
     final follow = _follow(workflows, now);
 
-    return FoloDialog(
+    return LoomiaDialog(
       title: l10n.changeWorkflowTitle(firstName(widget.person)),
       actions: [
         TextButton(

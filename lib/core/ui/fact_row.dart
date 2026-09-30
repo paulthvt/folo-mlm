@@ -1,6 +1,6 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_typography.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_typography.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// One thing known about a person: a label over its value. The value wraps and
@@ -22,7 +22,7 @@ class FactRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final content = Padding(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
       child: Column(
@@ -31,12 +31,12 @@ class FactRow extends StatelessWidget {
         children: [
           Text(
             label,
-            style: AppTypography.caption.copyWith(color: folo.textMuted),
+            style: AppTypography.caption.copyWith(color: colors.textMuted),
           ),
           Text(
             value,
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: onTap == null ? null : folo.primaryText,
+              color: onTap == null ? null : colors.primaryText,
             ),
           ),
         ],

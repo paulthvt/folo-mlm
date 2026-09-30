@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/core/ui/action_item.dart';
-import 'package:folo/core/ui/pick_day.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/contact_page.dart';
-import 'package:folo/features/today/presentation/today_page.dart';
-import 'package:folo/features/workflows/domain/progress.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/core/ui/action_item.dart';
+import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/contact_page.dart';
+import 'package:loomia/features/today/presentation/today_page.dart';
+import 'package:loomia/features/workflows/domain/progress.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../app/app_harness.dart';
@@ -53,7 +53,7 @@ void main() {
       _on('p3', 'Chloé', at: 2),
       _on('p4', 'Dora', pausedAt: DateTime.utc(2026, 9)),
     ]);
-    await pumpFolo(tester, size: _phone, people: people);
+    await pumpLoomia(tester, size: _phone, people: people);
 
     expect(find.text('2 people are worth a message today'), findsOneWidget);
     expect(find.text('Anna'), findsOneWidget);
@@ -75,7 +75,7 @@ void main() {
 
   testWidgets('a tick sends completeStep and the row leaves', (tester) async {
     final people = FakePeopleRepository([_on('p1', 'Anna')]);
-    await pumpFolo(tester, size: _phone, people: people);
+    await pumpLoomia(tester, size: _phone, people: people);
 
     await tester.tap(find.byTooltip(_markFirst));
     await tester.pumpAndSettle();
@@ -90,7 +90,7 @@ void main() {
     tester,
   ) async {
     final people = FakePeopleRepository([_on('p1', 'Anna')]);
-    await pumpFolo(tester, size: _phone, people: people);
+    await pumpLoomia(tester, size: _phone, people: people);
     people.gate = Completer<void>();
 
     await tester.tap(find.byTooltip(_markFirst));
@@ -108,7 +108,7 @@ void main() {
 
   testWidgets('a failed tick says so and keeps the row', (tester) async {
     final people = FakePeopleRepository([_on('p1', 'Anna')]);
-    await pumpFolo(tester, size: _phone, people: people);
+    await pumpLoomia(tester, size: _phone, people: people);
     people.failWith = PeopleFailure.network;
 
     await tester.tap(find.byTooltip(_markFirst));
@@ -128,7 +128,7 @@ void main() {
     final people = FakePeopleRepository([
       for (var i = 1; i <= 7; i++) _on('p$i', 'Person $i'),
     ]);
-    await pumpFolo(tester, size: _tallPhone, people: people);
+    await pumpLoomia(tester, size: _tallPhone, people: people);
 
     expect(find.byType(ActionItem), findsNWidgets(5));
     expect(find.text('7 people are worth a message today'), findsOneWidget);
@@ -143,7 +143,7 @@ void main() {
     final people = FakePeopleRepository([
       for (var i = 1; i <= 7; i++) _on('p$i', 'Person $i'),
     ]);
-    await pumpFolo(tester, size: _tallDesktop, people: people);
+    await pumpLoomia(tester, size: _tallDesktop, people: people);
 
     expect(find.byType(ActionItem), findsNWidgets(6));
     expect(find.text('And one more waiting'), findsOneWidget);
@@ -152,7 +152,7 @@ void main() {
   testWidgets('a spinner while loading, then the rows', (tester) async {
     final workflows = FakeWorkflowRepository(FakeWorkflowRepository.samples())
       ..gate = Completer<void>();
-    await pumpFolo(
+    await pumpLoomia(
       tester,
       size: _phone,
       people: FakePeopleRepository([_on('p1', 'Anna')]),
@@ -171,7 +171,7 @@ void main() {
   testWidgets('a failed load says so; Try again loads Today', (tester) async {
     final people = FakePeopleRepository([_on('p1', 'Anna')])
       ..failWith = PeopleFailure.network;
-    await pumpFolo(tester, size: _phone, people: people);
+    await pumpLoomia(tester, size: _phone, people: people);
 
     expect(find.text("Couldn't load today."), findsOneWidget);
     people.failWith = null;
@@ -182,14 +182,14 @@ void main() {
   });
 
   testWidgets('nobody due: up to date', (tester) async {
-    await pumpFolo(tester, size: _phone, people: FakePeopleRepository());
+    await pumpLoomia(tester, size: _phone, people: FakePeopleRepository());
 
     expect(find.text('You are up to date'), findsOneWidget);
   });
 
   testWidgets('a failed refresh keeps the rows', (tester) async {
     final people = FakePeopleRepository([_on('p1', 'Anna')]);
-    await pumpFolo(tester, size: _phone, people: people);
+    await pumpLoomia(tester, size: _phone, people: people);
     people.failWith = PeopleFailure.network;
 
     await tester.fling(find.text('Anna'), const Offset(0, 400), 1000);
@@ -205,7 +205,7 @@ void main() {
 
   testWidgets('tapping a row opens the person', (tester) async {
     final people = FakePeopleRepository([_on('p1', 'Anna')]);
-    await pumpFolo(tester, size: _phone, people: people);
+    await pumpLoomia(tester, size: _phone, people: people);
 
     await tester.tap(find.text('Anna'));
     await tester.pumpAndSettle();
@@ -216,7 +216,7 @@ void main() {
   testWidgets('desktop refresh button reloads the book', (tester) async {
     final people = FakePeopleRepository([_on('p1', 'Anna')])
       ..failWith = PeopleFailure.network;
-    await pumpFolo(tester, size: _tallDesktop, people: people);
+    await pumpLoomia(tester, size: _tallDesktop, people: people);
 
     expect(find.text("Couldn't load today."), findsOneWidget);
     people.failWith = null;

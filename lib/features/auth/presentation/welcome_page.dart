@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/ui/form_error.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/auth/domain/auth_failure.dart';
-import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
-import 'package:folo/features/auth/presentation/widgets/auth_scaffold.dart';
-import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/ui/form_error.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/auth/domain/auth_failure.dart';
+import 'package:loomia/features/auth/presentation/auth_failure_copy.dart';
+import 'package:loomia/features/auth/presentation/widgets/auth_scaffold.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The signed-out root: the promise, and the three ways in.
@@ -55,7 +55,7 @@ class _WelcomePageState extends ConsumerState<WelcomePage> {
           children: [
             // ponytail: the wordmark is set type until there is a real logo —
             // that is its own issue.
-            Text('Folo', style: text.displaySmall),
+            Text('Loomia', style: text.displaySmall),
             Text(l10n.authWelcomeHeadline, style: text.titleLarge),
             Text(l10n.authWelcomeBody, style: text.bodyMedium),
           ],

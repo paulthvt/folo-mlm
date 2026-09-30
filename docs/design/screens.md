@@ -2,7 +2,7 @@
 
 Five product screens plus the six auth screens, built in Figma from component
 instances only. Light on page `04 — Screens (Light)`, the same frames in dark on
-`05 — Screens (Dark)` (clones bound to the `Dark` mode of `Folo/color`, so they
+`05 — Screens (Dark)` (clones bound to the `Dark` mode of `Loomia/color`, so they
 are not a second design to maintain).
 
 | Frame | Size | Page |
@@ -231,7 +231,7 @@ header. Frames: `Edit details sheet — team member` (drawn full length) and
 **When a prospect's workflow ends**, `NEXT STEP` becomes a "How did it end with
 Sarah?" card on `secondary/container` with no border. Its two choices ("Became a
 customer" / "Not now") are Text buttons, so they cannot be mistaken for the
-Message / Call pair above. This is the only place Folo prompts a stage change.
+Message / Call pair above. This is the only place Loomia prompts a stage change.
 Customer → team is never prompted: moving someone to the team is always the
 user's own idea, from ⋯.
 
@@ -266,7 +266,7 @@ the editor open in the Settings pane (the editor replaces the list, and its
 back arrow returns to it); elsewhere each is pushed.
 
 **List** — top bar "Workflows" → intro ("What you usually do with someone,
-step by step. Folo puts the next step on Today when it comes due.") → one
+step by step. Loomia puts the next step on Today when it comes due.") → one
 group per stage that has workflows (PROSPECTS, CUSTOMERS, TEAM), the default
 first, each row trailing "Default · 5 steps" or "4 steps" and a chevron → a
 tonal `New workflow` button. New workflow is a dialog (a bottom sheet on a
@@ -309,10 +309,10 @@ on any device. Importing stays in Contacts: an icon in the toolbar and a text
 button under the empty state, both absent on the web.
 
 **Import** is a full screen: the eyebrow counts what is ticked, a search, a
-reassurance line (`Only the people you tick are saved in Folo.`), then one row
+reassurance line (`Only the people you tick are saved in Loomia.`), then one row
 per phone contact with a checkbox. Nobody starts ticked. Someone who looks
-already in Folo — the same number (last nine digits), or with no number the
-same name — says `Already in Folo` instead of their number, and can still be
+already in Loomia — the same number (last nine digits), or with no number the
+same name — says `Already in Loomia` instead of their number, and can still be
 ticked: never merged. The footer picks one stage for everyone and imports them
 in a single write, all on that stage's default workflow.
 

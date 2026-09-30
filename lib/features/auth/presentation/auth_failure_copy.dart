@@ -1,5 +1,5 @@
-import 'package:folo/features/auth/domain/auth_failure.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/features/auth/domain/auth_failure.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 
 /// User-facing copy for a failure. Lives in `presentation` because it is copy,
 /// not logic.

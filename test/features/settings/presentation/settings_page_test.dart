@@ -1,13 +1,13 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/app.dart';
-import 'package:folo/app/shell/app_shell.dart';
-import 'package:folo/core/layout/breakpoints.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/auth/domain/account.dart';
-import 'package:folo/features/auth/domain/auth_failure.dart';
-import 'package:folo/features/settings/presentation/settings_page.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/app.dart';
+import 'package:loomia/app/shell/app_shell.dart';
+import 'package:loomia/core/layout/breakpoints.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/auth/domain/account.dart';
+import 'package:loomia/features/auth/domain/auth_failure.dart';
+import 'package:loomia/features/settings/presentation/settings_page.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../auth/fake_auth_repository.dart';
@@ -28,7 +28,7 @@ Future<FakeAuthRepository> _openSettings(
   await tester.pumpWidget(
     ProviderScope(
       overrides: [authRepositoryProvider.overrideWithValue(fake)],
-      child: const FoloApp(),
+      child: const LoomiaApp(),
     ),
   );
   await tester.pumpAndSettle();
@@ -126,7 +126,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(
-      find.text('We could not reach Folo. Check your connection.'),
+      find.text('We could not reach Loomia. Check your connection.'),
       findsOneWidget,
     );
     expect(find.byType(SettingsPage), findsOneWidget);

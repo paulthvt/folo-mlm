@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/router/app_router.dart';
+import 'package:loomia/app/router/app_router.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../app/app_harness.dart';
@@ -18,7 +18,7 @@ Future<ProviderContainer> openWorkflows(
   FakePeopleRepository? people,
   bool settle = true,
 }) async {
-  final container = await pumpFolo(
+  final container = await pumpLoomia(
     tester,
     size: size,
     workflows: workflows,

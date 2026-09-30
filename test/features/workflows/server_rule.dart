@@ -1,6 +1,6 @@
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/workflows/domain/progress.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/workflows/domain/progress.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
 
 /// The one Dart copy of the server's rule (`current_step_id`, `due_on`,
 /// `complete_step`), so fakes answer like the database. Test-only: the app

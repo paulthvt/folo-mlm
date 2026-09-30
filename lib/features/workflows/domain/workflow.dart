@@ -1,4 +1,4 @@
-import 'package:folo/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
 
 /// One step: [days] after the previous one (after the start, for the first).
 class WorkflowStep {

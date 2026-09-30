@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
 
 List<WorkflowStep> _at(List<num> positions) => [
   for (final position in positions)

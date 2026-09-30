@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/router/app_router.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/core/ui/pick_day.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/contact_details.dart';
-import 'package:folo/features/contacts/presentation/workflow_timeline_page.dart';
+import 'package:loomia/app/router/app_router.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/contact_details.dart';
+import 'package:loomia/features/contacts/presentation/workflow_timeline_page.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../app/app_harness.dart';
@@ -43,7 +43,7 @@ void main() {
     Size size = _phone,
   }) async {
     people = FakePeopleRepository([marie]);
-    final container = await pumpFolo(tester, size: size, people: people);
+    final container = await pumpLoomia(tester, size: size, people: people);
     container.read(routerProvider).go(Routes.contactWorkflowLocation('p1'));
     await tester.pumpAndSettle();
   }
@@ -115,7 +115,7 @@ void main() {
     tester,
   ) async {
     people = FakePeopleRepository([_marie(position: 1)]);
-    final container = await pumpFolo(tester, size: _phone, people: people);
+    final container = await pumpLoomia(tester, size: _phone, people: people);
     container.read(routerProvider).go(Routes.contacts);
     await tester.pumpAndSettle();
     await tester.tap(find.text('Marie Dupont'));
@@ -133,7 +133,7 @@ void main() {
 
   testWidgets('no workflow: the card opens nothing', (tester) async {
     people = FakePeopleRepository([_marie()]);
-    final container = await pumpFolo(tester, size: _phone, people: people);
+    final container = await pumpLoomia(tester, size: _phone, people: people);
     container.read(routerProvider).go(Routes.contactLocation('p1'));
     await tester.pumpAndSettle();
 

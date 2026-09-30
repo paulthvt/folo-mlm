@@ -1,22 +1,21 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/app/shell/app_shell.dart';
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/core/layout/breakpoints.dart';
-import 'package:folo/core/ui/empty_state.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/presentation/add_person_sheet.dart';
-import 'package:folo/features/contacts/presentation/contact_list.dart';
-import 'package:folo/features/contacts/presentation/people_controller.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/features/workflows/presentation/workflows_controller.dart';
-import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/app/shell/app_shell.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/core/layout/breakpoints.dart';
+import 'package:loomia/core/ui/empty_state.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/presentation/add_person_sheet.dart';
+import 'package:loomia/features/contacts/presentation/contact_list.dart';
+import 'package:loomia/features/contacts/presentation/people_controller.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/features/workflows/presentation/workflows_controller.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Opens a person: beside the list on desktop (the URL changes, the list keeps
@@ -151,7 +150,7 @@ class _ContactsPageState extends ConsumerState<ContactsPage> {
                     decoration: BoxDecoration(
                       border: Border(
                         right: BorderSide(
-                          color: FoloColors.of(context).borderSubtle,
+                          color: LoomiaColors.of(context).borderSubtle,
                         ),
                       ),
                     ),

@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/workflows/data/workflow_repository.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/workflows/data/workflow_repository.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
 
 /// In-memory workflows that record calls, and fail or stall on demand.
 class FakeWorkflowRepository implements WorkflowRepository {

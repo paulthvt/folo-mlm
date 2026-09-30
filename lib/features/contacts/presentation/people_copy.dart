@@ -1,8 +1,8 @@
-import 'package:folo/features/contacts/domain/activity.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/workflows/domain/progress.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/features/contacts/domain/activity.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/workflows/domain/progress.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 
 /// User-facing words for the contacts domain. Copy, so it lives in
 /// presentation.

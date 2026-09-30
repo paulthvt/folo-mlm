@@ -75,7 +75,7 @@ jobs:
       - name: Build web
         run: |
           flutter build web --release
-          (cd build/web && zip -qr "../../folo-web.zip" .)
+          (cd build/web && zip -qr "../../loomia-web.zip" .)
 
       - name: Attach artifacts to the release
         env:
@@ -84,5 +84,5 @@ jobs:
         run: |
           gh release upload "$TAG" \
             build/app/outputs/flutter-apk/app-release.apk \
-            folo-web.zip \
+            loomia-web.zip \
             --clobber

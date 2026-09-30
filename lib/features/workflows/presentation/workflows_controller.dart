@@ -1,11 +1,11 @@
 import 'dart:ui' show PlatformDispatcher;
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/core/ui/pick_day.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/contacts/presentation/people_controller.dart';
-import 'package:folo/features/workflows/data/workflow_repository.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
+import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/contacts/presentation/people_controller.dart';
+import 'package:loomia/features/workflows/data/workflow_repository.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
 
 /// One account's workflows, `workflowsProvider(account?.email)`. Keyed by
 /// account for the same reason as `peopleProvider`. Every load asks the server

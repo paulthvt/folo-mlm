@@ -3,9 +3,9 @@
 Direction B (Fresh & Energetic) with the **N1 Forest → Olive** analogous palette,
 circular avatars, light and dark fully specified.
 
-Source of truth: [Figma → Folo](https://www.figma.com/design/spz2vsSK8gbt1Ok2rW1sdQ/Folo),
-page `Foundations`. Variables: collection `Folo/color` (modes `Light` / `Dark`)
-and `Folo/scale` (single mode). Every fill, stroke, padding and radius in every
+Source of truth: [Figma → Loomia](https://www.figma.com/design/spz2vsSK8gbt1Ok2rW1sdQ/Loomia),
+page `Foundations`. Variables: collection `Loomia/color` (modes `Light` / `Dark`)
+and `Loomia/scale` (single mode). Every fill, stroke, padding and radius in every
 component and screen is **bound to a variable** — no literal colour exists
 outside the two exploration pages.
 
@@ -133,7 +133,7 @@ Numerals use `FontFeature.tabularFigures()` in Flutter. Goal numerals cap at
 
 ## 3. Spacing
 
-A 4-based scale, in `Folo/scale`:
+A 4-based scale, in `Loomia/scale`:
 
 | Token | px | Typical use |
 | --- | --- | --- |
@@ -298,11 +298,11 @@ counting numbers up, filling a ring, confetti, a streak (principle #5).
 Implemented. One file per concern, no new dependency, no codegen.
 
 - `lib/app/theme/app_colors.dart` — `AppColors.light` / `AppColors.dark`
-  (`ColorScheme`) plus `FoloColors`, a `ThemeExtension` holding the tokens
+  (`ColorScheme`) plus `LoomiaColors`, a `ThemeExtension` holding the tokens
   `ColorScheme` has no slot for (`surface/default|sunken|raised|disabled`,
   `border/subtle|strong`, `text/muted|disabled`, `primary/hover|text|muted`,
   `secondary/text|track`, `accent/*`, success / warning / info, `state/focus`).
-  Read it with `FoloColors.of(context)`. A palette change is then one file.
+  Read it with `LoomiaColors.of(context)`. A palette change is then one file.
 - `lib/app/theme/app_spacing.dart` — `AppSpacing` (`xs` 4 → `xxxl` 64) and
   `AppRadii` (`sm` 8 → `pill`).
 - `lib/app/theme/app_typography.dart` — `fontFamily = 'PlusJakartaSans'`, all 13
@@ -326,9 +326,9 @@ Accent, success, warning and info deliberately do **not** occupy
 reach a date-only colour by accident.
 
 Widgets read `Theme.of(context)` and the extension only. The Figma variable name
-`primary/container` maps to `FoloColors.primaryContainer`; the code syntax for
-every variable is already set in Figma (`WEB`: `var(--folo-primary-container)`,
-`ANDROID`/`iOS`: `FoloColors.primaryContainer`), so Dev Mode reads the same names
+`primary/container` maps to `LoomiaColors.primaryContainer`; the code syntax for
+every variable is already set in Figma (`WEB`: `var(--loomia-primary-container)`,
+`ANDROID`/`iOS`: `LoomiaColors.primaryContainer`), so Dev Mode reads the same names
 the code uses.
 
 ---

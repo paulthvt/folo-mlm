@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/app.dart';
-import 'package:folo/core/layout/breakpoints.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/today/presentation/today_page.dart';
+import 'package:loomia/app/app.dart';
+import 'package:loomia/core/layout/breakpoints.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/today/presentation/today_page.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'app/app_harness.dart';
@@ -19,7 +19,7 @@ void main() {
         overrides: [
           authRepositoryProvider.overrideWithValue(FakeAuthRepository()),
         ],
-        child: const FoloApp(),
+        child: const LoomiaApp(),
       ),
     );
     await tester.pumpAndSettle();
@@ -28,7 +28,7 @@ void main() {
   });
 
   testWidgets('a restored session lands on Today', (tester) async {
-    await pumpFolo(tester, size: const Size(390, 844));
+    await pumpLoomia(tester, size: const Size(390, 844));
 
     expect(find.byType(TodayPage), findsOneWidget);
     // "Good morning, Pauline", or afternoon, or evening: the clock decides.

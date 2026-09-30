@@ -1,11 +1,11 @@
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/layout/breakpoints.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/layout/breakpoints.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// ConfirmDialog (`docs/design/components.md` #19), and any short form: a
 /// bottom sheet on mobile, a centred dialog elsewhere, the same internals.
-class FoloDialog extends StatelessWidget {
-  const FoloDialog({
+class LoomiaDialog extends StatelessWidget {
+  const LoomiaDialog({
     required this.title,
     required this.actions,
     this.body,
@@ -111,9 +111,9 @@ Future<bool> confirmDestructive(
   required String action,
   String? body,
 }) async {
-  final confirmed = await FoloDialog.show<bool>(context, (context) {
+  final confirmed = await LoomiaDialog.show<bool>(context, (context) {
     final scheme = Theme.of(context).colorScheme;
-    return FoloDialog(
+    return LoomiaDialog(
       title: title,
       body: body,
       actions: [

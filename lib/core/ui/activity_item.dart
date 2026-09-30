@@ -1,6 +1,6 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_typography.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_typography.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// One thing that happened (`docs/design/components.md` #14). Reads as memory,
@@ -28,7 +28,7 @@ class ActivityItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
 
     // IntrinsicHeight so the rail can fill the height of the text beside it
     // without either side knowing the other's size.
@@ -45,13 +45,13 @@ class ActivityItem extends StatelessWidget {
                   width: AppSpacing.sm,
                   height: AppSpacing.sm,
                   decoration: BoxDecoration(
-                    color: dimmed ? folo.borderSubtle : folo.borderStrong,
+                    color: dimmed ? colors.borderSubtle : colors.borderStrong,
                     shape: BoxShape.circle,
                   ),
                 ),
                 if (showRailLine)
                   Expanded(
-                    child: Container(width: 2, color: folo.borderSubtle),
+                    child: Container(width: 2, color: colors.borderSubtle),
                   ),
               ],
             ),
@@ -69,7 +69,7 @@ class ActivityItem extends StatelessWidget {
                     title,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: dimmed
-                          ? folo.textDisabled
+                          ? colors.textDisabled
                           : theme.colorScheme.onSurface,
                     ),
                   ),
@@ -77,7 +77,7 @@ class ActivityItem extends StatelessWidget {
                   Text(
                     meta,
                     style: AppTypography.caption.copyWith(
-                      color: dimmed ? folo.textDisabled : folo.textMuted,
+                      color: dimmed ? colors.textDisabled : colors.textMuted,
                     ),
                   ),
                 ],

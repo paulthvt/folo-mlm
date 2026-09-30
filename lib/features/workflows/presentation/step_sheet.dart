@@ -2,15 +2,15 @@ import 'dart:async';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/ui/folo_dialog.dart';
-import 'package:folo/core/ui/form_error.dart';
-import 'package:folo/core/ui/labeled_field.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
-import 'package:folo/features/workflows/presentation/workflows_controller.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/ui/form_error.dart';
+import 'package:loomia/core/ui/labeled_field.dart';
+import 'package:loomia/core/ui/loomia_dialog.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/workflows/presentation/workflows_controller.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// What the step sheet saves: a trimmed label, 0 to 365 days, and a trimmed
@@ -26,7 +26,7 @@ Future<void> showStepSheet(
   int? index,
 }) {
   final step = index == null ? null : workflow.steps[index];
-  return FoloDialog.show<void>(
+  return LoomiaDialog.show<void>(
     context,
     (_) => Consumer(
       builder: (context, ref, _) => StepForm(
@@ -155,7 +155,7 @@ class _StepFormState extends State<StepForm> {
 
     return Form(
       key: _form,
-      child: FoloDialog(
+      child: LoomiaDialog(
         title: widget.step == null
             ? l10n.stepNew
             : l10n.stepTitle(widget.number),

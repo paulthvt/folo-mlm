@@ -1,26 +1,26 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/router/back.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/core/ui/contact_row.dart';
-import 'package:folo/core/ui/empty_state.dart';
-import 'package:folo/core/ui/folo_top_bar.dart';
-import 'package:folo/core/ui/pick_day.dart';
-import 'package:folo/core/ui/section_header.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/contacts/data/phone_contacts_repository.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/domain/phone_contact.dart';
-import 'package:folo/features/contacts/domain/search_key.dart';
-import 'package:folo/features/contacts/presentation/people_controller.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
-import 'package:folo/features/workflows/presentation/workflows_controller.dart';
-import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loomia/app/router/back.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/core/ui/contact_row.dart';
+import 'package:loomia/core/ui/empty_state.dart';
+import 'package:loomia/core/ui/loomia_top_bar.dart';
+import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/core/ui/section_header.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/contacts/data/phone_contacts_repository.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/domain/phone_contact.dart';
+import 'package:loomia/features/contacts/domain/search_key.dart';
+import 'package:loomia/features/contacts/presentation/people_controller.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/workflows/presentation/workflows_controller.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The phone's address book; null when access is refused.
@@ -30,7 +30,7 @@ final phoneContactsProvider = FutureProvider.autoDispose<List<PhoneContact>?>(
 );
 
 /// Pick people from the phone's contacts and bring them in, all at one stage.
-/// Nobody is ticked to start with; someone who looks already in Folo says so,
+/// Nobody is ticked to start with; someone who looks already in Loomia says so,
 /// and can still be ticked.
 class ImportContactsPage extends ConsumerStatefulWidget {
   const ImportContactsPage({super.key});
@@ -163,7 +163,7 @@ class _ImportContactsPageState extends ConsumerState<ImportContactsPage> {
     List<Person> people,
   ) {
     final query = searchKey(_query);
-    final muted = FoloColors.of(context).textMuted;
+    final muted = LoomiaColors.of(context).textMuted;
     final count = _selected.length;
 
     return Column(
@@ -173,7 +173,7 @@ class _ImportContactsPageState extends ConsumerState<ImportContactsPage> {
           child: ListView(
             padding: const EdgeInsets.all(AppSpacing.md),
             children: [
-              FoloTopBar(
+              LoomiaTopBar(
                 eyebrow: l10n.importSelected(count),
                 title: l10n.importTitle,
               ),

@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/core/ui/action_item.dart';
-import 'package:folo/core/ui/folo_avatar.dart';
-import 'package:folo/core/ui/labeled_field.dart';
-import 'package:folo/l10n/app_localizations.dart';
-import 'package:folo/l10n/localizations_delegates.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/core/ui/action_item.dart';
+import 'package:loomia/core/ui/labeled_field.dart';
+import 'package:loomia/core/ui/loomia_avatar.dart';
+import 'package:loomia/l10n/app_localizations.dart';
+import 'package:loomia/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
 
 Future<void> pump(WidgetTester tester, Widget child) {
@@ -21,16 +21,16 @@ Future<void> pump(WidgetTester tester, Widget child) {
 
 void main() {
   test('initials come from the first and last word', () {
-    expect(FoloAvatar.initialsOf('Marie Dupont'), 'MD');
-    expect(FoloAvatar.initialsOf('Jean-Luc De La Fontaine'), 'JF');
-    expect(FoloAvatar.initialsOf('  amina  '), 'A');
-    expect(FoloAvatar.initialsOf(''), '?');
+    expect(LoomiaAvatar.initialsOf('Marie Dupont'), 'MD');
+    expect(LoomiaAvatar.initialsOf('Jean-Luc De La Fontaine'), 'JF');
+    expect(LoomiaAvatar.initialsOf('  amina  '), 'A');
+    expect(LoomiaAvatar.initialsOf(''), '?');
   });
 
   testWidgets('avatars are circular at every size', (tester) async {
     for (final size in AvatarSize.values) {
-      await pump(tester, FoloAvatar(name: 'Marie Dupont', size: size));
-      final box = tester.getSize(find.byType(FoloAvatar));
+      await pump(tester, LoomiaAvatar(name: 'Marie Dupont', size: size));
+      final box = tester.getSize(find.byType(LoomiaAvatar));
       expect(box.width, size.diameter);
       expect(box.height, size.diameter);
       final decoration =

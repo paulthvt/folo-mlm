@@ -1,4 +1,4 @@
-import 'package:folo/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// A form field under its label, as in Figma: the label sits above the box

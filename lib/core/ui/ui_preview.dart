@@ -1,20 +1,20 @@
 import 'package:flutter/widget_previews.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/core/ui/action_item.dart';
-import 'package:folo/core/ui/activity_item.dart';
-import 'package:folo/core/ui/contact_row.dart';
-import 'package:folo/core/ui/empty_state.dart';
-import 'package:folo/core/ui/fact_row.dart';
-import 'package:folo/core/ui/folo_avatar.dart';
-import 'package:folo/core/ui/folo_chip.dart';
-import 'package:folo/core/ui/folo_progress_bar.dart';
-import 'package:folo/core/ui/folo_top_bar.dart';
-import 'package:folo/core/ui/goal_card.dart';
-import 'package:folo/core/ui/section_header.dart';
-import 'package:folo/core/ui/stat_tile.dart';
-import 'package:folo/l10n/app_localizations.dart';
-import 'package:folo/l10n/localizations_delegates.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/core/ui/action_item.dart';
+import 'package:loomia/core/ui/activity_item.dart';
+import 'package:loomia/core/ui/contact_row.dart';
+import 'package:loomia/core/ui/empty_state.dart';
+import 'package:loomia/core/ui/fact_row.dart';
+import 'package:loomia/core/ui/goal_card.dart';
+import 'package:loomia/core/ui/loomia_avatar.dart';
+import 'package:loomia/core/ui/loomia_chip.dart';
+import 'package:loomia/core/ui/loomia_progress_bar.dart';
+import 'package:loomia/core/ui/loomia_top_bar.dart';
+import 'package:loomia/core/ui/section_header.dart';
+import 'package:loomia/core/ui/stat_tile.dart';
+import 'package:loomia/l10n/app_localizations.dart';
+import 'package:loomia/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Every shared component in one sheet, both modes, for
@@ -45,16 +45,16 @@ class _Gallery extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(AppSpacing.md),
       children: [
-        const FoloTopBar(eyebrow: 'Monday 22 September', title: 'Components'),
+        const LoomiaTopBar(eyebrow: 'Monday 22 September', title: 'Components'),
         const SectionHeader(title: 'Avatar'),
         Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             for (final size in AvatarSize.values) ...[
-              FoloAvatar(name: 'Marie Dupont', size: size),
+              LoomiaAvatar(name: 'Marie Dupont', size: size),
               const SizedBox(width: AppSpacing.sm),
             ],
-            const FoloAvatarGroup(
+            const LoomiaAvatarGroup(
               names: ['Marie Dupont', 'Lucas Morel', 'Amina Haddad', 'Karim B'],
             ),
           ],
@@ -66,13 +66,13 @@ class _Gallery extends StatelessWidget {
           runSpacing: AppSpacing.sm,
           children: [
             for (final tone in ChipTone.values)
-              FoloChip(label: tone.name, tone: tone),
+              LoomiaChip(label: tone.name, tone: tone),
             const DateChip('Birthday tomorrow'),
           ],
         ),
         const SizedBox(height: AppSpacing.lg),
         const SectionHeader(title: 'Progress', actionLabel: '2'),
-        const FoloProgressBar(
+        const LoomiaProgressBar(
           value: 0.62,
           leadingLabel: 'Slightly behind pace',
           trailingLabel: '11 days left',
@@ -98,13 +98,13 @@ class _Gallery extends StatelessWidget {
         ContactRow(
           name: 'Marie Dupont',
           subtitle: 'Nurse',
-          trailing: const FoloChip(label: 'Prospect'),
+          trailing: const LoomiaChip(label: 'Prospect'),
           onTap: () {},
         ),
         ContactRow(
           name: 'Lucas Morel',
           subtitle: 'Sleep, stress',
-          trailing: const FoloChip(label: 'Customer'),
+          trailing: const LoomiaChip(label: 'Customer'),
           selected: true,
           onTap: () {},
         ),

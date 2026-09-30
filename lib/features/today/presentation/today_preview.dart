@@ -1,13 +1,13 @@
 import 'package:flutter/widget_previews.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/today/domain/due.dart';
-import 'package:folo/features/today/presentation/today_page.dart';
-import 'package:folo/features/workflows/domain/progress.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
-import 'package:folo/l10n/app_localizations.dart';
-import 'package:folo/l10n/localizations_delegates.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/today/domain/due.dart';
+import 'package:loomia/features/today/presentation/today_page.dart';
+import 'package:loomia/features/workflows/domain/progress.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
+import 'package:loomia/l10n/app_localizations.dart';
+import 'package:loomia/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Today in both modes and both layouts, for `flutter widget-preview start`,

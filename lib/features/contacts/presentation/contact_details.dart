@@ -1,17 +1,17 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/core/layout/breakpoints.dart';
-import 'package:folo/core/ui/fact_row.dart';
-import 'package:folo/core/ui/folo_avatar.dart';
-import 'package:folo/core/ui/folo_chip.dart';
-import 'package:folo/core/ui/folo_dialog.dart';
-import 'package:folo/core/ui/section_header.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/edit_person_form.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/core/layout/breakpoints.dart';
+import 'package:loomia/core/ui/fact_row.dart';
+import 'package:loomia/core/ui/loomia_avatar.dart';
+import 'package:loomia/core/ui/loomia_chip.dart';
+import 'package:loomia/core/ui/loomia_dialog.dart';
+import 'package:loomia/core/ui/section_header.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/edit_person_form.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/features/settings/presentation/widgets/settings_group.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The digits and `+` of a phone number, which is what `tel:` and `sms:` want.
@@ -188,7 +188,7 @@ class ContactDetails extends StatelessWidget {
                 if (action.trailing case final trailing?)
                   Text(
                     trailing,
-                    style: TextStyle(color: FoloColors.of(context).textMuted),
+                    style: TextStyle(color: LoomiaColors.of(context).textMuted),
                   ),
               ],
             ),
@@ -217,7 +217,7 @@ class ContactDetails extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final message = messageUri(person);
     final call = callUri(person);
     final email = person.email;
@@ -261,7 +261,7 @@ class ContactDetails extends StatelessWidget {
           ? CrossAxisAlignment.center
           : CrossAxisAlignment.start,
       children: [
-        FoloAvatar(name: person.name, size: AvatarSize.header),
+        LoomiaAvatar(name: person.name, size: AvatarSize.header),
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Column(
@@ -280,10 +280,10 @@ class ContactDetails extends StatelessWidget {
                   person.stageSince.toLocal(),
                 ),
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: folo.textMuted,
+                  color: colors.textMuted,
                 ),
               ),
-              FoloChip(label: stageLabel(l10n, person.stage)),
+              LoomiaChip(label: stageLabel(l10n, person.stage)),
             ],
           ),
         ),
@@ -347,7 +347,7 @@ class ContactDetails extends StatelessWidget {
                     child: Text(
                       l10n.contactNothingYet,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: folo.textMuted,
+                        color: colors.textMuted,
                       ),
                     ),
                   )
@@ -479,7 +479,7 @@ class _MoreSheet extends StatelessWidget {
       trailing: switch (action.trailing) {
         final text? => Text(
           text,
-          style: TextStyle(color: FoloColors.of(context).textMuted),
+          style: TextStyle(color: LoomiaColors.of(context).textMuted),
         ),
         null => null,
       },

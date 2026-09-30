@@ -1,6 +1,6 @@
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/features/contacts/domain/phone_contact.dart';
+import 'package:loomia/features/contacts/domain/phone_contact.dart';
 
 /// The phone's address book, read once for the import. Nothing read here is
 /// kept: only the people the user ticks are saved, through the book.

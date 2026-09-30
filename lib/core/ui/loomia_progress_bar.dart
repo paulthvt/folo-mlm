@@ -1,7 +1,7 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/app/theme/app_typography.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/app/theme/app_typography.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Pace, not score (`docs/design/components.md` #7).
@@ -15,8 +15,8 @@ enum ProgressTone {
 
 /// A pill track with an optional caption row. The right caption says how much
 /// time is left — never a verdict (design principle #5).
-class FoloProgressBar extends StatelessWidget {
-  const FoloProgressBar({
+class LoomiaProgressBar extends StatelessWidget {
+  const LoomiaProgressBar({
     required this.value,
     this.tone = ProgressTone.secondary,
     this.leadingLabel,
@@ -32,14 +32,14 @@ class FoloProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final onPrimary = tone == ProgressTone.primary;
-    final track = onPrimary ? folo.primaryHover : folo.secondaryTrack;
+    final track = onPrimary ? colors.primaryHover : colors.secondaryTrack;
     // Inside the hero the captions sit on `primary/base`, so they take the
     // on-primary ink the hero uses rather than a surface ink.
     final captionInk = onPrimary
         ? scheme.onPrimary.withValues(alpha: 0.78)
-        : folo.textMuted;
+        : colors.textMuted;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

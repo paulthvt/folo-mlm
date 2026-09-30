@@ -16,5 +16,5 @@ abstract final class SupabaseConfig {
   /// Where email confirmation, password recovery and OAuth come back to.
   /// Registered in the project's allowed redirect URLs, in the Android intent
   /// filter and in `Info.plist`.
-  static const String redirectUrl = 'io.supabase.folo://login-callback/';
+  static const String redirectUrl = 'io.supabase.loomia://login-callback/';
 }

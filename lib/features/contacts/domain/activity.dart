@@ -1,4 +1,4 @@
-import 'package:folo/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
 
 /// What an entry records. [stage] entries are written by the database when a
 /// person changes stage, [step] entries when a workflow step is ticked; the

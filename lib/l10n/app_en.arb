@@ -53,17 +53,17 @@
   "@authFailureRateLimited": {
     "description": "Error after too many requests in a short time."
   },
-  "authFailureNetwork": "We could not reach Folo. Check your connection.",
+  "authFailureNetwork": "We could not reach Loomia. Check your connection.",
   "@authFailureNetwork": {
-    "description": "Error when the request never reached the server. Folo is the product name and is not translated."
+    "description": "Error when the request never reached the server. Loomia is the product name and is not translated."
   },
   "authFailureUnknown": "Something went wrong. Try again.",
   "@authFailureUnknown": {
     "description": "Fallback error for a failure with no specific cause."
   },
-  "authWelcomeHeadline": "Know what to do next.",
+  "authWelcomeHeadline": "Weave your network. Tend every thread.",
   "@authWelcomeHeadline": {
-    "description": "Main promise on the signed-out welcome screen, under the Folo wordmark."
+    "description": "Slogan on the signed-out welcome screen, under the Loomia wordmark."
   },
   "authWelcomeBody": "Organize your relationships, know what to do next.",
   "@authWelcomeBody": {
@@ -402,7 +402,7 @@
   "@contactsEmptyTitle": {
     "description": "Title of the Contacts list when the user has not added anyone."
   },
-  "contactsEmptyBody": "Add the people you talk to, and Folo helps you keep in touch.",
+  "contactsEmptyBody": "Add the people you talk to, and Loomia helps you keep in touch.",
   "@contactsEmptyBody": {
     "description": "Body of the Contacts list when the user has not added anyone."
   },
@@ -974,7 +974,7 @@
   "@settingsSectionWorkflows": {
     "description": "Settings row, and the title of the screen listing the user's workflows: what they do with someone, step by step."
   },
-  "workflowsIntro": "What you usually do with someone, step by step. Folo puts the next step on Today when it comes due.",
+  "workflowsIntro": "What you usually do with someone, step by step. Loomia puts the next step on Today when it comes due.",
   "@workflowsIntro": {
     "description": "Intro at the top of Settings → Workflows."
   },
@@ -1143,11 +1143,11 @@
   "@firstRunTitle": {
     "description": "Question on the first-run screen, shown once after sign-up."
   },
-  "firstRunBody": "Bring them in from your phone. Only the people you pick are saved in Folo.",
+  "firstRunBody": "Bring them in from your phone. Only the people you pick are saved in Loomia.",
   "@firstRunBody": {
     "description": "Body of the first-run screen on a phone, under the question."
   },
-  "firstRunBodyWeb": "Add the first one here, or import from your phone in the Folo app. They show up here too.",
+  "firstRunBodyWeb": "Add the first one here, or import from your phone in the Loomia app. They show up here too.",
   "@firstRunBodyWeb": {
     "description": "Body of the first-run screen on the web, where contacts cannot be imported."
   },
@@ -1166,13 +1166,13 @@
       "count": { "type": "int" }
     }
   },
-  "importHint": "Only the people you tick are saved in Folo.",
+  "importHint": "Only the people you tick are saved in Loomia.",
   "@importHint": {
     "description": "Reassurance under the search field of the import screen: the address book is not uploaded."
   },
-  "importAlreadyIn": "Already in Folo",
+  "importAlreadyIn": "Already in Loomia",
   "@importAlreadyIn": {
-    "description": "Shown instead of the phone number when a contact looks like someone already in Folo (same number or name). They can still be ticked."
+    "description": "Shown instead of the phone number when a contact looks like someone already in Loomia (same number or name). They can still be ticked."
   },
   "importStage": "Add them as",
   "@importStage": {
@@ -1192,7 +1192,7 @@
       "count": { "type": "int" }
     }
   },
-  "importDeniedTitle": "Folo can't see your contacts",
+  "importDeniedTitle": "Loomia can't see your contacts",
   "@importDeniedTitle": {
     "description": "Shown when the contacts permission was refused."
   },
@@ -1202,7 +1202,7 @@
   },
   "importOpenSettings": "Open settings",
   "@importOpenSettings": {
-    "description": "Opens the phone's settings for Folo, to allow contacts access."
+    "description": "Opens the phone's settings for Loomia, to allow contacts access."
   },
   "importNoneTitle": "No contacts on this phone",
   "@importNoneTitle": {

@@ -1,5 +1,5 @@
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/domain/search_key.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/domain/search_key.dart';
 
 /// Someone in the phone's address book, as the import sees them: only what
 /// Add someone would take.

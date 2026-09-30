@@ -1,11 +1,11 @@
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/ui/labeled_field.dart';
-import 'package:folo/core/ui/pick_day.dart';
-import 'package:folo/core/ui/section_header.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/features/workflows/domain/progress.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/ui/labeled_field.dart';
+import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/core/ui/section_header.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/features/workflows/domain/progress.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// What follows: one of a stage's workflows and its first step's day, or

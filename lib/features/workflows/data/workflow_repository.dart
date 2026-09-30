@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/core/supabase/supabase_provider.dart';
-import 'package:folo/features/contacts/data/people_repository.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
+import 'package:loomia/core/supabase/supabase_provider.dart';
+import 'package:loomia/features/contacts/data/people_repository.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// The `workflow` and `workflow_step` tables. Every method throws

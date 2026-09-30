@@ -1,6 +1,6 @@
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/core/ui/labeled_field.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/core/ui/labeled_field.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// A password input with a reveal toggle.

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/today/domain/due.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/today/domain/due.dart';
 
 import '../../workflows/fake_workflow_repository.dart';
 

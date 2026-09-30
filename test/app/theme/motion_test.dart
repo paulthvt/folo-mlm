@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/core/ui/folo_progress_bar.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/core/ui/loomia_progress_bar.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Reads `context.motion` under a chosen `disableAnimations` flag.
@@ -26,7 +26,7 @@ Future<Duration> _resolve(
 
 Widget _bar(double value) => MaterialApp(
   theme: AppTheme.light,
-  home: Scaffold(body: FoloProgressBar(value: value)),
+  home: Scaffold(body: LoomiaProgressBar(value: value)),
 );
 
 double? _barValue(WidgetTester tester) => tester

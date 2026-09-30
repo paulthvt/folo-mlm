@@ -3,18 +3,18 @@ import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/router/app_router.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/core/ui/labeled_field.dart';
-import 'package:folo/core/ui/pick_day.dart';
-import 'package:folo/features/contacts/domain/activity.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/contact_details.dart';
-import 'package:folo/features/contacts/presentation/contact_list.dart';
-import 'package:folo/features/contacts/presentation/contact_page.dart';
-import 'package:folo/features/contacts/presentation/history_section.dart';
-import 'package:folo/features/contacts/presentation/next_step_section.dart';
+import 'package:loomia/app/router/app_router.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/core/ui/labeled_field.dart';
+import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/features/contacts/domain/activity.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/contact_details.dart';
+import 'package:loomia/features/contacts/presentation/contact_list.dart';
+import 'package:loomia/features/contacts/presentation/contact_page.dart';
+import 'package:loomia/features/contacts/presentation/history_section.dart';
+import 'package:loomia/features/contacts/presentation/next_step_section.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../app/app_harness.dart';
@@ -74,7 +74,7 @@ void main() {
     Size size = _phone,
     FakeWorkflowRepository? workflows,
   }) async {
-    final container = await pumpFolo(
+    final container = await pumpLoomia(
       tester,
       size: size,
       people: people,
@@ -157,7 +157,7 @@ void main() {
   });
 
   testWidgets('missing person', (tester) async {
-    final container = await pumpFolo(tester, size: _phone, people: people);
+    final container = await pumpLoomia(tester, size: _phone, people: people);
     container.read(routerProvider).go(Routes.contactLocation('gone'));
     await tester.pumpAndSettle();
 
@@ -206,7 +206,7 @@ void main() {
   testWidgets('delete from a deep link replaces the page and deletes', (
     tester,
   ) async {
-    final container = await pumpFolo(tester, size: _phone, people: people);
+    final container = await pumpLoomia(tester, size: _phone, people: people);
     container.read(routerProvider).go(Routes.contactLocation('p1'));
     await tester.pumpAndSettle();
 
@@ -606,7 +606,7 @@ void main() {
       ..gate = Completer<void>();
     people.store['p1'] = _marieOn(1);
     // Today spins too while the workflows load: nothing settles, pump by hand.
-    final container = await pumpFolo(
+    final container = await pumpLoomia(
       tester,
       size: _phone,
       people: people,

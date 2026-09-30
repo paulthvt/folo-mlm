@@ -1,5 +1,5 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Tells the user that empty is fine (`docs/design/components.md` #18). Copy says
@@ -23,7 +23,7 @@ class EmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final label = actionLabel;
 
     return Padding(
@@ -57,7 +57,9 @@ class EmptyState extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           Text(
             body,
-            style: theme.textTheme.bodyMedium?.copyWith(color: folo.textMuted),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colors.textMuted,
+            ),
             textAlign: TextAlign.center,
           ),
           if (label != null) ...[
