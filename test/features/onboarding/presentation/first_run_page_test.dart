@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:folo/features/auth/domain/account.dart';
+import 'package:folo/features/contacts/presentation/contact_list.dart';
 import 'package:folo/features/contacts/presentation/import_contacts_page.dart';
 import 'package:folo/features/onboarding/presentation/first_run_page.dart';
 import 'package:folo/features/today/presentation/today_page.dart';
@@ -41,6 +42,11 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(ImportContactsPage), findsOneWidget);
+
+    // The system back gesture: Contacts, not out of the app.
+    expect(await tester.binding.handlePopRoute(), isTrue);
+    await tester.pumpAndSettle();
+    expect(find.byType(ContactList), findsOneWidget);
   });
 
   testWidgets('an onboarded account never sees it', (tester) async {

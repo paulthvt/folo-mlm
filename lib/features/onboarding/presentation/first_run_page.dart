@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/routes.dart';
@@ -27,8 +29,10 @@ class _FirstRunPageState extends ConsumerState<FirstRunPage> {
   bool _busy = false;
   AuthFailure? _failure;
 
-  /// Marks the account, then goes to [location]. A failure stays here.
-  Future<void> _leaveTo(String location) async {
+  /// Marks the account, then goes to [location], with [above] pushed on top
+  /// so back returns to [location] rather than out of the app. A failure
+  /// stays here.
+  Future<void> _leaveTo(String location, {String? above}) async {
     if (_busy) return;
     setState(() {
       _busy = true;
@@ -36,7 +40,9 @@ class _FirstRunPageState extends ConsumerState<FirstRunPage> {
     });
     try {
       await ref.read(authRepositoryProvider).markOnboarded();
-      if (mounted) context.go(location);
+      if (!mounted) return;
+      context.go(location);
+      if (above != null) unawaited(context.push(above));
     } on AuthFailure catch (failure) {
       if (mounted) {
         setState(() {
@@ -86,7 +92,12 @@ class _FirstRunPageState extends ConsumerState<FirstRunPage> {
               )
             else ...[
               FilledButton.icon(
-                onPressed: _busy ? null : () => _leaveTo(Routes.importContacts),
+                onPressed: _busy
+                    ? null
+                    : () => _leaveTo(
+                        Routes.contacts,
+                        above: Routes.importContacts,
+                      ),
                 icon: const Icon(Icons.contacts_outlined),
                 label: Text(l10n.contactsImport),
               ),
