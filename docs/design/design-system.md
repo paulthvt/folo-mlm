@@ -1,6 +1,6 @@
 # Design system
 
-Direction B (Fresh & Energetic) with the **N1 Forest → Olive** analogous palette,
+Direction B (Fresh & Energetic) with the **L1 Ocre pale** Loomia palette,
 circular avatars, light and dark fully specified.
 
 Source of truth: [Figma → Loomia](https://www.figma.com/design/spz2vsSK8gbt1Ok2rW1sdQ/Loomia),
@@ -19,59 +19,62 @@ screens are not implemented yet.
 
 ### Why these hues
 
-Primary and secondary are **neighbours on the wheel** (forest → olive), not
-opposites. Material 3 derives secondary and tertiary by rotating hue away from
-the seed; we deliberately do not, because a single hue arc reads as one brand
-rather than a set of status colours, and it structurally prevents the
-colour-coded-urgency failure mode that Direction B risks. The contrast the layout
-needs is bought back with **lightness**: a dark forest block carrying a bright
-olive bar.
+`brand` is the Loomia ochre `#E8964A` — logo, app icon, decorative marks. White
+on it is 2.4:1, so it **never sits behind text**. `primary` is the same hue
+walked darker until white text passes AA; `primary/text` walks it lighter for
+ink on dark surfaces. One hue, three jobs.
 
-Accent (amber-olive) is the third stop on the same arc. It is reserved for things
-anchored to a real moment — a birthday, a promised call-back — never for
-judgement (guardrail #2).
+Secondary is a muted **slate blue**: a cool counterpoint, so "on pace" never
+reads as a second shade of the brand. Accent (plum) and warning (olive-gold) sit
+away from ochre, and error is crimson rather than orange-red, so none of them can
+be mistaken for the brand. Neutrals are warm (hue 30°) at the lightness the
+previous palette was calibrated at.
+
+Accent is reserved for things anchored to a real moment — a birthday, a promised
+call-back — never for judgement (guardrail #2).
 
 ### Semantic tokens
 
 | Token | Light | Dark | Use |
 | --- | --- | --- | --- |
-| `surface/canvas` | `#FBFBF8` | `#0C1210` | App background. Warm off-white / hue-tinted near-black, never `#000`. |
-| `surface/default` | `#FFFFFF` | `#151E19` | Cards, rows, bars. |
-| `surface/raised` | `#FFFFFF` | `#1C2620` | Menus, sheets, dialogs. In dark, raised steps *up* a surface instead of deepening a shadow. |
-| `surface/sunken` | `#F4F4EE` | `#111814` | Search field, sidebar, wells. |
-| `surface/disabled` | `#F2F2EC` | `#1A211C` | Disabled controls. |
-| `border/subtle` | `#E6E8E1` | `#26312B` | The default 1px hairline. |
-| `border/strong` | `#C9CFC0` | `#3A4840` | Unchecked controls, dividers that must be seen. |
-| `text/primary` | `#16201A` | `#ECF1ED` | Names, headings, values. |
-| `text/secondary` | `#4C5751` | `#B7C2BA` | Body, reasons, descriptions. |
-| `text/muted` | `#64706A` | `#97A59D` | Metadata, overlines, captions. |
-| `text/on-primary` | `#FFFFFF` | `#FFFFFF` | Text on `primary/base` — same in both modes, because the hero block is the same colour in both modes. |
-| `text/on-secondary` | `#14200A` | `#14200A` | Text on `secondary/base`. |
-| `text/disabled` | `#A2A99F` | `#5C6861` | |
-| `primary/base` | `#235C46` | `#235C46` | The filled hero, primary buttons. **Identical in both modes** — a saturated block on a dark canvas stays readable, and the brand colour is not diluted. |
-| `primary/hover` | `#1B4A38` | `#2C6E55` | Pointer hover; also the hero's own progress track. |
-| `primary/text` | `#1F5540` | `#66BE94` | Primary used as *ink* — this is the token that must flip, since the base fails contrast on dark surfaces. |
-| `primary/container` | `#DAE8DF` | `#16291F` | Tinted blocks, active nav pill, avatar background. |
-| `primary/on-container` | `#143C2C` | `#8BD1AE` | Ink on `primary/container`. |
-| `primary/muted` | `#EDF3EF` | `#101A15` | Hover wash, selected row. |
-| `secondary/base` | `#6F9339` | `#A8C765` | Progress bars. The pace colour. |
-| `secondary/text` | `#4F6B1F` | `#A8C765` | "On pace", pace labels. |
-| `secondary/container` | `#E9EFD6` | `#232C12` | Tinted stat tile. |
-| `secondary/on-container` | `#41590F` | `#C2DA8C` | |
-| `secondary/track` | `#D7E2B6` | `#38471C` | Progress track under `secondary/base`. |
-| `accent/base` | `#B08B2A` | `#D9B75E` | Date-anchored marks only. |
-| `accent/container` | `#F6EBCD` | `#2E2612` | Date chips (birthday, promised call-back). |
-| `accent/on-container` | `#6E5410` | `#E6CE8E` | |
+| `brand/base` | `#E8964A` | `#E8964A` | Logo, app icon, decorative marks. Never behind text. |
+| `surface/canvas` | `#FBFAF8` | `#120F0C` | App background. Warm off-white / hue-tinted near-black, never `#000`. |
+| `surface/default` | `#FFFFFF` | `#1E1A15` | Cards, rows, bars. |
+| `surface/raised` | `#FFFFFF` | `#26211C` | Menus, sheets, dialogs. In dark, raised steps *up* a surface instead of deepening a shadow. |
+| `surface/sunken` | `#F4F1EE` | `#181411` | Search field, sidebar, wells. |
+| `surface/disabled` | `#F2EFEC` | `#211E1A` | Disabled controls. |
+| `border/subtle` | `#E8E4E1` | `#312C26` | The default 1px hairline. |
+| `border/strong` | `#CFC8C0` | `#48413A` | Unchecked controls, dividers that must be seen. |
+| `text/primary` | `#201B16` | `#F1EEEC` | Names, headings, values. |
+| `text/secondary` | `#57524C` | `#C2BCB7` | Body, reasons, descriptions. |
+| `text/muted` | `#706A64` | `#A59E97` | Metadata, overlines, captions. |
+| `text/on-primary` | `#FFFFFF` | `#FFFFFF` | Text on `primary/base` — same in both modes, because the hero block is the same colour in both modes. Also the hero's progress bar. |
+| `text/on-secondary` | `#0B111E` | `#0B111E` | Text on `secondary/base`. |
+| `text/disabled` | `#A9A49F` | `#68625C` | |
+| `primary/base` | `#A75C15` | `#A75C15` | The filled hero, primary buttons. **Identical in both modes.** |
+| `primary/hover` | `#8C4C12` | `#C26A19` | Pointer hover; also the hero's own progress track. |
+| `primary/text` | `#995413` | `#D38A45` | Primary used as *ink* — this is the token that must flip, since the base fails contrast on dark surfaces. |
+| `primary/container` | `#F2E8DE` | `#271E16` | Tinted blocks, active nav pill, avatar background. |
+| `primary/on-container` | `#713E0E` | `#E0AB7B` | Ink on `primary/container`. |
+| `primary/muted` | `#F9F5F1` | `#1A140F` | Hover wash, selected row. |
+| `secondary/base` | `#697DAB` | `#909FC1` | Progress bars. The pace colour. |
+| `secondary/text` | `#495B83` | `#909FC1` | "On pace", pace labels. |
+| `secondary/container` | `#E5E7EB` | `#1B1D22` | Tinted stat tile. |
+| `secondary/on-container` | `#3D4B6C` | `#AAB5CF` | |
+| `secondary/track` | `#CBCFD8` | `#2D3139` | Progress track under `secondary/base`. |
+| `accent/base` | `#A94C8D` | `#BF87AE` | Date-anchored marks only. |
+| `accent/container` | `#EDE3EA` | `#231B20` | Date chips (birthday, promised call-back). |
+| `accent/on-container` | `#71335E` | `#D1A9C5` | |
 | `semantic/success` | `#2E7D5B` | `#5FC196` | Confirmation of a system action. |
 | `semantic/success-container` | `#DCEFE4` | `#13291F` | |
-| `semantic/warning` | `#8A5A16` | `#E2A85C` | System states only (sync, permission). Deliberately a deeper bronze so it cannot be confused with `accent`. |
-| `semantic/warning-container` | `#F7E2C8` | `#2F2513` | |
-| `semantic/error` | `#A83B2A` | `#F08E7C` | Destructive actions and genuine validation errors. Never "overdue" (principle #4). |
-| `semantic/error-container` | `#FADEDA` | `#33201C` | |
+| `semantic/warning` | `#8A690F` | `#BC9529` | System states only (sync, permission). Olive-gold so it cannot be read as `brand` or `accent`. |
+| `semantic/warning-container` | `#F2EDDE` | `#272316` | |
+| `semantic/error` | `#CF3046` | `#D5818C` | Destructive actions and genuine validation errors. Never "overdue" (principle #4). |
+| `semantic/error-container` | `#F0E0E2` | `#25181A` | |
 | `semantic/on-error` | `#FFFFFF` | `#241110` | |
 | `semantic/info` | `#2C6B7A` | `#74BDCB` | Neutral system notice. |
 | `semantic/info-container` | `#DDEDF1` | `#14282E` | |
-| `state/focus` | `#235C46` | `#66BE94` | 2px focus-visible ring. |
+| `state/focus` | `#995413` | `#D38A45` | 2px focus-visible ring. |
 
 Scopes are set on every variable (`FRAME_FILL, SHAPE_FILL` for surfaces,
 `TEXT_FILL` for ink, `STROKE_COLOR` for borders) so the Figma colour picker only
@@ -92,8 +95,9 @@ offers tokens that make sense in the slot being edited.
 ### Contrast
 
 All body and label pairs clear WCAG AA (4.5:1); `text/muted` on `surface/canvas`
-is 4.7:1 light and 5.6:1 dark. `text/on-primary` on `primary/base` is 7.1:1 in
-both modes. The hero's secondary labels are white at 78% opacity, which holds in
+is 5.1:1 light and 7.2:1 dark. `text/on-primary` on `primary/base` is 5.0:1 in
+both modes; `primary/text` is 5.8:1 on white and 6.2:1 on dark `surface/default`.
+`test/app/theme/app_theme_test.dart` pins the last two. The hero's secondary labels are white at 78% opacity, which holds in
 both modes precisely because the block colour does not change.
 
 ---
@@ -337,5 +341,5 @@ the code uses.
 
 Cheap by construction: ~24 values in one Figma variables panel and one Dart
 file. What is *not* cheap: the token names and structure, the lightness
-relationships the layouts depend on (dark primary block carrying a bright olive
+relationships the layouts depend on (dark primary block carrying a light
 bar), and the number of accents. Hue is a value; the structure is the commitment.

@@ -78,7 +78,7 @@ row — filters use Primary for the active one.
 *Anatomy:* 8px pill track · pill bar · caption row (`pace` left, `time left`
 right).
 *Variants:* `Tone` = Primary | Secondary.
-*Rules:* Secondary is the default (olive on its own track). Primary tone exists
+*Rules:* Secondary is the default (`secondary/base` on its own track). Primary tone exists
 only inside the hero. The caption says how much time is left, never a verdict.
 
 ### 8. TextField
@@ -111,7 +111,7 @@ grouping (principle #6).
 ### 11. TodayHero
 *Purpose:* answer "what should I do today?" from arm's length.
 *Anatomy:* radius-20 `primary/base` block · `TODAY` eyebrow · one **sentence**
-(not a number) in `title-lg` · olive progress bar on a `primary/hover` track ·
+(not a number) in `title-lg` · white progress bar on a `primary/hover` track ·
 footer: progress left, effort in minutes right.
 *Props:* `eyebrow`, `headline`, `progressLabel`, `effortLabel`.
 *Responsive:* mobile full width; desktop the width of the left column, headline

@@ -6,7 +6,7 @@ import 'package:material_ui/material_ui.dart';
 
 /// Pace, not score (`docs/design/components.md` #7).
 enum ProgressTone {
-  /// Olive on its own track. The default everywhere.
+  /// Secondary on its own track. The default everywhere.
   secondary,
 
   /// Only inside the Today hero, where the surface is `primary/base`.
@@ -55,7 +55,7 @@ class LoomiaProgressBar extends StatelessWidget {
             builder: (context, animated, child) => LinearProgressIndicator(
               value: animated,
               backgroundColor: track,
-              color: onPrimary ? scheme.secondary : null,
+              color: onPrimary ? scheme.onPrimary : null,
             ),
           ),
         ),

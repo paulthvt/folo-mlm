@@ -14,62 +14,62 @@ import 'package:material_ui/material_ui.dart';
 abstract final class AppColors {
   static const light = ColorScheme(
     brightness: Brightness.light,
-    primary: Color(0xFF235C46), // primary/base — identical in both modes
+    primary: Color(0xFFA75C15), // primary/base — identical in both modes
     onPrimary: Color(0xFFFFFFFF), // text/on-primary
-    primaryContainer: Color(0xFFDAE8DF),
-    onPrimaryContainer: Color(0xFF143C2C),
-    secondary: Color(0xFF6F9339),
-    onSecondary: Color(0xFF14200A), // text/on-secondary
-    secondaryContainer: Color(0xFFE9EFD6),
-    onSecondaryContainer: Color(0xFF41590F),
-    error: Color(0xFFA83B2A),
+    primaryContainer: Color(0xFFF2E8DE),
+    onPrimaryContainer: Color(0xFF713E0E),
+    secondary: Color(0xFF697DAB),
+    onSecondary: Color(0xFF0B111E), // text/on-secondary
+    secondaryContainer: Color(0xFFE5E7EB),
+    onSecondaryContainer: Color(0xFF3D4B6C),
+    error: Color(0xFFCF3046),
     onError: Color(0xFFFFFFFF), // semantic/on-error
-    errorContainer: Color(0xFFFADEDA),
-    onErrorContainer: Color(0xFF5E1A11),
-    surface: Color(0xFFFBFBF8), // surface/canvas
-    onSurface: Color(0xFF16201A), // text/primary
-    onSurfaceVariant: Color(0xFF4C5751), // text/secondary
+    errorContainer: Color(0xFFF0E0E2),
+    onErrorContainer: Color(0xFF88202E),
+    surface: Color(0xFFFBFAF8), // surface/canvas
+    onSurface: Color(0xFF201B16), // text/primary
+    onSurfaceVariant: Color(0xFF57524C), // text/secondary
     surfaceContainerLowest: Color(0xFFFFFFFF), // surface/default
     surfaceContainerLow: Color(0xFFFFFFFF), // surface/raised
-    surfaceContainer: Color(0xFFF4F4EE), // surface/sunken
-    surfaceContainerHigh: Color(0xFFF4F4EE),
-    surfaceContainerHighest: Color(0xFFF2F2EC), // surface/disabled
-    outline: Color(0xFFC9CFC0), // border/strong
-    outlineVariant: Color(0xFFE6E8E1), // border/subtle
-    shadow: Color(0xFF16201A),
-    scrim: Color(0xFF16201A),
-    inverseSurface: Color(0xFF16201A),
-    onInverseSurface: Color(0xFFFBFBF8),
+    surfaceContainer: Color(0xFFF4F1EE), // surface/sunken
+    surfaceContainerHigh: Color(0xFFF4F1EE),
+    surfaceContainerHighest: Color(0xFFF2EFEC), // surface/disabled
+    outline: Color(0xFFCFC8C0), // border/strong
+    outlineVariant: Color(0xFFE8E4E1), // border/subtle
+    shadow: Color(0xFF201B16),
+    scrim: Color(0xFF201B16),
+    inverseSurface: Color(0xFF201B16),
+    onInverseSurface: Color(0xFFFBFAF8),
   );
 
   static const dark = ColorScheme(
     brightness: Brightness.dark,
-    primary: Color(0xFF235C46),
+    primary: Color(0xFFA75C15),
     onPrimary: Color(0xFFFFFFFF),
-    primaryContainer: Color(0xFF16291F),
-    onPrimaryContainer: Color(0xFF8BD1AE),
-    secondary: Color(0xFFA8C765),
-    onSecondary: Color(0xFF14200A),
-    secondaryContainer: Color(0xFF232C12),
-    onSecondaryContainer: Color(0xFFC2DA8C),
-    error: Color(0xFFF08E7C),
+    primaryContainer: Color(0xFF271E16),
+    onPrimaryContainer: Color(0xFFE0AB7B),
+    secondary: Color(0xFF909FC1),
+    onSecondary: Color(0xFF0B111E),
+    secondaryContainer: Color(0xFF1B1D22),
+    onSecondaryContainer: Color(0xFFAAB5CF),
+    error: Color(0xFFD5818C),
     onError: Color(0xFF241110),
-    errorContainer: Color(0xFF33201C),
-    onErrorContainer: Color(0xFFFFDAD3),
-    surface: Color(0xFF0C1210),
-    onSurface: Color(0xFFECF1ED),
-    onSurfaceVariant: Color(0xFFB7C2BA),
-    surfaceContainerLowest: Color(0xFF111814), // surface/sunken
-    surfaceContainerLow: Color(0xFF151E19), // surface/default
-    surfaceContainer: Color(0xFF151E19),
-    surfaceContainerHigh: Color(0xFF1C2620), // surface/raised
-    surfaceContainerHighest: Color(0xFF1C2620),
-    outline: Color(0xFF3A4840),
-    outlineVariant: Color(0xFF26312B),
+    errorContainer: Color(0xFF25181A),
+    onErrorContainer: Color(0xFFE0A3AC),
+    surface: Color(0xFF120F0C),
+    onSurface: Color(0xFFF1EEEC),
+    onSurfaceVariant: Color(0xFFC2BCB7),
+    surfaceContainerLowest: Color(0xFF181411), // surface/sunken
+    surfaceContainerLow: Color(0xFF1E1A15), // surface/default
+    surfaceContainer: Color(0xFF1E1A15),
+    surfaceContainerHigh: Color(0xFF26211C), // surface/raised
+    surfaceContainerHighest: Color(0xFF26211C),
+    outline: Color(0xFF48413A),
+    outlineVariant: Color(0xFF312C26),
     shadow: Color(0xFF000000),
     scrim: Color(0xFF000000),
-    inverseSurface: Color(0xFFECF1ED),
-    onInverseSurface: Color(0xFF16201A),
+    inverseSurface: Color(0xFFF1EEEC),
+    onInverseSurface: Color(0xFF201B16),
   );
 }
 
@@ -79,6 +79,7 @@ abstract final class AppColors {
 @immutable
 class LoomiaColors extends ThemeExtension<LoomiaColors> {
   const LoomiaColors({
+    required this.brand,
     required this.surfaceDefault,
     required this.surfaceSunken,
     required this.surfaceRaised,
@@ -103,6 +104,10 @@ class LoomiaColors extends ThemeExtension<LoomiaColors> {
     required this.infoContainer,
     required this.focus,
   });
+
+  /// Logo, app icon, decorative marks. Never behind text — too light for
+  /// white ink; text sits on `colorScheme.primary`.
+  final Color brand;
 
   /// Cards, rows, bars.
   final Color surfaceDefault;
@@ -149,8 +154,8 @@ class LoomiaColors extends ThemeExtension<LoomiaColors> {
   final Color success;
   final Color successContainer;
 
-  /// System states only (sync, permission) — deliberately a deeper bronze than
-  /// [accent] so the two cannot be confused.
+  /// System states only (sync, permission) — olive-gold, so it cannot be
+  /// read as [brand] or [accent].
   final Color warning;
   final Color warningContainer;
 
@@ -160,56 +165,61 @@ class LoomiaColors extends ThemeExtension<LoomiaColors> {
   /// 2px focus-visible ring.
   final Color focus;
 
+  /// Same in both modes: the logo does not change with the theme.
+  static const _brand = Color(0xFFE8964A);
+
   static const light = LoomiaColors(
+    brand: _brand,
     surfaceDefault: Color(0xFFFFFFFF),
-    surfaceSunken: Color(0xFFF4F4EE),
+    surfaceSunken: Color(0xFFF4F1EE),
     surfaceRaised: Color(0xFFFFFFFF),
-    surfaceDisabled: Color(0xFFF2F2EC),
-    borderSubtle: Color(0xFFE6E8E1),
-    borderStrong: Color(0xFFC9CFC0),
-    textMuted: Color(0xFF64706A),
-    textDisabled: Color(0xFFA2A99F),
-    primaryHover: Color(0xFF1B4A38),
-    primaryText: Color(0xFF1F5540),
-    primaryMuted: Color(0xFFEDF3EF),
-    secondaryText: Color(0xFF4F6B1F),
-    secondaryTrack: Color(0xFFD7E2B6),
-    accent: Color(0xFFB08B2A),
-    accentContainer: Color(0xFFF6EBCD),
-    onAccentContainer: Color(0xFF6E5410),
+    surfaceDisabled: Color(0xFFF2EFEC),
+    borderSubtle: Color(0xFFE8E4E1),
+    borderStrong: Color(0xFFCFC8C0),
+    textMuted: Color(0xFF706A64),
+    textDisabled: Color(0xFFA9A49F),
+    primaryHover: Color(0xFF8C4C12),
+    primaryText: Color(0xFF995413),
+    primaryMuted: Color(0xFFF9F5F1),
+    secondaryText: Color(0xFF495B83),
+    secondaryTrack: Color(0xFFCBCFD8),
+    accent: Color(0xFFA94C8D),
+    accentContainer: Color(0xFFEDE3EA),
+    onAccentContainer: Color(0xFF71335E),
     success: Color(0xFF2E7D5B),
     successContainer: Color(0xFFDCEFE4),
-    warning: Color(0xFF8A5A16),
-    warningContainer: Color(0xFFF7E2C8),
+    warning: Color(0xFF8A690F),
+    warningContainer: Color(0xFFF2EDDE),
     info: Color(0xFF2C6B7A),
     infoContainer: Color(0xFFDDEDF1),
-    focus: Color(0xFF235C46),
+    focus: Color(0xFF995413),
   );
 
   static const dark = LoomiaColors(
-    surfaceDefault: Color(0xFF151E19),
-    surfaceSunken: Color(0xFF111814),
-    surfaceRaised: Color(0xFF1C2620),
-    surfaceDisabled: Color(0xFF1A211C),
-    borderSubtle: Color(0xFF26312B),
-    borderStrong: Color(0xFF3A4840),
-    textMuted: Color(0xFF97A59D),
-    textDisabled: Color(0xFF5C6861),
-    primaryHover: Color(0xFF2C6E55),
-    primaryText: Color(0xFF66BE94),
-    primaryMuted: Color(0xFF101A15),
-    secondaryText: Color(0xFFA8C765),
-    secondaryTrack: Color(0xFF38471C),
-    accent: Color(0xFFD9B75E),
-    accentContainer: Color(0xFF2E2612),
-    onAccentContainer: Color(0xFFE6CE8E),
+    brand: _brand,
+    surfaceDefault: Color(0xFF1E1A15),
+    surfaceSunken: Color(0xFF181411),
+    surfaceRaised: Color(0xFF26211C),
+    surfaceDisabled: Color(0xFF211E1A),
+    borderSubtle: Color(0xFF312C26),
+    borderStrong: Color(0xFF48413A),
+    textMuted: Color(0xFFA59E97),
+    textDisabled: Color(0xFF68625C),
+    primaryHover: Color(0xFFC26A19),
+    primaryText: Color(0xFFD38A45),
+    primaryMuted: Color(0xFF1A140F),
+    secondaryText: Color(0xFF909FC1),
+    secondaryTrack: Color(0xFF2D3139),
+    accent: Color(0xFFBF87AE),
+    accentContainer: Color(0xFF231B20),
+    onAccentContainer: Color(0xFFD1A9C5),
     success: Color(0xFF5FC196),
     successContainer: Color(0xFF13291F),
-    warning: Color(0xFFE2A85C),
-    warningContainer: Color(0xFF2F2513),
+    warning: Color(0xFFBC9529),
+    warningContainer: Color(0xFF272316),
     info: Color(0xFF74BDCB),
     infoContainer: Color(0xFF14282E),
-    focus: Color(0xFF66BE94),
+    focus: Color(0xFFD38A45),
   );
 
   /// Throws if the extension is missing, which only happens outside
@@ -227,6 +237,7 @@ class LoomiaColors extends ThemeExtension<LoomiaColors> {
     if (other == null) return this;
     Color c(Color a, Color b) => Color.lerp(a, b, t)!;
     return LoomiaColors(
+      brand: c(brand, other.brand),
       surfaceDefault: c(surfaceDefault, other.surfaceDefault),
       surfaceSunken: c(surfaceSunken, other.surfaceSunken),
       surfaceRaised: c(surfaceRaised, other.surfaceRaised),
