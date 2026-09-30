@@ -16,6 +16,7 @@ import 'package:loomia/features/contacts/presentation/import_contacts_page.dart'
 import 'package:loomia/features/contacts/presentation/workflow_timeline_page.dart';
 import 'package:loomia/features/onboarding/presentation/first_run_page.dart';
 import 'package:loomia/features/settings/presentation/settings_page.dart';
+import 'package:loomia/features/team/presentation/team_page.dart';
 import 'package:loomia/features/today/presentation/today_page.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -90,6 +91,11 @@ final routerProvider = Provider<GoRouter>((ref) {
                 ],
               ),
             ],
+          ),
+          GoRoute(
+            path: Routes.team,
+            name: Routes.teamName,
+            builder: (context, state) => const TeamPage(),
           ),
           GoRoute(
             path: Routes.settings,
