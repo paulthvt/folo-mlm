@@ -48,7 +48,7 @@ jobs:
           TOKEN: ${{ steps.auth.outputs.access_token }}
           TAG: ${{ inputs.tag }}
           TRACK: ${{ inputs.track }}
-          API: https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.folo.folo
+          API: https://androidpublisher.googleapis.com/androidpublisher/v3/applications/app.loomia
         run: |
           IFS=. read -r major minor patch <<< "${TAG#v}"
           code=$((major * 10000 + minor * 100 + patch))

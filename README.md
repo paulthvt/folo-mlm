@@ -190,7 +190,7 @@ versionCode comes from the tag: `major*10000 + minor*100 + patch`.
      -keyalg RSA -keysize 2048 -validity 10000
    ```
 
-2. **Play Console app.** Create the app with package `com.folo.folo` (permanent
+2. **Play Console app.** Create the app with package `app.loomia` (permanent
    once created) and keep Play App Signing on. The API cannot publish the first
    build, so upload one by hand: put the key in `android/` with an
    `android/key.properties` (both git-ignored),
