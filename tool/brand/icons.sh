@@ -40,7 +40,7 @@ png() { # $1 = svg, $2 = size, $3 = output
 # iOS masks the icon itself and rejects alpha: full bleed, no transparency.
 ios=ios/Runner/Assets.xcassets/AppIcon.appiconset
 png square 1024 "$tmp/ios.png"
-magick "$tmp/ios.png" -background "$BRAND" -alpha remove -alpha off \
+magick "$tmp/ios.png" -background "$BRAND" -alpha remove -alpha off -strip \
   "$ios/Icon-App-1024x1024@1x.png"
 
 # Web: rounded tile where the browser shows it as is, full bleed where it masks.
@@ -58,5 +58,17 @@ png tile 72 $res/mipmap-hdpi/ic_launcher.png
 png tile 96 $res/mipmap-xhdpi/ic_launcher.png
 png tile 144 $res/mipmap-xxhdpi/ic_launcher.png
 png tile 192 $res/mipmap-xxxhdpi/ic_launcher.png
+
+# Launch screens: the ring alone, 96pt across (LaunchSplash.ring). Android and
+# web draw it as a vector: drawable/launch_ring.xml, web/index.html.
+cat > "$tmp/ring.svg" <<SVG
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96">
+  <circle cx="48" cy="48" r="37.0525" fill="none" stroke="white" stroke-width="21.895"/>
+</svg>
+SVG
+launch=ios/Runner/Assets.xcassets/LaunchImage.imageset
+png ring 96 $launch/LaunchImage.png
+png ring 192 $launch/LaunchImage@2x.png
+png ring 288 $launch/LaunchImage@3x.png
 
 rm -r "$tmp"

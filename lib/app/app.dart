@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loomia/app/launch_splash.dart';
 import 'package:loomia/app/router/app_router.dart';
 import 'package:loomia/app/theme/app_theme.dart';
 import 'package:loomia/features/auth/data/auth_repository.dart';
@@ -28,6 +29,8 @@ class LoomiaApp extends ConsumerWidget {
       // The user's choice from Settings; null follows the system.
       locale: locale == null ? null : Locale(locale),
       routerConfig: ref.watch(routerProvider),
+      // Built once for the app's lifetime, so it plays on cold start only.
+      builder: (context, child) => LaunchSplash(child: child!),
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       themeMode: switch (appearance) {
