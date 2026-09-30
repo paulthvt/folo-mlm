@@ -14,6 +14,6 @@ void main() {
   });
 
   test('the redirect url matches the registered deep link', () {
-    expect(SupabaseConfig.redirectUrl, 'io.supabase.colors://login-callback/');
+    expect(SupabaseConfig.redirectUrl, 'io.supabase.loomia://login-callback/');
   });
 }
