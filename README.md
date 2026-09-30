@@ -128,6 +128,12 @@ arrival.
   change — `supportedLocales` is generated from the files present.
 - **Never** edit English in Tolgee, and never hand-edit a translated `.arb`:
   each direction overwrites the other.
+- **Register:** Loomia is an assistant, so it speaks informally wherever the
+  language distinguishes — French says *tu* (*ton, ta, tes*, « Consulte »),
+  never *vous*. Tolgee holds this as the language's AI note and, for DeepL,
+  formality *less*; a new language gets the same setting before its first
+  translation. `test/l10n/french_register_test.dart` fails a sync that slips
+  back to *vous*; imperatives have no marker word, so check them in review.
 
 `.tolgeerc` is what makes the CLI speak Flutter ARB instead of its own JSON
 format, and what keeps a pulled file named `app_fr.arb` rather than `fr.arb`.
