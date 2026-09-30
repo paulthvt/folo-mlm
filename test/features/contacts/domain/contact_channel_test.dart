@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/features/contacts/domain/contact_channel.dart';
+import 'package:loomia/features/contacts/domain/contact_channel.dart';
 
 void main() {
   test('blank input is no channel', () {

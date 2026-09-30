@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/core/ui/contact_row.dart';
-import 'package:folo/core/ui/fact_row.dart';
-import 'package:folo/core/ui/folo_avatar.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/core/ui/contact_row.dart';
+import 'package:loomia/core/ui/fact_row.dart';
+import 'package:loomia/core/ui/loomia_avatar.dart';
 import 'package:material_ui/material_ui.dart';
 
 Future<void> _pump(WidgetTester tester, Widget child) => tester.pumpWidget(
@@ -27,7 +27,7 @@ void main() {
       ),
     );
 
-    expect(find.byType(FoloAvatar), findsOneWidget);
+    expect(find.byType(LoomiaAvatar), findsOneWidget);
     expect(find.text('Marie Dupont'), findsOneWidget);
     expect(find.text('Nurse'), findsOneWidget);
     expect(find.text('Prospect'), findsOneWidget);

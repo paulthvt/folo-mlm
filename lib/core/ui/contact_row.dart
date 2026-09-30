@@ -1,5 +1,5 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/core/ui/folo_avatar.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/core/ui/loomia_avatar.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// A person in a list: avatar, name, one line of context, a trailing chip.
@@ -29,8 +29,8 @@ class ContactRow extends StatelessWidget {
       selected: selected,
       selectedTileColor: scheme.primaryContainer,
       selectedColor: scheme.onPrimaryContainer,
-      hoverColor: FoloColors.of(context).surfaceSunken,
-      leading: FoloAvatar(name: name, size: AvatarSize.row),
+      hoverColor: LoomiaColors.of(context).surfaceSunken,
+      leading: LoomiaAvatar(name: name, size: AvatarSize.row),
       title: Text(name, maxLines: 1, overflow: TextOverflow.ellipsis),
       subtitle: text == null
           ? null

@@ -1,5 +1,5 @@
-import 'package:folo/features/auth/domain/auth_validation.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/features/auth/domain/auth_validation.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 
 /// Localized copy for a validation problem. Shaped for
 /// `TextFormField.validator`, so a page passes

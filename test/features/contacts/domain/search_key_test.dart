@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/features/contacts/domain/search_key.dart';
+import 'package:loomia/features/contacts/domain/search_key.dart';
 
 void main() {
   test('lowercases and removes accents', () {

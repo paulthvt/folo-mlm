@@ -1,15 +1,15 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/core/layout/breakpoints.dart';
-import 'package:folo/core/ui/contact_row.dart';
-import 'package:folo/core/ui/empty_state.dart';
-import 'package:folo/core/ui/folo_chip.dart';
-import 'package:folo/core/ui/folo_top_bar.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/domain/search_key.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/core/layout/breakpoints.dart';
+import 'package:loomia/core/ui/contact_row.dart';
+import 'package:loomia/core/ui/empty_state.dart';
+import 'package:loomia/core/ui/loomia_chip.dart';
+import 'package:loomia/core/ui/loomia_top_bar.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/domain/search_key.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The book: search, stage filter, one row per person, sorted by name.
@@ -78,7 +78,7 @@ class _ContactListState extends State<ContactList> {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: EdgeInsets.all(desktop ? AppSpacing.lg : AppSpacing.md),
         children: [
-          FoloTopBar(
+          LoomiaTopBar(
             title: l10n.contactsTitle,
             action: Row(
               mainAxisSize: MainAxisSize.min,
@@ -160,7 +160,7 @@ class _ContactListState extends State<ContactList> {
                   l10n.contactsNoMatch,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium
-                      ?.copyWith(color: FoloColors.of(context).textMuted),
+                      ?.copyWith(color: LoomiaColors.of(context).textMuted),
                 ),
               )
             else
@@ -168,7 +168,7 @@ class _ContactListState extends State<ContactList> {
                 ContactRow(
                   name: person.name,
                   subtitle: contactSubtitle(l10n, person),
-                  trailing: FoloChip(label: stageLabel(l10n, person.stage)),
+                  trailing: LoomiaChip(label: stageLabel(l10n, person.stage)),
                   selected: person.id == widget.selectedId,
                   onTap: () => widget.onOpen(person),
                 ),

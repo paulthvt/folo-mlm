@@ -1,18 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/ui/folo_dialog.dart';
-import 'package:folo/core/ui/form_error.dart';
-import 'package:folo/core/ui/pick_day.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/follow_with_field.dart';
-import 'package:folo/features/contacts/presentation/people_controller.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/features/workflows/domain/progress.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
-import 'package:folo/features/workflows/presentation/workflows_controller.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/ui/form_error.dart';
+import 'package:loomia/core/ui/loomia_dialog.dart';
+import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/follow_with_field.dart';
+import 'package:loomia/features/contacts/presentation/people_controller.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/features/workflows/domain/progress.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/workflows/presentation/workflows_controller.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Moves [person] to [stage] once confirmed: a sheet on mobile, a dialog
@@ -21,7 +21,7 @@ Future<void> showChangeStage(
   BuildContext context,
   Person person,
   Stage stage,
-) => FoloDialog.show<void>(
+) => LoomiaDialog.show<void>(
   context,
   (_) => _ChangeStage(person: person, stage: stage),
 );
@@ -89,7 +89,7 @@ class _ChangeStageState extends ConsumerState<_ChangeStage> {
         ? l10n.changeStageBodyCleared
         : l10n.changeStageBody;
 
-    return FoloDialog(
+    return LoomiaDialog(
       title: movedTitle(l10n, firstName(widget.person), widget.stage),
       body: ending != null && onStep
           ? '$body ${l10n.changeStageWorkflowEnds(ending.name)}'

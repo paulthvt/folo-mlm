@@ -1,7 +1,7 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/app/theme/app_typography.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/app/theme/app_typography.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// What a chip is allowed to say (`docs/design/components.md` #6). There is no
@@ -21,8 +21,8 @@ enum ChipTone {
 }
 
 /// A fact about a person.
-class FoloChip extends StatelessWidget {
-  const FoloChip({
+class LoomiaChip extends StatelessWidget {
+  const LoomiaChip({
     required this.label,
     this.tone = ChipTone.neutral,
     this.icon,
@@ -36,15 +36,15 @@ class FoloChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final (background, ink) = switch (tone) {
-      ChipTone.neutral => (folo.surfaceSunken, folo.textMuted),
+      ChipTone.neutral => (colors.surfaceSunken, colors.textMuted),
       ChipTone.primary => (scheme.primaryContainer, scheme.onPrimaryContainer),
       ChipTone.secondary => (
         scheme.secondaryContainer,
         scheme.onSecondaryContainer,
       ),
-      ChipTone.accent => (folo.accentContainer, folo.onAccentContainer),
+      ChipTone.accent => (colors.accentContainer, colors.onAccentContainer),
     };
 
     return AnimatedContainer(

@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/core/supabase/supabase_config.dart';
-import 'package:folo/core/supabase/supabase_provider.dart';
-import 'package:folo/features/auth/data/auth_failure_mapping.dart';
-import 'package:folo/features/auth/domain/account.dart';
-import 'package:folo/features/auth/domain/auth_change.dart';
+import 'package:loomia/core/supabase/supabase_config.dart';
+import 'package:loomia/core/supabase/supabase_provider.dart';
+import 'package:loomia/features/auth/data/auth_failure_mapping.dart';
+import 'package:loomia/features/auth/domain/account.dart';
+import 'package:loomia/features/auth/domain/auth_change.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Auth's side of the `supabase_flutter` boundary: only `data/` files import it.

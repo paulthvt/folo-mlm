@@ -1,24 +1,24 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/ui/action_item.dart';
-import 'package:folo/core/ui/pick_day.dart';
-import 'package:folo/core/ui/section_header.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/change_stage_sheet.dart';
-import 'package:folo/features/contacts/presentation/change_workflow_sheet.dart';
-import 'package:folo/features/contacts/presentation/contacts_page.dart';
-import 'package:folo/features/contacts/presentation/people_controller.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/features/workflows/domain/progress.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
-import 'package:folo/features/workflows/presentation/workflows_controller.dart';
-import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/ui/action_item.dart';
+import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/core/ui/section_header.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/change_stage_sheet.dart';
+import 'package:loomia/features/contacts/presentation/change_workflow_sheet.dart';
+import 'package:loomia/features/contacts/presentation/contacts_page.dart';
+import 'package:loomia/features/contacts/presentation/people_controller.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/features/workflows/domain/progress.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/workflows/presentation/workflows_controller.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// `NEXT STEP` on a contact: what to do next in their workflow, or what comes
@@ -271,7 +271,7 @@ class _Panel extends StatelessWidget {
                     Text(
                       text,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: FoloColors.of(context).textMuted,
+                        color: LoomiaColors.of(context).textMuted,
                       ),
                     ),
                   Wrap(

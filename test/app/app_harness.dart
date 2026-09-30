@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/app.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/auth/domain/account.dart';
-import 'package:folo/features/contacts/data/activity_repository.dart';
-import 'package:folo/features/contacts/data/people_repository.dart';
-import 'package:folo/features/contacts/data/phone_contacts_repository.dart';
-import 'package:folo/features/workflows/data/workflow_repository.dart';
+import 'package:loomia/app/app.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/auth/domain/account.dart';
+import 'package:loomia/features/contacts/data/activity_repository.dart';
+import 'package:loomia/features/contacts/data/people_repository.dart';
+import 'package:loomia/features/contacts/data/phone_contacts_repository.dart';
+import 'package:loomia/features/workflows/data/workflow_repository.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../features/auth/fake_auth_repository.dart';
@@ -52,7 +52,7 @@ Future<ProviderContainer> pumpFolo(
           phoneContacts ?? FakePhoneContactsRepository(),
         ),
       ],
-      child: const FoloApp(),
+      child: const LoomiaApp(),
     ),
   );
   if (settle) {
@@ -60,5 +60,5 @@ Future<ProviderContainer> pumpFolo(
   } else {
     await tester.pump();
   }
-  return ProviderScope.containerOf(tester.element(find.byType(FoloApp)));
+  return ProviderScope.containerOf(tester.element(find.byType(LoomiaApp)));
 }

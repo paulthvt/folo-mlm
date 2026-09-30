@@ -1,16 +1,16 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/router/app_router.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/auth/domain/account.dart';
-import 'package:folo/l10n/app_localizations.dart';
-import 'package:folo/l10n/localizations_delegates.dart';
+import 'package:loomia/app/router/app_router.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/auth/domain/account.dart';
+import 'package:loomia/l10n/app_localizations.dart';
+import 'package:loomia/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Application root: wires router + theme. Keep this widget free of any
 /// feature logic.
-class FoloApp extends ConsumerWidget {
-  const FoloApp({super.key});
+class LoomiaApp extends ConsumerWidget {
+  const LoomiaApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

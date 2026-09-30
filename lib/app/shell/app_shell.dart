@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/layout/breakpoints.dart';
-import 'package:folo/core/ui/folo_avatar.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/layout/breakpoints.dart';
+import 'package:loomia/core/ui/loomia_avatar.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Chrome around every signed-in screen (`docs/design/components.md` #23).
@@ -73,16 +73,16 @@ class _Sidebar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final l10n = AppLocalizations.of(context);
     final account = ref.watch(accountProvider);
 
     return Material(
-      color: folo.surfaceSunken,
+      color: colors.surfaceSunken,
       child: Container(
         width: expanded ? _expandedWidth : _railWidth,
         decoration: BoxDecoration(
-          border: Border(right: BorderSide(color: folo.borderSubtle)),
+          border: Border(right: BorderSide(color: colors.borderSubtle)),
         ),
         child: SafeArea(
           right: false,
@@ -123,7 +123,7 @@ class _Sidebar extends ConsumerWidget {
                 const Spacer(),
                 if (account != null)
                   _SidebarItem(
-                    icon: FoloAvatar(
+                    icon: LoomiaAvatar(
                       name: account.displayName,
                       size: AvatarSize.dense,
                     ),
@@ -168,7 +168,7 @@ class _SidebarItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     // Labels the content, not the tile: the tile keeps its own tap action and
     // selected state for screen readers.
     final content = Semantics(
@@ -187,7 +187,7 @@ class _SidebarItem extends StatelessWidget {
       selected: selected,
       selectedTileColor: scheme.primaryContainer,
       selectedColor: scheme.onPrimaryContainer,
-      hoverColor: folo.primaryMuted,
+      hoverColor: colors.primaryMuted,
       leading: expanded ? ExcludeSemantics(child: icon) : null,
       title: content,
       titleTextStyle: Theme.of(context).textTheme.labelLarge?.copyWith(
@@ -212,7 +212,7 @@ class AccountButton extends ConsumerWidget {
       icon: Semantics(
         label: AppLocalizations.of(context).settingsTitle,
         excludeSemantics: true,
-        child: FoloAvatar(name: account.displayName, size: AvatarSize.dense),
+        child: LoomiaAvatar(name: account.displayName, size: AvatarSize.dense),
       ),
     );
   }

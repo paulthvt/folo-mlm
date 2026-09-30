@@ -1,14 +1,14 @@
 import 'package:flutter/widget_previews.dart';
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/contact_details.dart';
-import 'package:folo/features/contacts/presentation/contact_list.dart';
-import 'package:folo/features/contacts/presentation/next_step_section.dart';
-import 'package:folo/features/workflows/domain/progress.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
-import 'package:folo/l10n/app_localizations.dart';
-import 'package:folo/l10n/localizations_delegates.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/contact_details.dart';
+import 'package:loomia/features/contacts/presentation/contact_list.dart';
+import 'package:loomia/features/contacts/presentation/next_step_section.dart';
+import 'package:loomia/features/workflows/domain/progress.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
+import 'package:loomia/l10n/app_localizations.dart';
+import 'package:loomia/l10n/localizations_delegates.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Contacts and a person in both modes, for `flutter widget-preview start`.
@@ -42,7 +42,7 @@ Widget contactsDesktopLight() => _app(
           width: 440,
           decoration: BoxDecoration(
             border: Border(
-              right: BorderSide(color: FoloColors.of(context).borderSubtle),
+              right: BorderSide(color: LoomiaColors.of(context).borderSubtle),
             ),
           ),
           child: _list(selectedId: _sample.first.id, showRefresh: true),

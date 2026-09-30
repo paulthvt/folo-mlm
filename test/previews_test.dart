@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/theme/theme_preview.dart';
-import 'package:folo/core/ui/ui_preview.dart';
-import 'package:folo/features/contacts/presentation/contacts_preview.dart';
-import 'package:folo/features/today/presentation/today_preview.dart';
-import 'package:folo/features/workflows/presentation/workflows_preview.dart';
+import 'package:loomia/app/theme/theme_preview.dart';
+import 'package:loomia/core/ui/ui_preview.dart';
+import 'package:loomia/features/contacts/presentation/contacts_preview.dart';
+import 'package:loomia/features/today/presentation/today_preview.dart';
+import 'package:loomia/features/workflows/presentation/workflows_preview.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Every `@Preview`, rendered at its preview size and compared against a

@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/features/contacts/data/activity_repository.dart';
-import 'package:folo/features/contacts/domain/activity.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/data/activity_repository.dart';
+import 'package:loomia/features/contacts/domain/activity.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
 
 Map<String, dynamic> _row([Map<String, dynamic> changes = const {}]) => {
   'id': 'a1',

@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/core/supabase/supabase_provider.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
+import 'package:loomia/core/supabase/supabase_provider.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// The `person` table. Every method throws [PeopleFailure] and nothing else, so

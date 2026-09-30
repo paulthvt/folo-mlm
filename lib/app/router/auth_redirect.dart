@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/auth/domain/auth_change.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/auth/domain/auth_change.dart';
 
 /// The whole guard, as a pure function of five facts — which is why it is
 /// testable without a router, a widget tree or a client.

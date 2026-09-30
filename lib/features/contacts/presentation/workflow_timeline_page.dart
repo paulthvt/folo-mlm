@@ -1,25 +1,25 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/router/back.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_typography.dart';
-import 'package:folo/core/layout/breakpoints.dart';
-import 'package:folo/core/ui/empty_state.dart';
-import 'package:folo/core/ui/folo_top_bar.dart';
-import 'package:folo/core/ui/pick_day.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/contacts_page.dart';
-import 'package:folo/features/contacts/presentation/people_controller.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/features/workflows/domain/progress.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
-import 'package:folo/features/workflows/presentation/workflows_controller.dart';
-import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loomia/app/router/back.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_typography.dart';
+import 'package:loomia/core/layout/breakpoints.dart';
+import 'package:loomia/core/ui/empty_state.dart';
+import 'package:loomia/core/ui/loomia_top_bar.dart';
+import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/contacts_page.dart';
+import 'package:loomia/features/contacts/presentation/people_controller.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/features/workflows/domain/progress.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/workflows/presentation/workflows_controller.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// A person's whole workflow, top to bottom: the steps before the current one
@@ -125,7 +125,7 @@ class _WorkflowTimelinePageState extends ConsumerState<WorkflowTimelinePage> {
         child: ListView(
           padding: EdgeInsets.all(desktop ? AppSpacing.xl : AppSpacing.md),
           children: [
-            FoloTopBar(
+            LoomiaTopBar(
               large: desktop,
               eyebrow: current < steps.length
                   ? l10n.workflowTimelineStep(
@@ -219,18 +219,18 @@ class TimelineStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final button = action;
     Widget line({double? height, bool visible = true}) => Container(
       width: 2,
       height: height,
-      color: visible ? folo.borderSubtle : null,
+      color: visible ? colors.borderSubtle : null,
     );
 
     return Container(
       decoration: current
           ? BoxDecoration(
-              color: folo.primaryMuted,
+              color: colors.primaryMuted,
               borderRadius: BorderRadius.circular(AppRadii.lg),
             )
           : null,
@@ -249,10 +249,10 @@ class TimelineStep extends StatelessWidget {
                     height: AppSpacing.sm,
                     decoration: BoxDecoration(
                       color: current
-                          ? folo.primaryText
+                          ? colors.primaryText
                           : dimmed
-                          ? folo.borderSubtle
-                          : folo.borderStrong,
+                          ? colors.borderSubtle
+                          : colors.borderStrong,
                       shape: BoxShape.circle,
                     ),
                   ),
@@ -271,7 +271,7 @@ class TimelineStep extends StatelessWidget {
                       title,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: dimmed
-                            ? folo.textDisabled
+                            ? colors.textDisabled
                             : theme.colorScheme.onSurface,
                       ),
                     ),
@@ -279,7 +279,7 @@ class TimelineStep extends StatelessWidget {
                     Text(
                       meta,
                       style: AppTypography.caption.copyWith(
-                        color: dimmed ? folo.textDisabled : folo.textMuted,
+                        color: dimmed ? colors.textDisabled : colors.textMuted,
                       ),
                     ),
                   ],

@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/core/ui/action_item.dart';
-import 'package:folo/core/ui/pick_day.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/contact_page.dart';
-import 'package:folo/features/today/presentation/today_page.dart';
-import 'package:folo/features/workflows/domain/progress.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/core/ui/action_item.dart';
+import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/contact_page.dart';
+import 'package:loomia/features/today/presentation/today_page.dart';
+import 'package:loomia/features/workflows/domain/progress.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../app/app_harness.dart';

@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/features/auth/domain/account.dart';
-import 'package:folo/features/contacts/presentation/contact_list.dart';
-import 'package:folo/features/contacts/presentation/import_contacts_page.dart';
-import 'package:folo/features/onboarding/presentation/first_run_page.dart';
-import 'package:folo/features/today/presentation/today_page.dart';
+import 'package:loomia/features/auth/domain/account.dart';
+import 'package:loomia/features/contacts/presentation/contact_list.dart';
+import 'package:loomia/features/contacts/presentation/import_contacts_page.dart';
+import 'package:loomia/features/onboarding/presentation/first_run_page.dart';
+import 'package:loomia/features/today/presentation/today_page.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../app/app_harness.dart';

@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/features/contacts/data/people_repository.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/data/people_repository.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Map<String, dynamic> _row([Map<String, dynamic> changes = const {}]) => {

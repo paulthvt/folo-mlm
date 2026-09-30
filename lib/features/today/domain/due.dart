@@ -1,7 +1,7 @@
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/domain/search_key.dart';
-import 'package:folo/features/workflows/domain/progress.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/domain/search_key.dart';
+import 'package:loomia/features/workflows/domain/progress.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
 
 /// Someone worth a message today, and the step that says why.
 typedef Due = ({Person person, OnStep step});

@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/domain/phone_contact.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/domain/phone_contact.dart';
 
 Person _person(String name, {String? phone}) => Person(
   id: name,

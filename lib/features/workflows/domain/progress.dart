@@ -1,5 +1,5 @@
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
 
 /// Where a person stands in their workflow, as the NEXT STEP card shows it.
 sealed class WorkflowProgress {

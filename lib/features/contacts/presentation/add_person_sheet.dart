@@ -1,24 +1,24 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/ui/folo_dialog.dart';
-import 'package:folo/core/ui/form_error.dart';
-import 'package:folo/core/ui/labeled_field.dart';
-import 'package:folo/core/ui/pick_day.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/contacts/domain/contact_channel.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/people_controller.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
-import 'package:folo/features/workflows/presentation/workflows_controller.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/ui/form_error.dart';
+import 'package:loomia/core/ui/labeled_field.dart';
+import 'package:loomia/core/ui/loomia_dialog.dart';
+import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/contacts/domain/contact_channel.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/people_controller.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/workflows/presentation/workflows_controller.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Add someone: a sheet on mobile, a dialog elsewhere. Resolves to the saved
 /// person, or null when dismissed.
 Future<Person?> showAddPerson(BuildContext context) =>
-    FoloDialog.show<Person>(context, (_) => const _AddPersonForm());
+    LoomiaDialog.show<Person>(context, (_) => const _AddPersonForm());
 
 class _AddPersonForm extends ConsumerStatefulWidget {
   const _AddPersonForm();
@@ -89,7 +89,7 @@ class _AddPersonFormState extends ConsumerState<_AddPersonForm> {
 
     return Form(
       key: _form,
-      child: FoloDialog(
+      child: LoomiaDialog(
         title: l10n.addPersonTitle,
         actions: [
           TextButton(

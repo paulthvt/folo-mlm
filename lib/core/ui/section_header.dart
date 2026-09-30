@@ -1,6 +1,6 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_typography.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_typography.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// The only structural divider in the product (`docs/design/components.md` #10):
@@ -22,7 +22,7 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final label = actionLabel;
 
     return Padding(
@@ -37,14 +37,14 @@ class SectionHeader extends StatelessWidget {
           Expanded(
             child: Text(
               title.toUpperCase(),
-              style: AppTypography.overline.copyWith(color: folo.textMuted),
+              style: AppTypography.overline.copyWith(color: colors.textMuted),
             ),
           ),
           if (label != null)
             if (onAction == null)
               Text(
                 label,
-                style: AppTypography.caption.copyWith(color: folo.textMuted),
+                style: AppTypography.caption.copyWith(color: colors.textMuted),
               )
             else
               // 32px, not the theme's 44: the header sits 16px tall in Figma,

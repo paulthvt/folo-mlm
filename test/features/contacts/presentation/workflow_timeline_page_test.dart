@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/router/app_router.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/core/ui/pick_day.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/contact_details.dart';
-import 'package:folo/features/contacts/presentation/workflow_timeline_page.dart';
+import 'package:loomia/app/router/app_router.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/contact_details.dart';
+import 'package:loomia/features/contacts/presentation/workflow_timeline_page.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../app/app_harness.dart';

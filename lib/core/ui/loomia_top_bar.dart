@@ -1,6 +1,6 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_typography.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_typography.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Screen header (`docs/design/components.md` #24): the eyebrow carries the date,
@@ -9,8 +9,8 @@ import 'package:material_ui/material_ui.dart';
 ///
 /// A plain widget rather than an `AppBar` because it scrolls with the content and
 /// its title is two lines of different styles.
-class FoloTopBar extends StatelessWidget {
-  const FoloTopBar({
+class LoomiaTopBar extends StatelessWidget {
+  const LoomiaTopBar({
     required this.title,
     this.eyebrow,
     this.large = false,
@@ -36,7 +36,7 @@ class FoloTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final eyebrowText = eyebrow;
     final trailing = action;
 
@@ -53,7 +53,7 @@ class FoloTopBar extends StatelessWidget {
                   Text(
                     eyebrowText.toUpperCase(),
                     style: AppTypography.overline.copyWith(
-                      color: folo.textMuted,
+                      color: colors.textMuted,
                     ),
                   ),
                   const SizedBox(height: AppSpacing.xs),

@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/core/ui/folo_top_bar.dart';
-import 'package:folo/core/ui/form_error.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/workflows/presentation/workflow_editor.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/core/ui/form_error.dart';
+import 'package:loomia/core/ui/loomia_top_bar.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/workflows/presentation/workflow_editor.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../fake_workflow_repository.dart';
@@ -15,7 +15,7 @@ import 'workflows_harness.dart';
 const _failed = "Couldn't save. Check your connection and try again.";
 
 Finder _title(String text) =>
-    find.descendant(of: find.byType(FoloTopBar), matching: find.text(text));
+    find.descendant(of: find.byType(LoomiaTopBar), matching: find.text(text));
 
 Future<void> _openNew(WidgetTester tester) async {
   await tester.ensureVisible(find.text('New workflow'));

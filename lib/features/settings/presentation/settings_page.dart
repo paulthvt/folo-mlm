@@ -1,25 +1,25 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/router/back.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/layout/breakpoints.dart';
-import 'package:folo/core/ui/folo_avatar.dart';
-import 'package:folo/core/ui/form_error.dart';
-import 'package:folo/core/ui/section_header.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/auth/domain/account.dart';
-import 'package:folo/features/auth/presentation/auth_failure_copy.dart';
-import 'package:folo/features/settings/presentation/account_settings.dart';
-import 'package:folo/features/settings/presentation/appearance_settings.dart';
-import 'package:folo/features/settings/presentation/language_settings.dart';
-import 'package:folo/features/settings/presentation/settings_action.dart';
-import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
-import 'package:folo/features/settings/presentation/widgets/settings_scroll.dart';
-import 'package:folo/features/workflows/presentation/workflow_editor.dart';
-import 'package:folo/features/workflows/presentation/workflows_settings.dart';
-import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loomia/app/router/back.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/layout/breakpoints.dart';
+import 'package:loomia/core/ui/form_error.dart';
+import 'package:loomia/core/ui/loomia_avatar.dart';
+import 'package:loomia/core/ui/section_header.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/auth/domain/account.dart';
+import 'package:loomia/features/auth/presentation/auth_failure_copy.dart';
+import 'package:loomia/features/settings/presentation/account_settings.dart';
+import 'package:loomia/features/settings/presentation/appearance_settings.dart';
+import 'package:loomia/features/settings/presentation/language_settings.dart';
+import 'package:loomia/features/settings/presentation/settings_action.dart';
+import 'package:loomia/features/settings/presentation/widgets/settings_group.dart';
+import 'package:loomia/features/settings/presentation/widgets/settings_scroll.dart';
+import 'package:loomia/features/workflows/presentation/workflow_editor.dart';
+import 'package:loomia/features/workflows/presentation/workflows_settings.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 enum SettingsSection { account, language, appearance, workflows }
@@ -72,7 +72,7 @@ class SettingsPage extends StatelessWidget {
                 decoration: BoxDecoration(
                   border: Border(
                     right: BorderSide(
-                      color: FoloColors.of(context).borderSubtle,
+                      color: LoomiaColors.of(context).borderSubtle,
                     ),
                   ),
                 ),
@@ -209,7 +209,7 @@ class _SettingsListState extends ConsumerState<_SettingsList>
             children: [
               ListTile(
                 selected: selected == SettingsSection.account,
-                leading: FoloAvatar(
+                leading: LoomiaAvatar(
                   name: account.displayName,
                   size: AvatarSize.row,
                 ),

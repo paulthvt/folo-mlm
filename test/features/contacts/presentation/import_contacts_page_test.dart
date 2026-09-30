@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/router/app_router.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/contact_list.dart';
+import 'package:loomia/app/router/app_router.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/contact_list.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../app/app_harness.dart';

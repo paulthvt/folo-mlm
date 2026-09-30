@@ -1,16 +1,16 @@
 import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/ui/activity_item.dart';
-import 'package:folo/core/ui/folo_dialog.dart';
-import 'package:folo/core/ui/section_header.dart';
-import 'package:folo/features/contacts/domain/activity.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/history_controller.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/ui/activity_item.dart';
+import 'package:loomia/core/ui/loomia_dialog.dart';
+import 'package:loomia/core/ui/section_header.dart';
+import 'package:loomia/features/contacts/domain/activity.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/history_controller.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// `HISTORY`: the latest entries, the rest a tap away. It loads on its own,
@@ -53,7 +53,7 @@ class _HistorySectionState extends ConsumerState<HistorySection> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final theme = Theme.of(context);
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final provider = historyProvider(widget.person.id);
     final history = ref.watch(provider);
     final entries = history.value;
@@ -62,7 +62,7 @@ class _HistorySectionState extends ConsumerState<HistorySection> {
 
     Widget muted(String text) => Text(
       text,
-      style: theme.textTheme.bodyMedium?.copyWith(color: folo.textMuted),
+      style: theme.textTheme.bodyMedium?.copyWith(color: colors.textMuted),
     );
 
     return Column(

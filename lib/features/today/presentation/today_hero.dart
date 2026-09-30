@@ -1,5 +1,5 @@
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_typography.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_typography.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Answers "what should I do today?" from arm's length

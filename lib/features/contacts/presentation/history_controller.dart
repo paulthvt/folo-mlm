@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/features/contacts/data/activity_repository.dart';
-import 'package:folo/features/contacts/domain/activity.dart';
+import 'package:loomia/features/contacts/data/activity_repository.dart';
+import 'package:loomia/features/contacts/domain/activity.dart';
 
 /// One person's history, fetched when their page opens and dropped when it
 /// closes. Keyed by person id: ids are uuids, so no account ever reads another

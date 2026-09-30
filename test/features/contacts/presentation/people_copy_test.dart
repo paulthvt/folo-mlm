@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/features/contacts/domain/activity.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/l10n/app_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:loomia/features/contacts/domain/activity.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 void main() {

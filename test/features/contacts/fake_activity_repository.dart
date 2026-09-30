@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:folo/features/contacts/data/activity_repository.dart';
-import 'package:folo/features/contacts/domain/activity.dart';
-import 'package:folo/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/data/activity_repository.dart';
+import 'package:loomia/features/contacts/domain/activity.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
 
 /// An in-memory history that records calls, and fails or stalls on demand.
 class FakeActivityRepository implements ActivityRepository {

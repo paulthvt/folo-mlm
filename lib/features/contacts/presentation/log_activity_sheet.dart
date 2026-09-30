@@ -1,21 +1,21 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/core/ui/folo_dialog.dart';
-import 'package:folo/core/ui/form_error.dart';
-import 'package:folo/core/ui/labeled_field.dart';
-import 'package:folo/core/ui/pick_day.dart';
-import 'package:folo/features/contacts/domain/activity.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/history_controller.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/ui/form_error.dart';
+import 'package:loomia/core/ui/labeled_field.dart';
+import 'package:loomia/core/ui/loomia_dialog.dart';
+import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/features/contacts/domain/activity.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/history_controller.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Log something with [person]: a sheet on mobile, a dialog elsewhere. Closes
 /// once the entry is saved.
 Future<void> showLogActivity(BuildContext context, Person person) =>
-    FoloDialog.show<void>(context, (_) => _LogActivityForm(person));
+    LoomiaDialog.show<void>(context, (_) => _LogActivityForm(person));
 
 class _LogActivityForm extends ConsumerStatefulWidget {
   const _LogActivityForm(this.person);
@@ -79,7 +79,7 @@ class _LogActivityFormState extends ConsumerState<_LogActivityForm> {
 
     return Form(
       key: _form,
-      child: FoloDialog(
+      child: LoomiaDialog(
         title: l10n.logTitle(firstName(widget.person)),
         actions: [
           TextButton(

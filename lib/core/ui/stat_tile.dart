@@ -1,7 +1,7 @@
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/app/theme/app_typography.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/app/theme/app_typography.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// At most one tinted pair per screen (`docs/design/components.md` #16).
@@ -26,12 +26,12 @@ class StatTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     final (background, ink, border) = switch (tone) {
       StatTone.plain => (
-        folo.surfaceDefault,
+        colors.surfaceDefault,
         scheme.onSurface,
-        folo.borderSubtle,
+        colors.borderSubtle,
       ),
       StatTone.primary => (
         scheme.primaryContainer,
@@ -44,7 +44,7 @@ class StatTile extends StatelessWidget {
         Colors.transparent,
       ),
     };
-    final subdued = tone == StatTone.plain ? folo.textMuted : ink;
+    final subdued = tone == StatTone.plain ? colors.textMuted : ink;
     final noteText = note;
 
     return AnimatedContainer(

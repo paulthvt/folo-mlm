@@ -1,28 +1,28 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/router/back.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_typography.dart';
-import 'package:folo/core/ui/empty_state.dart';
-import 'package:folo/core/ui/folo_dialog.dart';
-import 'package:folo/core/ui/labeled_field.dart';
-import 'package:folo/core/ui/section_header.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/people_controller.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
-import 'package:folo/features/settings/presentation/widgets/settings_scroll.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
-import 'package:folo/features/workflows/presentation/step_sheet.dart';
-import 'package:folo/features/workflows/presentation/workflows_controller.dart';
-import 'package:folo/features/workflows/presentation/workflows_settings.dart';
-import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loomia/app/router/back.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_typography.dart';
+import 'package:loomia/core/ui/empty_state.dart';
+import 'package:loomia/core/ui/labeled_field.dart';
+import 'package:loomia/core/ui/loomia_dialog.dart';
+import 'package:loomia/core/ui/section_header.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/people_controller.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/features/settings/presentation/widgets/settings_group.dart';
+import 'package:loomia/features/settings/presentation/widgets/settings_scroll.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/workflows/presentation/step_sheet.dart';
+import 'package:loomia/features/workflows/presentation/workflows_controller.dart';
+import 'package:loomia/features/workflows/presentation/workflows_settings.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// One workflow, found in the loaded list (there is no second fetch), wired
@@ -408,18 +408,18 @@ class _NumberBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final folo = FoloColors.of(context);
+    final colors = LoomiaColors.of(context);
     return Container(
       width: AppSpacing.xl,
       height: AppSpacing.xl,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: folo.primaryMuted,
+        color: colors.primaryMuted,
         shape: BoxShape.circle,
       ),
       child: Text(
         '$number',
-        style: AppTypography.label.copyWith(color: folo.primaryText),
+        style: AppTypography.label.copyWith(color: colors.primaryText),
       ),
     );
   }

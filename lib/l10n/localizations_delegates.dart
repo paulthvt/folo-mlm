@@ -1,4 +1,4 @@
-import 'package:folo/l10n/app_localizations.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Use this, not `AppLocalizations.localizationsDelegates`: gen-l10n still

@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:folo/features/auth/domain/auth_failure.dart';
+import 'package:loomia/features/auth/domain/auth_failure.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Translates anything thrown by `supabase_flutter` into an [AuthFailure].

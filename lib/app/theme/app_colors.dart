@@ -6,10 +6,10 @@ import 'package:material_ui/material_ui.dart';
 ///
 /// Two homes for a token:
 /// * `ColorScheme` when Material already has a slot with the same meaning,
-/// * [FoloColors] when it does not (sunken surfaces, borders, muted ink,
+/// * [LoomiaColors] when it does not (sunken surfaces, borders, muted ink,
 ///   accent, progress track, focus ring, semantic states).
 ///
-/// Widgets read `Theme.of(context).colorScheme` and `FoloColors.of(context)`.
+/// Widgets read `Theme.of(context).colorScheme` and `LoomiaColors.of(context)`.
 /// Never a literal colour.
 abstract final class AppColors {
   static const light = ColorScheme(
@@ -75,10 +75,10 @@ abstract final class AppColors {
 
 /// The colour tokens `ColorScheme` has no slot for.
 ///
-/// `FoloColors.of(context)` is the only way widgets should reach them.
+/// `LoomiaColors.of(context)` is the only way widgets should reach them.
 @immutable
-class FoloColors extends ThemeExtension<FoloColors> {
-  const FoloColors({
+class LoomiaColors extends ThemeExtension<LoomiaColors> {
+  const LoomiaColors({
     required this.surfaceDefault,
     required this.surfaceSunken,
     required this.surfaceRaised,
@@ -160,7 +160,7 @@ class FoloColors extends ThemeExtension<FoloColors> {
   /// 2px focus-visible ring.
   final Color focus;
 
-  static const light = FoloColors(
+  static const light = LoomiaColors(
     surfaceDefault: Color(0xFFFFFFFF),
     surfaceSunken: Color(0xFFF4F4EE),
     surfaceRaised: Color(0xFFFFFFFF),
@@ -186,7 +186,7 @@ class FoloColors extends ThemeExtension<FoloColors> {
     focus: Color(0xFF235C46),
   );
 
-  static const dark = FoloColors(
+  static const dark = LoomiaColors(
     surfaceDefault: Color(0xFF151E19),
     surfaceSunken: Color(0xFF111814),
     surfaceRaised: Color(0xFF1C2620),
@@ -214,19 +214,19 @@ class FoloColors extends ThemeExtension<FoloColors> {
 
   /// Throws if the extension is missing, which only happens outside
   /// [AppTheme] — a bug, not a case to fall back from.
-  static FoloColors of(BuildContext context) =>
-      Theme.of(context).extension<FoloColors>()!;
+  static LoomiaColors of(BuildContext context) =>
+      Theme.of(context).extension<LoomiaColors>()!;
 
   /// No field-by-field override exists because nothing needs one: the two
   /// instances above are the whole palette.
   @override
-  FoloColors copyWith() => this;
+  LoomiaColors copyWith() => this;
 
   @override
-  FoloColors lerp(FoloColors? other, double t) {
+  LoomiaColors lerp(LoomiaColors? other, double t) {
     if (other == null) return this;
     Color c(Color a, Color b) => Color.lerp(a, b, t)!;
-    return FoloColors(
+    return LoomiaColors(
       surfaceDefault: c(surfaceDefault, other.surfaceDefault),
       surfaceSunken: c(surfaceSunken, other.surfaceSunken),
       surfaceRaised: c(surfaceRaised, other.surfaceRaised),

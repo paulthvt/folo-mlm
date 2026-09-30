@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/auth/domain/account.dart';
-import 'package:folo/features/auth/domain/auth_change.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/auth/domain/account.dart';
+import 'package:loomia/features/auth/domain/auth_change.dart';
 
 /// Records what a screen asked for, and fails or stalls on demand.
 class FakeAuthRepository implements AuthRepository {

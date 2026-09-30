@@ -1,43 +1,43 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/theme/app_colors.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/app/theme/app_typography.dart';
+import 'package:loomia/app/theme/app_colors.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/app/theme/app_typography.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Captures the theme as a widget actually sees it.
-Future<(ThemeData, FoloColors)> _resolve(
+Future<(ThemeData, LoomiaColors)> _resolve(
   WidgetTester tester,
   ThemeData theme,
 ) async {
   late ThemeData resolved;
-  late FoloColors folo;
+  late LoomiaColors colors;
   await tester.pumpWidget(
     MaterialApp(
       theme: theme,
       home: Builder(
         builder: (context) {
           resolved = Theme.of(context);
-          folo = FoloColors.of(context);
+          colors = LoomiaColors.of(context);
           return const SizedBox.shrink();
         },
       ),
     ),
   );
-  return (resolved, folo);
+  return (resolved, colors);
 }
 
 void main() {
-  for (final (name, theme, expected) in <(String, ThemeData, FoloColors)>[
-    ('light', AppTheme.light, FoloColors.light),
-    ('dark', AppTheme.dark, FoloColors.dark),
+  for (final (name, theme, expected) in <(String, ThemeData, LoomiaColors)>[
+    ('light', AppTheme.light, LoomiaColors.light),
+    ('dark', AppTheme.dark, LoomiaColors.dark),
   ]) {
     group(name, () {
-      testWidgets('FoloColors resolves from the theme', (tester) async {
-        final (resolved, folo) = await _resolve(tester, theme);
+      testWidgets('LoomiaColors resolves from the theme', (tester) async {
+        final (resolved, colors) = await _resolve(tester, theme);
 
-        expect(folo.borderSubtle, expected.borderSubtle);
-        expect(folo.accent, expected.accent);
+        expect(colors.borderSubtle, expected.borderSubtle);
+        expect(colors.accent, expected.accent);
         expect(resolved.colorScheme.primary, const Color(0xFF235C46));
       });
 
@@ -69,7 +69,10 @@ void main() {
 
   test('primary ink flips between modes, the primary fill does not', () {
     expect(AppColors.light.primary, AppColors.dark.primary);
-    expect(FoloColors.light.primaryText, isNot(FoloColors.dark.primaryText));
+    expect(
+      LoomiaColors.light.primaryText,
+      isNot(LoomiaColors.dark.primaryText),
+    );
   });
 
   test('numerals are tabular so goal values do not shift', () {

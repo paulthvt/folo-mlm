@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:folo/app/shell/app_shell.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/contact_list.dart';
-import 'package:folo/features/contacts/presentation/contact_page.dart';
-import 'package:folo/features/settings/presentation/settings_page.dart';
+import 'package:loomia/app/shell/app_shell.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/contact_list.dart';
+import 'package:loomia/features/contacts/presentation/contact_page.dart';
+import 'package:loomia/features/settings/presentation/settings_page.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../features/contacts/fake_people_repository.dart';

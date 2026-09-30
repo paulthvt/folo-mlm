@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/features/contacts/data/people_repository.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/domain/search_key.dart';
-import 'package:folo/features/contacts/presentation/history_controller.dart';
-import 'package:folo/features/workflows/domain/progress.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/contacts/data/people_repository.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/domain/search_key.dart';
+import 'package:loomia/features/contacts/presentation/history_controller.dart';
+import 'package:loomia/features/workflows/domain/progress.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
 
 /// One account's whole book, loaded once and kept in memory; every contacts
 /// screen reads the signed-in one, `peopleProvider(account?.email)`. Sorted by

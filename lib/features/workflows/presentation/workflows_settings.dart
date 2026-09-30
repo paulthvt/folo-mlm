@@ -1,24 +1,24 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:folo/app/router/routes.dart';
-import 'package:folo/app/theme/app_spacing.dart';
-import 'package:folo/app/theme/app_theme.dart';
-import 'package:folo/core/layout/breakpoints.dart';
-import 'package:folo/core/ui/empty_state.dart';
-import 'package:folo/core/ui/folo_dialog.dart';
-import 'package:folo/core/ui/form_error.dart';
-import 'package:folo/core/ui/labeled_field.dart';
-import 'package:folo/core/ui/section_header.dart';
-import 'package:folo/features/auth/data/auth_repository.dart';
-import 'package:folo/features/contacts/domain/people_failure.dart';
-import 'package:folo/features/contacts/domain/person.dart';
-import 'package:folo/features/contacts/presentation/people_copy.dart';
-import 'package:folo/features/settings/presentation/widgets/settings_group.dart';
-import 'package:folo/features/workflows/domain/workflow.dart';
-import 'package:folo/features/workflows/presentation/workflows_controller.dart';
-import 'package:folo/l10n/app_localizations.dart';
 import 'package:go_router/go_router.dart';
+import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/app/theme/app_theme.dart';
+import 'package:loomia/core/layout/breakpoints.dart';
+import 'package:loomia/core/ui/empty_state.dart';
+import 'package:loomia/core/ui/form_error.dart';
+import 'package:loomia/core/ui/labeled_field.dart';
+import 'package:loomia/core/ui/loomia_dialog.dart';
+import 'package:loomia/core/ui/section_header.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
+import 'package:loomia/features/contacts/domain/people_failure.dart';
+import 'package:loomia/features/contacts/domain/person.dart';
+import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/features/settings/presentation/widgets/settings_group.dart';
+import 'package:loomia/features/workflows/domain/workflow.dart';
+import 'package:loomia/features/workflows/presentation/workflows_controller.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Settings → Workflows, on the signed-in account's workflows.
@@ -157,7 +157,7 @@ void openWorkflow(BuildContext context, String id) {
 
 /// Name and stage. Create writes, then opens the editor on the new workflow.
 Future<void> showNewWorkflow(BuildContext context) async {
-  final created = await FoloDialog.show<Workflow>(
+  final created = await LoomiaDialog.show<Workflow>(
     context,
     (_) => const _NewWorkflowForm(),
   );
@@ -215,7 +215,7 @@ class _NewWorkflowFormState extends ConsumerState<_NewWorkflowForm> {
 
     return Form(
       key: _form,
-      child: FoloDialog(
+      child: LoomiaDialog(
         title: l10n.workflowsNew,
         actions: [
           TextButton(
