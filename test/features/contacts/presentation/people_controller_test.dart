@@ -378,6 +378,27 @@ void main() {
     expect(added.place, isNull);
   });
 
+  test('addAll saves everyone in one call, sorted, on the workflow', () async {
+    final world = _world([_person('1', 'Chloé')]);
+    final book = _book(world.container);
+    await world.container.read(book.future);
+
+    PersonDraft draft(String name) => (
+      name: name,
+      stage: Stage.prospect,
+      phone: null,
+      email: null,
+      instagram: null,
+    );
+    final added = await world.container
+        .read(book.notifier)
+        .addAll([draft('Denis'), draft('Anne')], workflow: samples, today: day);
+
+    expect(world.people.calls.last, 'addAll(Denis, Anne)');
+    expect(added.map((person) => person.place), [at(1), at(1)]);
+    expect(_names(world.container), ['Anne', 'Chloé', 'Denis']);
+  });
+
   test('moveTo writes the stage and what follows in one call', () async {
     final world = _world([onSamples(3)]);
     final book = _book(world.container);

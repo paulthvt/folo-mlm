@@ -9,6 +9,7 @@ class Account {
     required this.email,
     this.locale,
     this.appearance = Appearance.system,
+    this.onboarded = true,
   });
 
   /// Empty when the user never gave one (an email sign-up always does).
@@ -19,6 +20,10 @@ class Account {
   final String? locale;
 
   final Appearance appearance;
+
+  /// False for a new account until its first-run screen is passed (imported,
+  /// added someone, or skipped); then true on every device.
+  final bool onboarded;
 
   /// What to show where a name is expected: the first name, else the email.
   String get displayName => firstName.isEmpty ? email : firstName;

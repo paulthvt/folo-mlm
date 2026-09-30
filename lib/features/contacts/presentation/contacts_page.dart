@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:folo/app/router/routes.dart';
 import 'package:folo/app/shell/app_shell.dart';
@@ -123,6 +125,9 @@ class _ContactsPageState extends ConsumerState<ContactsPage> {
         people: list,
         onOpen: (person) => openContact(context, person.id),
         onAdd: _add,
+        onImport: kIsWeb
+            ? null
+            : () => unawaited(context.push(Routes.importContacts)),
         onRefresh: () => refreshPeople(context, ref),
         selectedId: widget.selectedId,
         showRefresh: sideNavigation,

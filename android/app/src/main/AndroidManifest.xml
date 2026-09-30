@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The import (#61) reads the address book; nothing is written to it. -->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <!-- enableOnBackInvokedCallback opts into predictive back, which is what
          makes the back gesture animate along with the finger instead of jumping
          at the end of it. Flutter already picks

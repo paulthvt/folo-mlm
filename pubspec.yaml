@@ -13,6 +13,9 @@ dependencies:
   cupertino_ui: ^1.1.0
   flutter:
     sdk: flutter
+  # Reads the phone's address book for the import (#61). Nothing in the SDK
+  # reaches it; Android and iOS only, so the web offers no import.
+  flutter_contacts: ^2.5.0
   # Imported by the code gen-l10n generates. The delegates the app registers come
   # from material_ui (lib/l10n/localizations_delegates.dart).
   flutter_localizations:

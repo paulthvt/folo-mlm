@@ -73,6 +73,29 @@ class FakePeopleRepository implements PeopleRepository {
   }
 
   @override
+  Future<List<Person>> addAll(
+    List<PersonDraft> drafts, {
+    WorkflowPlace? place,
+  }) async {
+    await _record('addAll(${drafts.map((draft) => draft.name).join(', ')})');
+    final added = <Person>[];
+    for (final draft in drafts) {
+      final person = Person(
+        id: 'new-${_next++}',
+        name: draft.name.trim(),
+        stage: draft.stage,
+        stageSince: DateTime.utc(2026, 9, 28),
+        phone: draft.phone,
+        email: draft.email,
+        place: place,
+      );
+      store[person.id] = person;
+      added.add(_served(person));
+    }
+    return added;
+  }
+
+  @override
   Future<Person> update(Person person) async {
     await _record('update(${person.id})');
     // The real update writes neither the stage nor the workflow fields.

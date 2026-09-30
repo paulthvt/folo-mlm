@@ -72,6 +72,22 @@ class PeopleController extends AsyncNotifier<List<Person>> {
     return person;
   }
 
+  /// The import: everyone in one write, on [workflow] like [add].
+  Future<List<Person>> addAll(
+    List<PersonDraft> drafts, {
+    Workflow? workflow,
+    required DateTime today,
+  }) async {
+    final added = await _repository.addAll(
+      drafts,
+      place: workflow == null
+          ? null
+          : start(workflow, firstDue: firstDueDefault(workflow, today)),
+    );
+    _change((people) => [...people, ...added]);
+    return added;
+  }
+
   Future<void> save(Person person) async {
     _replace(await _repository.update(person));
   }

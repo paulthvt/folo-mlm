@@ -284,6 +284,37 @@ which shows the saved state again.
 
 ---
 
+## 9. First run & import from the phone
+
+Added 2026-09-30 for [#61](https://github.com/paulthvt/folo-mlm/issues/61).
+Frames `First run — mobile`, `First run — web` and `Import contacts — mobile`.
+
+**First run** is one screen, shown once after sign-up, in the auth shape (one
+column capped at 400, no navigation): `Who do you already work with?`. On a
+phone: Import from your contacts (primary), Add someone, Skip for now. On the
+web there is no address book to read, so Add someone is the primary and the
+body says the phone app can import. Every way out — Skip included — marks the
+account (`onboarded` in the Supabase user metadata), so it never comes back,
+on any device. Importing stays in Contacts: an icon in the toolbar and a text
+button under the empty state, both absent on the web.
+
+**Import** is a full screen: the eyebrow counts what is ticked, a search, a
+reassurance line (`Only the people you tick are saved in Folo.`), then one row
+per phone contact with a checkbox. Nobody starts ticked. Someone who looks
+already in Folo — the same number (last nine digits), or with no number the
+same name — says `Already in Folo` instead of their number, and can still be
+ticked: never merged. The footer picks one stage for everyone and imports them
+in a single write, all on that stage's default workflow.
+
+Refused access shows Open settings and reloads on return to the app. Only a
+name, the first number and the first email are read; nothing else leaves the
+phone.
+
+WhatsApp, Instagram and Messenger have no API that lists someone's contacts,
+so the phone's address book is the only source.
+
+---
+
 ## Dark mode
 
 The dark frames are clones with `setExplicitVariableModeForCollection` pointing at
@@ -302,7 +333,7 @@ set of values to keep in sync. Three things are worth looking at specifically:
 
 ## What these screens deliberately do not have
 
-No onboarding, no notification centre, no analytics view, no team performance
+No onboarding tour beyond the one first-run screen, no notification centre, no analytics view, no team performance
 comparison, no gamification of any kind. Each would need either a product decision or a feature that does not exist yet
 (CLAUDE.md: don't scaffold for later).
 

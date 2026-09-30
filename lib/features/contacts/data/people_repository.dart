@@ -36,6 +36,22 @@ class PeopleRepository {
         return personFromRow(row);
       });
 
+  /// One insert for the whole batch: all of them are saved, or none. Each
+  /// starts at [place].
+  Future<List<Person>> addAll(
+    List<PersonDraft> drafts, {
+    WorkflowPlace? place,
+  }) => guardPeople(() async {
+    final rows = await _client
+        .from(_table)
+        .insert([
+          for (final draft in drafts)
+            {...draftToRow(draft), ...placeToRow(place)},
+        ])
+        .select(_columns);
+    return rows.map(personFromRow).toList();
+  });
+
   Future<Person> update(Person person) =>
       _write(person.id, personToRow(person));
 
