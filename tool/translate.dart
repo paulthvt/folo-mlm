@@ -2,9 +2,7 @@
 //
 //   GEMINI_API_KEY=... dart run tool/translate.dart
 //
-// The key is a free-tier Google AI Studio key: no billing, rate-limited, and
-// Google may use the requests to improve its products. Fine here, the input is
-// public UI copy only.
+// Free-tier Gemini key, see tool/gemini.dart.
 //
 // Only keys that need work are sent: missing in the target, or whose English
 // changed since they were translated. lib/l10n/translation_sources.json records
@@ -13,8 +11,8 @@
 import 'dart:convert';
 import 'dart:io';
 
-// A Flash model on the Gemini free tier (ai.google.dev/gemini-api/docs/pricing).
-const _model = 'gemini-3.8-flash';
+import 'gemini.dart';
+
 const _dir = 'lib/l10n';
 const _sourcesPath = '$_dir/translation_sources.json';
 
@@ -43,7 +41,7 @@ translation. No other text.''';
 
 Future<void> main() async {
   final key = Platform.environment['GEMINI_API_KEY'];
-  if (key == null || key.isEmpty) _fail('GEMINI_API_KEY is not set');
+  if (key == null || key.isEmpty) fail('GEMINI_API_KEY is not set');
 
   final englishArb = _readJson('$_dir/app_en.arb');
   final english = messages(englishArb);
@@ -79,7 +77,7 @@ Future<void> main() async {
       final keys = todo.sublist(i, (i + _batch).clamp(0, todo.length));
       final reply = await _translate(client, key, locale, englishArb, keys);
       final errors = check(englishArb, keys, reply);
-      if (errors.isNotEmpty) _fail('$locale:\n  ${errors.join('\n  ')}');
+      if (errors.isNotEmpty) fail('$locale:\n  ${errors.join('\n  ')}');
       translated.addAll(reply);
     }
 
@@ -173,62 +171,19 @@ Future<Map<String, String>> _translate(
         if (englishArb['@$key'] case final Map<String, dynamic> meta) ...meta,
       },
   };
-  final request = await client.postUrl(
-    Uri.parse(
-      'https://generativelanguage.googleapis.com/v1beta/models/$_model:generateContent',
-    ),
+  final reply = await askGemini(
+    client,
+    apiKey,
+    system: _system,
+    prompt:
+        'Translate from English into the locale "$locale".\n\n'
+        '${const JsonEncoder.withIndent('  ').convert(input)}',
+    what: locale,
   );
-  request.headers
-    ..set('x-goog-api-key', apiKey)
-    ..contentType = ContentType.json;
-  request.write(
-    jsonEncode({
-      'systemInstruction': {
-        'parts': [
-          {'text': _system},
-        ],
-      },
-      'contents': [
-        {
-          'role': 'user',
-          'parts': [
-            {
-              'text':
-                  'Translate from English into the locale "$locale".\n\n'
-                  '${const JsonEncoder.withIndent('  ').convert(input)}',
-            },
-          ],
-        },
-      ],
-      'generationConfig': {'responseMimeType': 'application/json'},
-    }),
-  );
-  final response = await request.close();
-  final body = await response.transform(utf8.decoder).join();
-  if (response.statusCode == 429) {
-    _fail(
-      'Gemini free-tier quota or rate limit reached (429). Wait and re-run the '
-      'workflow, or lower _batch.\n$body',
-    );
-  }
-  if (response.statusCode != 200) {
-    _fail('Gemini API ${response.statusCode}: $body');
-  }
-  final reply = jsonDecode(body) as Map<String, dynamic>;
-  final candidates = reply['candidates'] as List<dynamic>? ?? [];
-  if (candidates.isEmpty) _fail('$locale: no candidate returned: $body');
-  final candidate = candidates.first as Map<String, dynamic>;
-  final finish = candidate['finishReason'];
-  if (finish != 'STOP') _fail('$locale: stopped with $finish');
-  final content = candidate['content'] as Map<String, dynamic>;
-  final text = (content['parts'] as List<dynamic>)
-      .cast<Map<String, dynamic>>()
-      .map((part) => part['text'] as String? ?? '')
-      .join();
   try {
-    return Map<String, String>.from(jsonDecode(text) as Map);
+    return Map<String, String>.from(reply! as Map);
   } on Object {
-    _fail('$locale: reply is not a JSON object of strings:\n$text');
+    fail('$locale: reply is not a JSON object of strings:\n$reply');
   }
 }
 
@@ -237,8 +192,3 @@ Map<String, dynamic> _readJson(String path) =>
 
 String _encode(Object json) =>
     '${const JsonEncoder.withIndent('  ').convert(json)}\n';
-
-Never _fail(String message) {
-  stderr.writeln(message);
-  exit(1);
-}

@@ -42,6 +42,19 @@ jobs:
           token_format: access_token
           access_token_scopes: https://www.googleapis.com/auth/androidpublisher
 
+      # The notes release.yaml attached, so every track shows the same text.
+      # Releases from before them, or whose notes failed, have none.
+      - name: Fetch the release notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets -q '.assets[].name' | grep -qx release-notes.json; then
+            gh release download "$TAG" --repo "$GITHUB_REPOSITORY" -p release-notes.json
+          else
+            echo '{}' > release-notes.json
+          fi
+
       # Same formula as release.yaml.
       - name: Move the build on Play
         env:
@@ -58,8 +71,9 @@ jobs:
           api "$API/edits/$edit/tracks/internal" \
             | jq -e --arg code "$code" '[.releases[].versionCodes[]?] | index($code)' > /dev/null \
             || { echo "::error::versionCode $code ($TAG) is not on internal testing"; exit 1; }
-          jq -n --arg track "$TRACK" --arg code "$code" --arg name "$TAG" \
-            '{track: $track, releases: [{name: $name, versionCodes: [$code], status: "completed"}]}' \
+          jq -n --arg track "$TRACK" --arg code "$code" --arg name "$TAG" --slurpfile notes release-notes.json \
+            '{track: $track, releases: [{name: $name, versionCodes: [$code], status: "completed",
+              releaseNotes: [$notes[0] | to_entries[] | {language: .key, text: .value}]}]}' \
             | api -X PUT "$API/edits/$edit/tracks/$TRACK" -d @- > /dev/null
           api -X POST "$API/edits/$edit:commit" > /dev/null
 

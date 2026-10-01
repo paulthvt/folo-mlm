@@ -153,9 +153,10 @@ arrives as a pull request to review.
 
 The workflow needs the `GEMINI_API_KEY` repository secret: a free-tier key from
 [Google AI Studio](https://aistudio.google.com/apikey), no billing. Locally:
-`GEMINI_API_KEY=... dart run tool/translate.dart`. The model is one constant at
-the top of the script. The free tier is rate-limited — a run that hits the limit
-fails with a 429 message; re-run it later. Google may use free-tier requests to
+`GEMINI_API_KEY=... dart run tool/translate.dart`. The models are a list at
+the top of `tool/gemini.dart`. The free tier is rate-limited and often
+overloaded — a 429, 500 or 503 is retried on the next model in the list for
+about two minutes, then the run fails; re-run it later. Google may use free-tier requests to
 improve its products, which is acceptable because the input is only public UI
 copy.
 
@@ -182,6 +183,22 @@ pre-release flags keep matching what users get. Production needs a closed test
 first on a personal developer account (12 testers opted in for 14 days).
 
 versionCode comes from the tag: `major*10000 + minor*100 + patch`.
+
+### Release notes
+
+`tool/release_notes.dart` turns the Features, Bug Fixes and Performance entries
+of the release body into short store notes in every app language, with one
+Gemini call (same `GEMINI_API_KEY`). They are attached to the GitHub release as
+`release-notes.json`, at most 500 characters per language (Play's limit), and
+that file is the only source: the internal testing upload and every Promote
+send the same text. To change the wording, replace the asset before promoting:
+
+```bash
+gh release download v0.2.0 -p release-notes.json   # edit it, then
+gh release upload v0.2.0 release-notes.json --clobber
+```
+
+A Gemini failure, or a release with nothing user-facing, ships without notes.
 
 ### One-time setup
 
