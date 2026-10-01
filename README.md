@@ -123,16 +123,18 @@ The same script writes the Play Store listing images to `store/play/` (512 px
 icon, 1024×500 feature graphic). Play has no API for them in this pipeline:
 upload them by hand in Play Console → Store listing.
 
-Phone screenshots come from the same previews as the goldens, in every app
-language, at Play's 1080×1920:
+Store screenshots show the whole app — navigation, account button — on a
+sample book, in every app language: `phone` (1080×1920), `tablet-7`
+(1200×1920) and `tablet-10` (2560×1600) for Play, `desktop` (2880×1800) for
+the web:
 
 ```bash
-flutter test test/previews_test.dart --dart-define=STORE_SCREENSHOTS=true
+flutter test test/store_screenshots_test.dart --dart-define=STORE_SCREENSHOTS=true
 ```
 
-They land in `build/store/play/<language>/`, numbered in listing order, and
+They land in `build/store/<device>/<language>/`, numbered in listing order, and
 every release attaches them as `store-screenshots.zip`. Upload them by hand too.
-The list of screens is in the test.
+The devices and screens are in the test.
 
 ## Translations
 

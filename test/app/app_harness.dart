@@ -15,12 +15,14 @@ import '../features/contacts/fake_people_repository.dart';
 import '../features/contacts/fake_phone_contacts_repository.dart';
 import '../features/workflows/fake_workflow_repository.dart';
 
-/// The whole app, signed in as Pauline unless [auth] says otherwise, at [size]. Returns the container so a
+/// The whole app, signed in as Pauline unless [auth] says otherwise, at [size]
+/// logical pixels times [pixelRatio]. Returns the container so a
 /// test can drive `routerProvider` the way a URL would. With [settle] false it
 /// pumps one frame, for a load gated on purpose.
 Future<ProviderContainer> pumpLoomia(
   WidgetTester tester, {
   required Size size,
+  double pixelRatio = 1,
   FakePeopleRepository? people,
   FakeActivityRepository? activities,
   FakeWorkflowRepository? workflows,
@@ -28,8 +30,8 @@ Future<ProviderContainer> pumpLoomia(
   FakeAuthRepository? auth,
   bool settle = true,
 }) async {
-  tester.view.physicalSize = size;
-  tester.view.devicePixelRatio = 1;
+  tester.view.physicalSize = size * pixelRatio;
+  tester.view.devicePixelRatio = pixelRatio;
   addTearDown(tester.view.reset);
   auth ??= FakeAuthRepository()
     ..session = true
