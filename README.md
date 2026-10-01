@@ -130,8 +130,9 @@ language, at Play's 1080×1920:
 flutter test test/previews_test.dart --dart-define=STORE_SCREENSHOTS=true
 ```
 
-They land in `build/store/play/<language>/`, numbered in listing order; upload
-them by hand too. The list of screens is in the test.
+They land in `build/store/play/<language>/`, numbered in listing order, and
+every release attaches them as `store-screenshots.zip`. Upload them by hand too.
+The list of screens is in the test.
 
 ## Translations
 

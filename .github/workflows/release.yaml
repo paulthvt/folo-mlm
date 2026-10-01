@@ -68,6 +68,18 @@ jobs:
 
       - run: flutter pub get
 
+      # The Play listing screenshots of this version, from the previews. Upload
+      # them by hand in Play Console → Store listing (README.md → App icons).
+      - name: Attach store screenshots
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.release-please.outputs.tag_name }}
+        run: |
+          flutter test test/previews_test.dart --dart-define=STORE_SCREENSHOTS=true
+          (cd build/store && zip -qr ../../store-screenshots.zip .)
+          gh release upload "$TAG" store-screenshots.zip --clobber
+
       - name: Write the upload key
         env:
           KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
