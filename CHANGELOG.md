@@ -1,5 +1,29 @@
 # Changelog
 
+## [0.1.2](https://github.com/paulthvt/loomia/compare/v0.1.1...v0.1.2) (2026-10-01)
+
+
+### ✨ Features
+
+* **team:** Team tab with the roster ([#104](https://github.com/paulthvt/loomia/issues/104)) ([f6db969](https://github.com/paulthvt/loomia/commit/f6db969ff623c6574ff5dde8ae77231b5d8585a3))
+* **team:** worth a check-in ([#122](https://github.com/paulthvt/loomia/issues/122)) ([2c88a25](https://github.com/paulthvt/loomia/commit/2c88a25579104c3c4152e9db53c3f772e039e766))
+
+
+### 🐛 Bug Fixes
+
+* **store:** screenshots of the whole app on phone, tablets and desktop ([#129](https://github.com/paulthvt/loomia/issues/129)) ([316138e](https://github.com/paulthvt/loomia/commit/316138e44bb1eaa296a91d35c445e545368504ca))
+
+
+### 🔄 CI/CD
+
+* **release:** user-friendly store release notes with Gemini ([#127](https://github.com/paulthvt/loomia/issues/127)) ([3538e27](https://github.com/paulthvt/loomia/commit/3538e273cb0291187ae55c3dc5418348a97550b1))
+
+
+### 🔧 Miscellaneous
+
+* **deps:** update dependency supabase to v2.119.0 ([#123](https://github.com/paulthvt/loomia/issues/123)) ([853aa44](https://github.com/paulthvt/loomia/commit/853aa44f0cfe787b6cccd507e92b4c9824ece2b8))
+* **store:** Play screenshots rendered from the previews ([#126](https://github.com/paulthvt/loomia/issues/126)) ([aa82ccc](https://github.com/paulthvt/loomia/commit/aa82cccc0090940260016b07e8f99763721ed99a))
+
 ## [0.1.1](https://github.com/paulthvt/loomia/compare/v0.1.0...v0.1.1) (2026-09-30)
 
 
