@@ -9,6 +9,8 @@
 #   4. A signed AAB + APK are built, attached to that release, and the AAB goes
 #      to the Play internal testing track. The release stays a GitHub
 #      pre-release until promote.yaml ships the same build further.
+#   5. tool/release_notes.dart turns the release body into store notes, attached
+#      as release-notes.json: the one text every store and track shows.
 #
 # Trunk-based, no branches per channel: every release starts internal, only
 # promotion decides what reaches users. Setup: README.md → Releases.
@@ -106,15 +108,33 @@ jobs:
           flutter build web --release
           (cd build/web && zip -qr "../../loomia-web.zip" .)
 
+      # One Gemini call. Failing only costs the notes, the build still ships.
+      # Edit the attached release-notes.json before promoting to fix the text.
+      - name: Write store release notes
+        id: notes
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ needs.release-please.outputs.tag_name }}
+        run: |
+          gh release view "$TAG" --json body -q .body > release-body.md
+          dart run tool/release_notes.dart release-body.md release-notes.json
+          [ -f release-notes.json ] || exit 0
+          mkdir whatsnew
+          for lang in $(jq -r 'keys[]' release-notes.json); do
+            jq -j --arg l "$lang" '.[$l]' release-notes.json > "whatsnew/whatsnew-$lang"
+          done
+          echo "dir=whatsnew" >> "$GITHUB_OUTPUT"
+
       - name: Attach artifacts to the release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ needs.release-please.outputs.tag_name }}
         run: |
-          gh release upload "$TAG" \
-            build/app/outputs/flutter-apk/app-release.apk \
-            loomia-web.zip \
-            --clobber
+          files=(build/app/outputs/flutter-apk/app-release.apk loomia-web.zip)
+          [ -f release-notes.json ] && files+=(release-notes.json)
+          gh release upload "$TAG" "${files[@]}" --clobber
           gh release edit "$TAG" --prerelease
 
       - name: Upload to Play internal testing
@@ -126,3 +146,4 @@ jobs:
           releaseName: ${{ needs.release-please.outputs.tag_name }}
           track: internal
           status: completed
+          whatsNewDirectory: ${{ steps.notes.outputs.dir }}
