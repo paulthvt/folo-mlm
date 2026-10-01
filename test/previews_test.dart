@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,6 +10,7 @@ import 'package:loomia/features/contacts/presentation/contacts_preview.dart';
 import 'package:loomia/features/team/presentation/team_preview.dart';
 import 'package:loomia/features/today/presentation/today_preview.dart';
 import 'package:loomia/features/workflows/presentation/workflows_preview.dart';
+import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
 /// Every `@Preview`, rendered at its preview size and compared against a
@@ -21,6 +23,9 @@ import 'package:material_ui/material_ui.dart';
 /// Pixels are compared on Linux only. Antialiasing differs per OS, and the
 /// committed PNGs come from CI (see the `update-goldens` input in ci.yaml).
 /// Elsewhere the previews still have to render without an exception.
+///
+/// The same previews are the store screenshots, written to `build/store/` and
+/// never compared — see [_store].
 void main() {
   final previews = <String, (Size, Widget Function())>{
     'today_mobile_light': (const Size(390, 844), todayMobileLight),
@@ -84,4 +89,44 @@ void main() {
       }
     });
   }
+
+  // Store listing screenshots, in every app language, in listing order:
+  //   flutter test test/previews_test.dart --dart-define=STORE_SCREENSHOTS=true
+  // 360×640 at 3× is Play's 1080×1920: the goldens' 390×844 is over its 2:1
+  // ratio limit. Not the App Store yet, it wants exact device sizes.
+  const store = [
+    'today_mobile_light',
+    'contacts_mobile_light',
+    'contact_mobile_light',
+    'team_mobile_light',
+  ];
+  for (final locale in AppLocalizations.supportedLocales) {
+    for (final (index, name) in store.indexed) {
+      testWidgets('store ${locale.languageCode} $name', skip: !_store, (
+        tester,
+      ) async {
+        tester.view
+          ..physicalSize = const Size(1080, 1920)
+          ..devicePixelRatio = 3;
+        tester.platformDispatcher.localesTestValue = [locale];
+        addTearDown(tester.view.reset);
+        addTearDown(tester.platformDispatcher.clearLocalesTestValue);
+
+        await tester.pumpWidget(previews[name]!.$2());
+        await tester.pumpAndSettle();
+
+        final png = await tester.runAsync(() async {
+          final image = await captureImage(
+            find.byType(MaterialApp).evaluate().single,
+          );
+          return image.toByteData(format: ui.ImageByteFormat.png);
+        });
+        File('build/store/play/${locale.languageCode}/${index + 1}_$name.png')
+          ..createSync(recursive: true)
+          ..writeAsBytesSync(png!.buffer.asUint8List());
+      });
+    }
+  }
 }
+
+const _store = bool.fromEnvironment('STORE_SCREENSHOTS');
