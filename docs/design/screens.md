@@ -139,9 +139,12 @@ a person who might need help, and the screen is built out of the same ActionItem
 and ContactRow as Contacts. The copy states the rule out loud.
 
 **Built** ([#101](https://github.com/paulthvt/loomia/issues/101)): the summary
-card and `EVERYONE` (#102); `WORTH A CHECK-IN` follows in #103. A row's second
-line is "Team · joined 3 weeks ago". Tapping a member opens their contact page
-under Contacts. Every size is one 624px column, like Today.
+card and `EVERYONE` (#102), then `WORTH A CHECK-IN` (#103): new on the team
+(under 30 days, nothing logged since joining) or quiet (nothing logged for two
+weeks). Its circle opens Log something. The summary says how many first. A
+row's second line is "Team · talked yesterday", or "Team · joined 3 weeks ago"
+until something is logged since joining. Tapping a member opens their contact
+page under Contacts. Every size is one 624px column, like Today.
 
 Not built: "has not added a contact yet". It would read the member's own book,
 which stays private (#67).

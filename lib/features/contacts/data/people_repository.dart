@@ -17,7 +17,7 @@ class PeopleRepository {
   static const String _table = 'person';
 
   /// Every column, plus the server's computed step and due day.
-  static const String _columns = '*, current_step_id, due_on';
+  static const String _columns = '*, current_step_id, due_on, last_contact_on';
 
   /// Unordered: the controller sorts by `searchKey`, which Postgres collation
   /// does not match.
@@ -188,6 +188,11 @@ Person personFromRow(Map<String, dynamic> row) {
     currentStepId: row['current_step_id'] as String?,
     dueOn: switch (row['due_on']) {
       // A bare date parses as local midnight, like last_tick.
+      final String day => DateTime.parse(day),
+      _ => null,
+    },
+    lastContactOn: switch (row['last_contact_on']) {
+      // A bare date parses as local midnight, like due_on.
       final String day => DateTime.parse(day),
       _ => null,
     },

@@ -2,13 +2,17 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
 import 'package:loomia/features/contacts/data/activity_repository.dart';
+import 'package:loomia/features/contacts/data/people_repository.dart';
 import 'package:loomia/features/contacts/domain/activity.dart';
 import 'package:loomia/features/contacts/domain/people_failure.dart';
 import 'package:loomia/features/contacts/domain/person.dart';
 import 'package:loomia/features/contacts/presentation/history_controller.dart';
 
+import '../../auth/fake_auth_repository.dart';
 import '../fake_activity_repository.dart';
+import '../fake_people_repository.dart';
 
 Activity _note(String id, int day, {int hour = 12}) => Activity(
   id: id,
@@ -23,8 +27,15 @@ Activity _note(String id, int day, {int hour = 12}) => Activity(
   List<Activity> entries,
 ) {
   final activities = FakeActivityRepository(entries);
+  final auth = FakeAuthRepository()..session = true;
+  addTearDown(auth.dispose);
   final container = ProviderContainer.test(
-    overrides: [activityRepositoryProvider.overrideWithValue(activities)],
+    overrides: [
+      activityRepositoryProvider.overrideWithValue(activities),
+      // A save reloads the book, which reads the account.
+      authRepositoryProvider.overrideWithValue(auth),
+      peopleRepositoryProvider.overrideWithValue(FakePeopleRepository()),
+    ],
   );
   // autoDispose: keep it alive the way the open page does.
   container.listen(historyProvider('p1'), (_, _) {});
@@ -107,9 +118,16 @@ void main() {
 
   test('closed while a save is in flight: nothing throws', () async {
     final activities = FakeActivityRepository();
+    final auth = FakeAuthRepository()..session = true;
+    addTearDown(auth.dispose);
     final container = ProviderContainer.test(
-      overrides: [activityRepositoryProvider.overrideWithValue(activities)],
+      overrides: [
+        activityRepositoryProvider.overrideWithValue(activities),
+        authRepositoryProvider.overrideWithValue(auth),
+        peopleRepositoryProvider.overrideWithValue(FakePeopleRepository()),
+      ],
     );
+    // The only listener, as when the page is the last one open.
     final subscription = container.listen(historyProvider('p1'), (_, _) {});
     await container.read(historyProvider('p1').future);
     activities.gate = Completer<void>();

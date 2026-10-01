@@ -9,7 +9,8 @@ import 'package:material_ui/material_ui.dart';
 
 /// Team in both modes, for `flutter widget-preview start`, on a fixed day so
 /// the goldens never follow the clock. Six members: the AvatarGroup shows
-/// three and "+3". Nothing in the app imports this file.
+/// three and "+3"; Bruno is quiet and Inès new, so two check-ins. Nothing in
+/// the app imports this file.
 @Preview(group: 'Team', name: 'Mobile — light', size: Size(390, 844))
 Widget teamMobileLight() => _app(AppTheme.light);
 
@@ -21,17 +22,22 @@ Widget teamDesktopLight() => _app(AppTheme.light);
 
 final _today = DateTime(2026, 9, 30);
 
-Person _member(String name, DateTime since) =>
-    Person(id: name, name: name, stage: Stage.team, stageSince: since);
+Person _member(String name, DateTime since, [DateTime? talked]) => Person(
+  id: name,
+  name: name,
+  stage: Stage.team,
+  stageSince: since,
+  lastContactOn: talked,
+);
 
 /// Sorted as the book is, by name.
 final _book = [
-  _member('Bruno Keller', DateTime(2026, 6, 2)),
+  _member('Bruno Keller', DateTime(2026, 6, 2), DateTime(2026, 9, 12)),
   _member('Inès Moreau', DateTime(2026, 9, 29)),
-  _member('John Baptiste', DateTime(2026, 9, 9)),
-  _member('Léa Fontaine', DateTime(2026, 8, 19)),
-  _member('Marc Lambert', DateTime(2026, 9, 25)),
-  _member('Sophie Laurent', DateTime(2026, 3, 4)),
+  _member('John Baptiste', DateTime(2026, 9, 9), DateTime(2026, 9, 28)),
+  _member('Léa Fontaine', DateTime(2026, 8, 19), DateTime(2026, 9, 24)),
+  _member('Marc Lambert', DateTime(2026, 9, 25), DateTime(2026, 9, 29)),
+  _member('Sophie Laurent', DateTime(2026, 3, 4), DateTime(2026, 9, 26)),
 ];
 
 Widget _app(ThemeData theme) {
@@ -47,6 +53,7 @@ Widget _app(ThemeData theme) {
       today: _today,
       onOpen: (_) {},
       onRetry: () {},
+      onCheckIn: (_) {},
       onRefresh: () async {},
     ),
   );

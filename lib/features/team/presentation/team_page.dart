@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loomia/app/shell/app_shell.dart';
 import 'package:loomia/app/theme/app_colors.dart';
 import 'package:loomia/app/theme/app_spacing.dart';
 import 'package:loomia/app/theme/app_typography.dart';
 import 'package:loomia/core/layout/breakpoints.dart';
+import 'package:loomia/core/ui/action_item.dart';
 import 'package:loomia/core/ui/contact_row.dart';
 import 'package:loomia/core/ui/empty_state.dart';
 import 'package:loomia/core/ui/loomia_avatar.dart';
@@ -14,8 +17,10 @@ import 'package:loomia/core/ui/section_header.dart';
 import 'package:loomia/features/auth/data/auth_repository.dart';
 import 'package:loomia/features/contacts/domain/person.dart';
 import 'package:loomia/features/contacts/presentation/contacts_page.dart';
+import 'package:loomia/features/contacts/presentation/log_activity_sheet.dart';
 import 'package:loomia/features/contacts/presentation/people_controller.dart';
 import 'package:loomia/features/contacts/presentation/people_copy.dart';
+import 'package:loomia/features/team/domain/check_in.dart';
 import 'package:loomia/features/workflows/domain/progress.dart';
 import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
@@ -30,6 +35,22 @@ String joinedLabel(AppLocalizations l10n, DateTime since, DateTime today) {
     < 7 && final days => l10n.teamJoinedDaysAgo(days),
     <= 56 && final days => l10n.teamJoinedWeeksAgo(days ~/ 7),
     _ => l10n.teamJoinedIn(local),
+  };
+}
+
+/// "Team · talked yesterday" once something is logged since they joined;
+/// until then, when they joined.
+String rosterLabel(AppLocalizations l10n, Person person, DateTime today) {
+  final last = person.lastContactOn;
+  if (last == null || !talkedSinceJoining(person)) {
+    return joinedLabel(l10n, person.stageSince, today);
+  }
+  return switch (daysBetween(last, today)) {
+    <= 0 => l10n.teamTalkedToday,
+    1 => l10n.teamTalkedYesterday,
+    < 7 && final days => l10n.teamTalkedDaysAgo(days),
+    <= 56 && final days => l10n.teamTalkedWeeksAgo(days ~/ 7),
+    _ => l10n.teamTalkedIn(last),
   };
 }
 
@@ -53,6 +74,8 @@ class TeamPage extends ConsumerWidget {
           : const AccountButton(),
       onOpen: (person) => openContact(context, person.id),
       onRetry: () => ref.invalidate(book),
+      // Saving reloads the book, so they leave the check-ins.
+      onCheckIn: (person) => unawaited(showLogActivity(context, person)),
       onRefresh: () => refreshPeople(context, ref),
     );
   }
@@ -67,6 +90,7 @@ class TeamView extends StatelessWidget {
     required this.today,
     required this.onOpen,
     required this.onRetry,
+    required this.onCheckIn,
     required this.onRefresh,
     this.accountAction,
     super.key,
@@ -75,11 +99,14 @@ class TeamView extends StatelessWidget {
   /// The whole book; the team is everyone at [Stage.team], in its order.
   final AsyncValue<List<Person>> people;
 
-  /// Local midnight: how long ago each member joined.
+  /// Local midnight: how long ago each member joined or last talked.
   final DateTime today;
 
   final void Function(Person person) onOpen;
   final VoidCallback onRetry;
+
+  /// The circle on a check-in: log something with them.
+  final void Function(Person person) onCheckIn;
   final Future<void> Function() onRefresh;
 
   /// Top-bar entry to Settings, where there is no sidebar to hold it.
@@ -152,8 +179,27 @@ class TeamView extends StatelessWidget {
         ),
       ];
     }
+    final due = checkIns(team, today);
     return [
-      _Summary(team: team),
+      _Summary(team: team, checkIns: due.length),
+      if (due.isNotEmpty) ...[
+        const SizedBox(height: AppSpacing.lg),
+        SectionHeader(title: l10n.teamSectionCheckIn),
+        for (final (index, checkIn) in due.indexed) ...[
+          if (index > 0) const SizedBox(height: AppSpacing.ms),
+          ActionItem(
+            name: checkIn.person.name,
+            reason: _reason(l10n, checkIn),
+            chip: DateChip(switch (checkIn.reason) {
+              CheckInReason.isNew => l10n.teamChipNew,
+              CheckInReason.quiet => l10n.teamChipQuiet(checkIn.days ~/ 7),
+            }),
+            onOpen: () => onOpen(checkIn.person),
+            onResolve: () => onCheckIn(checkIn.person),
+            resolveLabel: l10n.logTitle(firstName(checkIn.person)),
+          ),
+        ],
+      ],
       const SizedBox(height: AppSpacing.lg),
       SectionHeader(
         title: l10n.teamSectionEveryone,
@@ -162,19 +208,34 @@ class TeamView extends StatelessWidget {
       for (final person in team)
         ContactRow(
           name: person.name,
-          subtitle: joinedLabel(l10n, person.stageSince, today),
+          subtitle: rosterLabel(l10n, person, today),
           trailing: LoomiaChip(label: stageLabel(l10n, person.stage)),
           onTap: () => onOpen(person),
         ),
     ];
   }
+
+  String _reason(AppLocalizations l10n, CheckIn checkIn) {
+    final (:person, :reason, :since, :days) = checkIn;
+    return switch (reason) {
+      CheckInReason.isNew when days <= 0 => l10n.teamReasonNewToday,
+      CheckInReason.isNew when days < 7 => l10n.teamReasonNewDays(days),
+      CheckInReason.isNew => l10n.teamReasonNewWeeks(days ~/ 7),
+      CheckInReason.quiet when person.lastContactOn == null =>
+        l10n.teamReasonQuietNothing(since),
+      CheckInReason.quiet => l10n.teamReasonQuiet(since),
+    };
+  }
 }
 
 /// How many, who, and the rule said out loud. No totals, no scores.
 class _Summary extends StatelessWidget {
-  const _Summary({required this.team});
+  const _Summary({required this.team, required this.checkIns});
 
   final List<Person> team;
+
+  /// How many are worth a check-in: the paragraph says it first.
+  final int checkIns;
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +268,8 @@ class _Summary extends StatelessWidget {
             ),
             const SizedBox(height: AppSpacing.ms),
             Text(
-              l10n.teamNotMeasured,
+              // Two whole sentences, so no translation is split.
+              '${l10n.teamCheckInSummary(checkIns)} ${l10n.teamNotMeasured}',
               style: Theme.of(context).textTheme.bodyMedium
                   ?.copyWith(color: colors.textMuted),
             ),

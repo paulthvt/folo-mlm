@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
 import 'package:loomia/features/contacts/data/activity_repository.dart';
 import 'package:loomia/features/contacts/domain/activity.dart';
+import 'package:loomia/features/contacts/presentation/people_controller.dart';
 
 /// One person's history, fetched when their page opens and dropped when it
 /// closes. Keyed by person id: ids are uuids, so no account ever reads another
@@ -27,21 +29,39 @@ class HistoryController extends AsyncNotifier<List<Activity>> {
 
   /// Waits for the server; a failure rethrows and leaves the list as it was.
   Future<void> add(ActivityDraft draft) async {
-    final activity = await _repository.add(personId, draft);
-    _change((entries) => [...entries, activity]);
+    // Alive until the save lands, even if the sheet closes: the book must
+    // still reload.
+    final alive = ref.keepAlive();
+    try {
+      final activity = await _repository.add(personId, draft);
+      _change((entries) => [...entries, activity]);
+      _reloadBook();
+    } finally {
+      alive.close();
+    }
   }
 
   /// Gone at once, deleted behind. A failure puts it back and rethrows.
   Future<void> remove(Activity activity) async {
     _change((entries) => [...entries.where((e) => e.id != activity.id)]);
+    final alive = ref.keepAlive();
     try {
       await _repository.delete(activity.id);
+      _reloadBook();
     } catch (_) {
       _change(
         (entries) => [...entries.where((e) => e.id != activity.id), activity],
       );
       rethrow;
+    } finally {
+      alive.close();
     }
+  }
+
+  /// Last contact is the server's answer: the book re-reads it.
+  void _reloadBook() {
+    if (!ref.mounted) return;
+    ref.invalidate(peopleProvider(ref.read(accountProvider)?.email));
   }
 
   void _change(List<Activity> Function(List<Activity> entries) change) {

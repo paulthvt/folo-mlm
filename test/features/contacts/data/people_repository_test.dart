@@ -222,6 +222,14 @@ void main() {
       expect(person.dueOn, DateTime(2026, 9, 29));
     });
 
+    test('reads last_contact_on as a local day', () {
+      expect(
+        personFromRow(row({'last_contact_on': '2026-09-12'})).lastContactOn,
+        DateTime(2026, 9, 12),
+      );
+      expect(personFromRow(row()).lastContactOn, isNull);
+    });
+
     test('nothing due reads as null', () {
       final person = personFromRow(row());
 

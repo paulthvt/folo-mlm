@@ -414,6 +414,89 @@
   "@teamLoadFailed": {
     "description": "Heading in place of the Team screen when the contacts could not be loaded. Above contactsLoadErrorBody and a Try again button."
   },
+  "teamTalkedToday": "Team · talked today",
+  "@teamTalkedToday": {
+    "description": "Second line of a team member's row: something was logged with them today."
+  },
+  "teamTalkedYesterday": "Team · talked yesterday",
+  "@teamTalkedYesterday": {
+    "description": "Second line of a team member's row: the latest thing logged with them was yesterday."
+  },
+  "teamTalkedDaysAgo": "{count, plural, other{Team · talked {count} days ago}}",
+  "@teamTalkedDaysAgo": {
+    "description": "Second line of a team member's row, 2 to 6 days after the latest thing logged with them.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "teamTalkedWeeksAgo": "{count, plural, =1{Team · talked a week ago} other{Team · talked {count} weeks ago}}",
+  "@teamTalkedWeeksAgo": {
+    "description": "Second line of a team member's row, 1 to 8 weeks after the latest thing logged with them. count is whole weeks.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "teamTalkedIn": "Team · talked in {date}",
+  "@teamTalkedIn": {
+    "description": "Second line of a team member's row, more than 8 weeks after the latest thing logged with them: the month, e.g. 'Team · talked in March 2026'.",
+    "placeholders": {
+      "date": { "type": "DateTime", "format": "yMMMM" }
+    }
+  },
+  "teamCheckInSummary": "{count, plural, =0{Everyone has heard from you lately.} =1{One of them could use a message this week.} other{{count} of them could use a message this week.}}",
+  "@teamCheckInSummary": {
+    "description": "First sentence of the summary card on the Team screen, before teamNotMeasured: how many members are worth a check-in. A gentle offer, never a score. Informal register.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "teamSectionCheckIn": "Worth a check-in",
+  "@teamSectionCheckIn": {
+    "description": "Section header on the Team screen above the members who could use a message: new and not talked to yet, or quiet for two weeks. Shown in capitals."
+  },
+  "teamChipNew": "New",
+  "@teamChipNew": {
+    "description": "Chip on a check-in row: they joined the team less than 30 days ago and nothing is logged since."
+  },
+  "teamChipQuiet": "{count, plural, =1{Quiet a week} other{Quiet {count} weeks}}",
+  "@teamChipQuiet": {
+    "description": "Chip on a check-in row: nothing is logged with them for this many whole weeks (at least 2). Not a reproach.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "teamReasonNewToday": "Joined today and nothing is logged yet",
+  "@teamReasonNewToday": {
+    "description": "Why a member is worth a check-in: they joined the team today."
+  },
+  "teamReasonNewDays": "{count, plural, =1{Joined yesterday and nothing is logged since} other{Joined {count} days ago and nothing is logged since}}",
+  "@teamReasonNewDays": {
+    "description": "Why a member is worth a check-in: they joined the team 1 to 6 days ago and nothing is logged with them since.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "teamReasonNewWeeks": "{count, plural, =1{Joined a week ago and nothing is logged since} other{Joined {count} weeks ago and nothing is logged since}}",
+  "@teamReasonNewWeeks": {
+    "description": "Why a member is worth a check-in: they joined the team this many whole weeks ago (under 30 days) and nothing is logged with them since.",
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "teamReasonQuiet": "You last talked on {date}",
+  "@teamReasonQuiet": {
+    "description": "Why a member is worth a check-in: the latest thing logged with them, two weeks ago or more, e.g. 'You last talked on September 12'. Informal register.",
+    "placeholders": {
+      "date": { "type": "DateTime", "format": "MMMMd" }
+    }
+  },
+  "teamReasonQuietNothing": "Nothing is logged since they joined on {date}",
+  "@teamReasonQuietNothing": {
+    "description": "Why a member is worth a check-in: they joined more than 30 days ago and nothing was ever logged with them, e.g. '… joined on August 3'.",
+    "placeholders": {
+      "date": { "type": "DateTime", "format": "MMMMd" }
+    }
+  },
   "contactsTitle": "Contacts",
   "@contactsTitle": {
     "description": "Title of the list of people."
