@@ -173,7 +173,12 @@ Every table follows the same conventions (#48), first applied to `person`:
 - Default privileges are revoked from both `anon` and `authenticated`; only
   SELECT, INSERT, UPDATE, DELETE are granted to `authenticated`.
 - Enums are Postgres enum types; a new value is a migration.
-- Each table's RLS gets a pgTAP test in `supabase/tests/`.
+- Each table's RLS gets a pgTAP test in `supabase/tests/`. On top of that,
+  `schema_rls_test.sql` fails CI if any `public` table lacks RLS or a policy,
+  or `anon` holds any grant. The publishable key in `core/supabase/` is public
+  by design; RLS is what stands between it and the data. A view must be
+  `security_invoker`, a `security definer` function must check
+  `auth.uid()` itself.
 
 Anything the client must not do with its own key runs in an Edge Function in
 `supabase/functions/` — so far only `delete-account`, which deletes the caller

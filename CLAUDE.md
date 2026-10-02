@@ -104,5 +104,7 @@ already-installed packages first.
   provider in `core/supabase/`, access behind repositories in
   `features/<x>/data/`. Schema changes only via `supabase/migrations/`
   (`supabase migration new`), auth settings only via `supabase/config.toml` —
-  never the dashboard.
+  never the dashboard. Every new table: RLS enabled, owner policies, `revoke
+  all ... from anon, authenticated` then explicit grants, in the same
+  migration (docs/architecture.md → Backend). `schema_rls_test.sql` enforces it.
 - Flag a significant architectural decision before making it, briefly.
