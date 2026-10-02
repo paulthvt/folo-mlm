@@ -64,7 +64,13 @@ class AppShell extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _Sidebar(location: location, expanded: size.isDesktop),
+        // The right inset (a landscape phone's nav buttons) belongs to the
+        // content; left in, every ListTile in the rail pads by it again.
+        MediaQuery.removePadding(
+          context: context,
+          removeRight: true,
+          child: _Sidebar(location: location, expanded: size.isDesktop),
+        ),
         // A route's modal barrier blocks the semantics of everything painted
         // before it; without this boundary screen readers never see the sidebar.
         Expanded(child: Semantics(container: true, child: child)),
@@ -91,12 +97,15 @@ class _Sidebar extends ConsumerWidget {
     return Material(
       color: colors.surfaceSunken,
       child: Container(
-        width: expanded ? _expandedWidth : _railWidth,
+        // Grows by the inset the SafeArea below takes (a landscape phone's
+        // cutout), so the items keep their full width.
+        width:
+            (expanded ? _expandedWidth : _railWidth) +
+            MediaQuery.paddingOf(context).left,
         decoration: BoxDecoration(
           border: Border(right: BorderSide(color: colors.borderSubtle)),
         ),
         child: SafeArea(
-          right: false,
           child: Padding(
             padding: const EdgeInsets.all(AppSpacing.ms),
             child: Column(

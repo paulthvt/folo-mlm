@@ -47,6 +47,21 @@ void main() {
     semantics.dispose();
   });
 
+  testWidgets('landscape phone: the rail widens past the cutout inset', (
+    tester,
+  ) async {
+    tester.view.padding = const FakeViewPadding(left: 28, right: 48);
+    addTearDown(tester.view.resetPadding);
+    await pumpLoomia(tester, size: const Size(832, 384));
+
+    // The sidebar comes first in the Row, so its Today item is the first tile.
+    final tile = find.byType(ListTile).first;
+    expect(tester.getTopLeft(tile).dx, greaterThanOrEqualTo(28));
+    expect(tester.getSize(tile).width, greaterThanOrEqualTo(44));
+    final icon = find.byIcon(Icons.wb_sunny_outlined);
+    expect(tester.getCenter(icon).dx, tester.getCenter(tile).dx);
+  });
+
   testWidgets('desktop: the sidebar, its account block opens Settings', (
     tester,
   ) async {
