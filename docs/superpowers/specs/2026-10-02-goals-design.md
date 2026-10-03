@@ -42,7 +42,7 @@ Built from a real user's practice (a dōTERRA consultant). Her month has:
 | Suggested targets | Average of the last 3 closed months; loyalty from the forecast. No AI. |
 | Navigation | Today · Contacts · Team · Goals until the Calendar epic. Sidebar gains Goals. |
 | Habits ("What you said you would do") | Not built. Parked issue. |
-| Upline sees my plan | Not built. Team plan, opt-in per member (#67). |
+| Upline sees my plan | Not built. Needs connections (#67); Personal plan, opt-in per member (#147). |
 | Push reminder for the ritual | Not built. Waits for FCM. |
 | Currency | None. An amount is a plain number in the business model's unit. |
 
@@ -258,7 +258,7 @@ Updated frames:
 
 ## Later in this epic (parked issues)
 
-Habits. Upline visibility (team plan). Push reminders for the ritual (FCM). AI
+Habits. Upline visibility (#147, Personal plan). Push reminders for the ritual (FCM). AI
 help to set targets.
 
 ## Calendar epic (sketch, designed when started)
