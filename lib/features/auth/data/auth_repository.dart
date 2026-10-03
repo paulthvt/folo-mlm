@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:loomia/core/business_model/business_model.dart';
 import 'package:loomia/core/supabase/supabase_config.dart';
 import 'package:loomia/core/supabase/supabase_provider.dart';
 import 'package:loomia/features/auth/data/auth_failure_mapping.dart';
@@ -37,6 +38,7 @@ class AuthRepository {
       appearance:
           Appearance.values.asNameMap()[metadata['theme']] ?? Appearance.system,
       onboarded: metadata['onboarded'] == true,
+      businessModel: BusinessModel.parse(metadata['business_model']),
     );
   }
 
@@ -130,6 +132,14 @@ class AuthRepository {
           'theme': appearance == Appearance.system ? null : appearance.name,
         },
       ),
+    ),
+  );
+
+  /// Stored as `business_model`; removed for [BusinessModel.other], like a
+  /// system appearance.
+  Future<void> updateBusinessModel(BusinessModel model) => _guard(
+    () => _auth.updateUser(
+      UserAttributes(data: {'business_model': model.stored}),
     ),
   );
 

@@ -10,7 +10,12 @@ import 'package:material_ui/material_ui.dart';
 /// across size classes — a form has one column at every width. Only the
 /// vertical rhythm steps up on a larger screen.
 class AuthScaffold extends StatelessWidget {
-  const AuthScaffold({required this.children, this.back, super.key});
+  const AuthScaffold({
+    required this.children,
+    this.back,
+    this.onBack,
+    super.key,
+  });
 
   static const double _columnWidth = 400;
 
@@ -21,6 +26,10 @@ class AuthScaffold extends StatelessWidget {
   /// nothing on the stack to pop — see `backOr`.
   final String? back;
 
+  /// Instead of [back], for a step inside one screen: there is no route to go
+  /// back to, only the previous step.
+  final VoidCallback? onBack;
+
   @override
   Widget build(BuildContext context) {
     final rhythm = context.screenSize == ScreenSize.mobile
@@ -28,10 +37,12 @@ class AuthScaffold extends StatelessWidget {
         : AppSpacing.xl;
 
     return Scaffold(
-      appBar: back == null
+      appBar: back == null && onBack == null
           ? null
           : AppBar(
-              leading: BackButton(onPressed: () => backOr(context, back!)),
+              leading: BackButton(
+                onPressed: onBack ?? () => backOr(context, back!),
+              ),
             ),
       body: SafeArea(
         child: Center(

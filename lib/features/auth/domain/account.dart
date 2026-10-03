@@ -1,3 +1,5 @@
+import 'package:loomia/core/business_model/business_model.dart';
+
 /// Light or dark, as chosen in Settings. [system] follows the device.
 enum Appearance { system, light, dark }
 
@@ -10,6 +12,7 @@ class Account {
     this.locale,
     this.appearance = Appearance.system,
     this.onboarded = true,
+    this.businessModel = BusinessModel.other,
   });
 
   /// Empty when the user never gave one (an email sign-up always does).
@@ -24,6 +27,9 @@ class Account {
   /// False for a new account until its first-run screen is passed (imported,
   /// added someone, or skipped); then true on every device.
   final bool onboarded;
+
+  /// Which company's words the app uses. Other until the user picks one.
+  final BusinessModel businessModel;
 
   /// What to show where a name is expected: the first name, else the email.
   String get displayName => firstName.isEmpty ? email : firstName;
