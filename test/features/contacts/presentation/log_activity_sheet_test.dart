@@ -1,5 +1,8 @@
 import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoDatePicker;
 import 'package:flutter_test/flutter_test.dart';
+import 'package:loomia/core/business_model/business_model.dart';
+import 'package:loomia/core/ui/labeled_field.dart';
+import 'package:loomia/features/auth/domain/account.dart';
 import 'package:loomia/features/contacts/domain/activity.dart';
 import 'package:loomia/features/contacts/domain/people_failure.dart';
 import 'package:loomia/features/contacts/domain/person.dart';
@@ -27,13 +30,31 @@ void main() {
 
   setUp(() => activities = FakeActivityRepository());
 
-  Future<void> open(WidgetTester tester) => pumpFormHarness(
+  Future<void> open(
+    WidgetTester tester, {
+    BusinessModel model = BusinessModel.doterra,
+  }) => pumpFormHarness(
     tester,
     people: FakePeopleRepository([_claire]),
     activities: activities,
+    account: Account(
+      firstName: 'Pauline',
+      email: 'p@example.com',
+      businessModel: model,
+    ),
     open: (context) => showLogActivity(context, _claire),
     result: (_) {},
   );
+
+  Finder field(String label) => find.descendant(
+    of: find.widgetWithText(LabeledField, label),
+    matching: find.byType(TextFormField),
+  );
+
+  Future<void> save(WidgetTester tester) async {
+    await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+    await tester.pumpAndSettle();
+  }
 
   testWidgets('titled with the first name, Note and today preset', (
     tester,
@@ -159,5 +180,116 @@ void main() {
 
     expect(find.widgetWithText(ChoiceChip, 'Step'), findsNothing);
     expect(find.widgetWithText(ChoiceChip, 'Note'), findsOneWidget);
+  });
+
+  testWidgets('Order asks for an amount in PV and a note', (tester) async {
+    await open(tester);
+    expect(find.text('Amount'), findsNothing);
+
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Order'));
+    await tester.pumpAndSettle();
+
+    expect(field('Amount'), findsOneWidget);
+    expect(find.text('PV'), findsOneWidget);
+    expect(
+      tester.getSemantics(field('Amount')),
+      isSemantics(label: 'Amount', hint: 'PV'),
+    );
+    expect(field('Note'), findsOneWidget);
+    expect(find.text('What happened'), findsNothing);
+  });
+
+  testWidgets('Other shows no unit', (tester) async {
+    await open(tester, model: BusinessModel.other);
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Order'));
+    await tester.pumpAndSettle();
+
+    expect(field('Amount'), findsOneWidget);
+    expect(find.text('PV'), findsNothing);
+  });
+
+  testWidgets('an amount alone saves', (tester) async {
+    await open(tester);
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Order'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(field('Amount'), '100');
+    await save(tester);
+
+    final saved = activities.store.single;
+    expect(saved.kind, ActivityKind.order);
+    expect(saved.amount, 100);
+    expect(saved.text, isNull);
+  });
+
+  testWidgets('an amount and a note save together', (tester) async {
+    await open(tester);
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Order'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(field('Amount'), '12.5');
+    await tester.enterText(field('Note'), 'Wild Orange');
+    await save(tester);
+
+    final saved = activities.store.single;
+    expect(saved.amount, 12.5);
+    expect(saved.text, 'Wild Orange');
+  });
+
+  testWidgets('an order with neither is refused', (tester) async {
+    await open(tester);
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Order'));
+    await tester.pumpAndSettle();
+
+    await save(tester);
+
+    expect(find.text('Add an amount or a note.'), findsOneWidget);
+    expect(activities.calls, isNot(contains('add(p1)')));
+  });
+
+  testWidgets('a bad amount is refused', (tester) async {
+    await open(tester);
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Order'));
+    await tester.pumpAndSettle();
+
+    for (final typed in ['6,00', '0', 'abc']) {
+      await tester.enterText(field('Amount'), typed);
+      await save(tester);
+      expect(
+        find.text('Use a number above 0, like 100 or 99.5.'),
+        findsOneWidget,
+        reason: typed,
+      );
+    }
+    expect(activities.calls, isNot(contains('add(p1)')));
+  });
+
+  testWidgets('6,000 in English is six thousand', (tester) async {
+    await open(tester);
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Order'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(field('Amount'), '6,000');
+    await save(tester);
+
+    expect(activities.store.single.amount, 6000);
+  });
+
+  testWidgets('an amount typed under Order is dropped for another kind', (
+    tester,
+  ) async {
+    await open(tester);
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Order'));
+    await tester.pumpAndSettle();
+    await tester.enterText(field('Amount'), '100');
+
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Call'));
+    await tester.pumpAndSettle();
+    await tester.enterText(field('What happened'), 'Called back');
+    await save(tester);
+
+    final saved = activities.store.single;
+    expect(saved.kind, ActivityKind.call);
+    expect(saved.amount, isNull);
   });
 }

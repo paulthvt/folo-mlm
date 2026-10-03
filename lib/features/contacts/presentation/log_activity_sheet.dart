@@ -1,9 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/business_model/business_model.dart';
 import 'package:loomia/core/ui/form_error.dart';
 import 'package:loomia/core/ui/labeled_field.dart';
 import 'package:loomia/core/ui/loomia_dialog.dart';
 import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
 import 'package:loomia/features/contacts/domain/activity.dart';
 import 'package:loomia/features/contacts/domain/people_failure.dart';
 import 'package:loomia/features/contacts/domain/person.dart';
@@ -29,6 +31,7 @@ class _LogActivityForm extends ConsumerStatefulWidget {
 class _LogActivityFormState extends ConsumerState<_LogActivityForm> {
   final _form = GlobalKey<FormState>();
   final _text = TextEditingController();
+  final _amount = TextEditingController();
   ActivityKind _kind = ActivityKind.note;
   DateTime _day = today();
   bool _saving = false;
@@ -37,6 +40,7 @@ class _LogActivityFormState extends ConsumerState<_LogActivityForm> {
   @override
   void dispose() {
     _text.dispose();
+    _amount.dispose();
     super.dispose();
   }
 
@@ -56,7 +60,10 @@ class _LogActivityFormState extends ConsumerState<_LogActivityForm> {
         kind: _kind,
         happenedOn: _day,
         text: _text.text.trim(),
-        amount: null,
+        // Typed under Order, then another kind picked: not this entry's.
+        amount: _kind == ActivityKind.order
+            ? parseAmount(_amount.text, AppLocalizations.of(context).localeName)
+            : null,
       ));
       if (mounted) Navigator.pop(context);
     } on PeopleFailure catch (failure) {
@@ -77,6 +84,10 @@ class _LogActivityFormState extends ConsumerState<_LogActivityForm> {
     final material = MaterialLocalizations.of(context);
     final failure = _failure;
     final currentDay = today();
+    final order = _kind == ActivityKind.order;
+    final unit = l10n.orderUnit(
+      (ref.watch(accountProvider)?.businessModel ?? BusinessModel.other).name,
+    );
 
     return Form(
       key: _form,
@@ -131,16 +142,59 @@ class _LogActivityFormState extends ConsumerState<_LogActivityForm> {
                 ),
               ),
             ),
+            if (order)
+              LabeledField(
+                label: l10n.logAmount,
+                // The unit is drawn excluded from semantics (see below), so
+                // a screen reader hears it here.
+                child: Semantics(
+                  hint: unit,
+                  child: TextFormField(
+                    controller: _amount,
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
+                    // An icon, not suffixText, kept out of semantics: a suffix
+                    // that has semantics trips a Flutter assertion in
+                    // LabeledField's MergeSemantics when the form rebuilds.
+                    decoration: InputDecoration(
+                      suffixIcon: unit.isEmpty
+                          ? null
+                          : Padding(
+                              padding: const EdgeInsetsDirectional.only(
+                                end: AppSpacing.md,
+                              ),
+                              child: ExcludeSemantics(child: Text(unit)),
+                            ),
+                      suffixIconConstraints: const BoxConstraints(),
+                    ),
+                    validator: (value) {
+                      final typed = (value ?? '').trim();
+                      return typed.isEmpty ||
+                              parseAmount(typed, l10n.localeName) != null
+                          ? null
+                          : l10n.logAmountInvalid;
+                    },
+                  ),
+                ),
+              ),
             LabeledField(
-              label: l10n.logWhat,
+              // Keeps its state, focus included, when Amount appears above.
+              key: const ValueKey('text'),
+              label: order ? l10n.logNote : l10n.logWhat,
               child: TextFormField(
                 controller: _text,
                 autofocus: true,
                 minLines: 2,
                 maxLines: 5,
                 textCapitalization: TextCapitalization.sentences,
-                validator: (value) =>
-                    (value ?? '').trim().isEmpty ? l10n.logWhatRequired : null,
+                validator: (value) {
+                  if ((value ?? '').trim().isNotEmpty) return null;
+                  if (!order) return l10n.logWhatRequired;
+                  return _amount.text.trim().isEmpty
+                      ? l10n.logOrderRequired
+                      : null;
+                },
               ),
             ),
           ],
