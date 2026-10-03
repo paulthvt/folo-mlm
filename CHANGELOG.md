@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.1.3](https://github.com/paulthvt/loomia/compare/v0.1.2...v0.1.3) (2026-10-03)
+
+
+### ✨ Features
+
+* **contacts:** amount on orders ([#158](https://github.com/paulthvt/loomia/issues/158)) ([66ff855](https://github.com/paulthvt/loomia/commit/66ff85542a2d0f8e55d9243af25650137be8344a))
+* **onboarding:** ask which company the user works with ([#156](https://github.com/paulthvt/loomia/issues/156)) ([4f7eb16](https://github.com/paulthvt/loomia/commit/4f7eb160c8a7e12e373193d99b8af078f193af82))
+
+
+### 🐛 Bug Fixes
+
+* **shell:** keep the side rail usable on a landscape phone ([#132](https://github.com/paulthvt/loomia/issues/132)) ([7325a35](https://github.com/paulthvt/loomia/commit/7325a353762b67526e5860dd37647bf6d665692d))
+
+
+### 🔧 Miscellaneous
+
+* **supabase:** CI guard that every public table has RLS ([#135](https://github.com/paulthvt/loomia/issues/135)) ([9f7328d](https://github.com/paulthvt/loomia/commit/9f7328dc5c6c497fcf47c3e17f2a065d1cdbd9ec))
+
 ## [0.1.2](https://github.com/paulthvt/loomia/compare/v0.1.1...v0.1.2) (2026-10-01)
 
 
