@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:loomia/core/business_model/business_model.dart';
 import 'package:loomia/features/auth/data/auth_repository.dart';
 import 'package:loomia/features/auth/domain/account.dart';
 import 'package:loomia/features/auth/domain/auth_change.dart';
@@ -80,6 +81,7 @@ class FakeAuthRepository implements AuthRepository {
       locale: locale,
       appearance: current.appearance,
       onboarded: current.onboarded,
+      businessModel: current.businessModel,
     );
     emit(AuthChange.userUpdated);
   }
@@ -95,6 +97,7 @@ class FakeAuthRepository implements AuthRepository {
       locale: current.locale,
       appearance: current.appearance,
       onboarded: current.onboarded,
+      businessModel: current.businessModel,
     );
     emit(AuthChange.userUpdated);
   }
@@ -110,6 +113,23 @@ class FakeAuthRepository implements AuthRepository {
       locale: current.locale,
       appearance: appearance,
       onboarded: current.onboarded,
+      businessModel: current.businessModel,
+    );
+    emit(AuthChange.userUpdated);
+  }
+
+  @override
+  Future<void> updateBusinessModel(BusinessModel model) async {
+    await _record('updateBusinessModel(${model.name})');
+    final current = account;
+    if (current == null) return;
+    account = Account(
+      firstName: current.firstName,
+      email: current.email,
+      locale: current.locale,
+      appearance: current.appearance,
+      onboarded: current.onboarded,
+      businessModel: model,
     );
     emit(AuthChange.userUpdated);
   }
@@ -124,6 +144,7 @@ class FakeAuthRepository implements AuthRepository {
       email: current.email,
       locale: current.locale,
       appearance: current.appearance,
+      businessModel: current.businessModel,
     );
     emit(AuthChange.userUpdated);
   }

@@ -1302,6 +1302,18 @@
   "@firstRunSkip": {
     "description": "Leaves the first-run screen without adding anyone; importing stays available from Contacts."
   },
+  "businessModelQuestion": "Which company do you work with?",
+  "@businessModelQuestion": {
+    "description": "Question on the first step of the first-run screen, and title of the dialog that changes the answer in Settings. Loomia uses the company's own words for volumes and ranks."
+  },
+  "businessModelDoterra": "dōTERRA",
+  "@businessModelDoterra": {
+    "description": "Company name, a brand: keep exactly as written (lowercase d, macron on the o, TERRA in capitals) in every language."
+  },
+  "businessModelOther": "Other",
+  "@businessModelOther": {
+    "description": "Choice for anyone not working with a company Loomia knows; the app then uses neutral terms. Also shown in Settings beside Company."
+  },
   "importTitle": "Your contacts",
   "@importTitle": {
     "description": "Title of the screen listing the phone's contacts to import."
