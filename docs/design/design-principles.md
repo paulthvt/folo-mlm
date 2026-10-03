@@ -45,6 +45,11 @@ own intent, never against other people.
 leaderboards, no ranks, no streaks that break, no trophies. Behind-pace uses the
 warm secondary, not error red.
 
+*The one exception:* a rank, when the user's company has ranks (dōTERRA), is a
+private target the user sets for themselves — "Aiming for Elite" — or a fact
+they write on a team member's page. Never a badge, never shown outside Goals
+and that page, never compared or ranked against anyone.
+
 ## 6. Structure from space and type, not from chrome
 
 Hierarchy comes from whitespace, type weight, and one accent colour. Borders and

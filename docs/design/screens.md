@@ -309,15 +309,21 @@ which shows the saved state again.
 
 Added 2026-09-30 for [#61](https://github.com/paulthvt/loomia/issues/61).
 Frames `First run — mobile`, `First run — web` and `Import contacts — mobile`.
+Frames First run step 1 (210:3226) and step 2 (212:3241).
 
-**First run** is one screen, shown once after sign-up, in the auth shape (one
-column capped at 400, no navigation): `Who do you already work with?`. On a
-phone: Import from your contacts (primary), Add someone, Skip for now. On the
-web there is no address book to read, so Add someone is the primary and the
-body says the phone app can import. Every way out — Skip included — marks the
-account (`onboarded` in the Supabase user metadata), so it never comes back,
-on any device. Importing stays in Contacts: an icon in the toolbar and a text
-button under the empty state, both absent on the web.
+**First run** has two steps, shown once after sign-up, in the auth shape (one
+column capped at 400, no navigation). Step 1 (`Welcome`, [#137](https://github.com/paulthvt/loomia/issues/137)):
+`Which company do you work with?`, two cards, dōTERRA and Other. The tap is the
+answer — no preselection, no Next — saved as `business_model` in the Supabase
+user metadata (absent for Other) and changeable in Settings → Account. Step 2:
+`Who do you already work with?`, with a back button to step 1. On a phone:
+Import from your contacts (primary), Add someone, Skip for now. On the web
+there is no address book to read, so Add someone is the primary and the body
+says the phone app can import. Every way out of step 2 — Skip included — marks
+the account (`onboarded`), so it never comes back, on any device. The step is
+local state under `/start`: the router guard does not change. Importing stays
+in Contacts: an icon in the toolbar and a text button under the empty state,
+both absent on the web.
 
 **Import** is a full screen: the eyebrow counts what is ticked, a search, a
 reassurance line (`Only the people you tick are saved in Loomia.`), then one row
@@ -354,7 +360,7 @@ set of values to keep in sync. Three things are worth looking at specifically:
 
 ## What these screens deliberately do not have
 
-No onboarding tour beyond the one first-run screen, no notification centre, no analytics view, no team performance
+No onboarding tour beyond the two first-run steps, no notification centre, no analytics view, no team performance
 comparison, no gamification of any kind. Each would need either a product decision or a feature that does not exist yet
 (CLAUDE.md: don't scaffold for later).
 

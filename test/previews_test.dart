@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:loomia/app/theme/theme_preview.dart';
 import 'package:loomia/core/ui/ui_preview.dart';
 import 'package:loomia/features/contacts/presentation/contacts_preview.dart';
+import 'package:loomia/features/onboarding/presentation/first_run_preview.dart';
 import 'package:loomia/features/team/presentation/team_preview.dart';
 import 'package:loomia/features/today/presentation/today_preview.dart';
 import 'package:loomia/features/workflows/presentation/workflows_preview.dart';
@@ -37,6 +38,8 @@ void main() {
     'contact_mobile_dark': (const Size(390, 844), contactMobileDark),
     'team_member_mobile_light': (const Size(390, 844), teamMemberMobileLight),
     'contacts_desktop_light': (const Size(1440, 900), contactsDesktopLight),
+    'first_run_company_light': (const Size(390, 844), firstRunCompanyLight),
+    'first_run_people_light': (const Size(390, 844), firstRunPeopleLight),
     'workflows_list_light': (const Size(390, 844), workflowsListLight),
     'workflow_editor_light': (const Size(390, 844), workflowEditorLight),
     'workflow_step_light': (const Size(390, 844), workflowStepLight),
