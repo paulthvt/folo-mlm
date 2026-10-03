@@ -44,8 +44,8 @@ reads one person's history, which never holds an own order.
 ## Review Focus
 
 1. Order picked, `100` typed, then Call picked and text saved: the call is saved with no amount (the hidden field must not leak). → Task 3, `an amount typed under Order is dropped for another kind`.
-2. `6,000` typed by someone who means six thousand: refused with a message, never saved as 6. → Task 2 (`parseAmount`) and Task 3, `a bad amount is refused`.
-3. French `12,5`: saved as 12.5. → Task 2, `a comma is a decimal point`.
+2. English `6,000` is six thousand, French `12,5` is twelve and a half: the app language decides the decimal separator (US-style for English). → Task 2, `parseAmount` groups, and Task 3, `6,000 in English is six thousand`.
+3. A typed value the language can't read cleanly (English `6,00` or `1,5`, French `6.000`) is refused with a message, never guessed. → Task 2 and Task 3, `a bad amount is refused`.
 4. An order with an amount and an empty note saves with `text` null; HISTORY reads "Order · 100 PV" over the day alone. → Task 3, `an amount alone saves`, and `Log an order from ⋯ reads Order · 100 PV`.
 5. An Other account: no unit next to the field; the title reads "Order · 100". → Task 1 copy test and Task 3, `Other shows no unit`.
 
@@ -499,45 +499,73 @@ git commit -m "feat(contacts): an order can carry an amount"
 
 **Interfaces:**
 - Consumes: `Activity.amount` (Task 1).
-- Produces: `double? parseAmount(String input)`; `typedef ActivityDraft = ({ActivityKind kind, DateTime happenedOn, String text, double? amount})`. `text` may be blank only on an order with an amount; the row writes it as null.
+- Produces: `double? parseAmount(String input, String locale)` (`locale` is `AppLocalizations.localeName`); `typedef ActivityDraft = ({ActivityKind kind, DateTime happenedOn, String text, double? amount})`. `text` may be blank only on an order with an amount; the row writes it as null.
 
 - [ ] **Step 1: Write the failing tests**
 
 Append to `test/features/contacts/domain/activity_test.dart`:
 
 ```dart
-  group('parseAmount', () {
+  group('parseAmount in English', () {
+    double? en(String typed) => parseAmount(typed, 'en');
+
     test('a whole number, or up to two decimals', () {
-      expect(parseAmount('100'), 100);
-      expect(parseAmount('99.5'), 99.5);
-      expect(parseAmount('99.50'), 99.5);
+      expect(en('100'), 100);
+      expect(en('99.5'), 99.5);
+      expect(en('99.50'), 99.5);
     });
 
-    test('a comma is a decimal point', () {
-      expect(parseAmount('12,5'), 12.5);
+    test('a comma groups thousands', () {
+      expect(en('6,000'), 6000);
+      expect(en('1,840.5'), 1840.5);
+      expect(en('1,234,567'), 1234567);
     });
 
-    test('spaces are ignored, the French narrow one too', () {
-      expect(parseAmount(' 1 840 '), 1840);
-      expect(parseAmount('1\u202F840'), 1840);
+    test('a comma that does not group thousands is refused, not guessed', () {
+      expect(en('1,5'), isNull);
+      expect(en('6,00'), isNull);
+      expect(en('12,34,567'), isNull);
     });
 
-    test('three decimals are a thousands separator: refused, not 6', () {
-      expect(parseAmount('6,000'), isNull);
-      expect(parseAmount('6.000'), isNull);
+    test('spaces are ignored', () {
+      expect(en(' 1 840 '), 1840);
     });
 
-    test('zero, negative, text, empty or too big: refused', () {
-      expect(parseAmount('0'), isNull);
-      expect(parseAmount('0.00'), isNull);
-      expect(parseAmount('-5'), isNull);
-      expect(parseAmount('abc'), isNull);
-      expect(parseAmount(''), isNull);
-      expect(parseAmount('12345678901'), isNull);
+    test('zero, negative, text, empty, too precise or too big: refused', () {
+      expect(en('0'), isNull);
+      expect(en('0.00'), isNull);
+      expect(en('-5'), isNull);
+      expect(en('abc'), isNull);
+      expect(en(''), isNull);
+      expect(en('1.005'), isNull);
+      expect(en('12345678901'), isNull);
     });
 
     test('the largest the column holds is accepted', () {
-      expect(parseAmount('9999999999.99'), 9999999999.99);
+      expect(en('9,999,999,999.99'), 9999999999.99);
+    });
+  });
+
+  group('parseAmount in French', () {
+    double? fr(String typed) => parseAmount(typed, 'fr');
+
+    test('a comma is the decimal point', () {
+      expect(fr('12,5'), 12.5);
+      expect(fr('1,84'), 1.84);
+    });
+
+    test('a point is one too: some number pads only offer it', () {
+      expect(fr('12.5'), 12.5);
+    });
+
+    test('spaces group thousands, the narrow no-break one too', () {
+      expect(fr('1 840'), 1840);
+      expect(fr('1\u202F840,5'), 1840.5);
+    });
+
+    test('three decimals are refused, never read as thousands', () {
+      expect(fr('6.000'), isNull);
+      expect(fr('6,000'), isNull);
     });
   });
 ```
@@ -607,8 +635,8 @@ Expected: compile errors: `parseAmount` undefined, the draft has no `amount`.
 
 - [ ] **Step 3: Implement**
 
-`lib/features/contacts/domain/activity.dart`, replace the typedef and add
-`parseAmount` below it:
+`lib/features/contacts/domain/activity.dart`, add `import 'package:intl/intl.dart';`
+(already a dependency), replace the typedef and add `parseAmount` below it:
 
 ```dart
 /// What Log something collects. Never a stage entry. [text] may be blank only
@@ -620,14 +648,29 @@ typedef ActivityDraft = ({
   double? amount,
 });
 
-/// An order's amount as typed: digits, then `.` or `,` and at most two
-/// decimals (the column is numeric(12,2)). Spaces are ignored, so "1 840" is
-/// 1840. Null for anything else, zero included. "6,000" is refused rather
-/// than read as 6: three decimals can only be a thousands separator.
-double? parseAmount(String input) {
-  final match = RegExp(
-    r'^(\d{1,10})(?:[.,](\d{1,2}))?$',
-  ).firstMatch(input.replaceAll(RegExp(r'\s'), ''));
+/// An order's amount as typed, read the way [locale] writes numbers: at most
+/// two decimals (the column is numeric(12,2)), spaces ignored. Null for
+/// anything else, zero included; an ambiguous value is refused, never
+/// guessed.
+///
+/// Where the decimal point is `.` (English), `,` only groups thousands:
+/// "6,000" is 6000, "6,00" is refused. Elsewhere (French) `,` is the decimal
+/// point and so is `.`, which some number pads offer alone; "6.000" has three
+/// decimals and is refused.
+// ponytail: the app language stands for the region (English reads US-style);
+// use the device locale if someone writes English with decimal commas.
+double? parseAmount(String input, String locale) {
+  var typed = input.replaceAll(RegExp(r'\s'), '');
+  if (NumberFormat.decimalPattern(locale).symbols.DECIMAL_SEP == '.') {
+    if (typed.contains(',') &&
+        !RegExp(r'^\d{1,3}(,\d{3})+(\.\d*)?$').hasMatch(typed)) {
+      return null;
+    }
+    typed = typed.replaceAll(',', '');
+  } else {
+    typed = typed.replaceAll(',', '.');
+  }
+  final match = RegExp(r'^(\d{1,10})(?:\.(\d{1,2}))?$').firstMatch(typed);
   if (match == null) return null;
   final value = double.parse('${match[1]}.${match[2] ?? '0'}');
   return value > 0 ? value : null;
@@ -795,7 +838,7 @@ Append:
     await tester.tap(find.widgetWithText(ChoiceChip, 'Order'));
     await tester.pumpAndSettle();
 
-    await tester.enterText(field('Amount'), '12,5');
+    await tester.enterText(field('Amount'), '12.5');
     await tester.enterText(field('Note'), 'Wild Orange');
     await save(tester);
 
@@ -820,7 +863,7 @@ Append:
     await tester.tap(find.widgetWithText(ChoiceChip, 'Order'));
     await tester.pumpAndSettle();
 
-    for (final typed in ['6,000', '0', 'abc']) {
+    for (final typed in ['6,00', '0', 'abc']) {
       await tester.enterText(field('Amount'), typed);
       await save(tester);
       expect(
@@ -830,6 +873,17 @@ Append:
       );
     }
     expect(activities.calls, isNot(contains('add(p1)')));
+  });
+
+  testWidgets('6,000 in English is six thousand', (tester) async {
+    await open(tester);
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Order'));
+    await tester.pumpAndSettle();
+
+    await tester.enterText(field('Amount'), '6,000');
+    await save(tester);
+
+    expect(activities.store.single.amount, 6000);
   });
 
   testWidgets('an amount typed under Order is dropped for another kind', (
@@ -910,7 +964,9 @@ In `_submit`, the draft:
         happenedOn: _day,
         text: _text.text.trim(),
         // Typed under Order, then another kind picked: not this entry's.
-        amount: _kind == ActivityKind.order ? parseAmount(_amount.text) : null,
+        amount: _kind == ActivityKind.order
+            ? parseAmount(_amount.text, AppLocalizations.of(context).localeName)
+            : null,
       ));
 ```
 
@@ -939,7 +995,7 @@ Between the When field and the text field:
                   ),
                   validator: (value) {
                     final typed = (value ?? '').trim();
-                    return typed.isEmpty || parseAmount(typed) != null
+                    return typed.isEmpty || parseAmount(typed, l10n.localeName) != null
                         ? null
                         : l10n.logAmountInvalid;
                   },
