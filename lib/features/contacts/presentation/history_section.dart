@@ -2,9 +2,11 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loomia/app/theme/app_colors.dart';
 import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/business_model/business_model.dart';
 import 'package:loomia/core/ui/activity_item.dart';
 import 'package:loomia/core/ui/loomia_dialog.dart';
 import 'package:loomia/core/ui/section_header.dart';
+import 'package:loomia/features/auth/data/auth_repository.dart';
 import 'package:loomia/features/contacts/domain/activity.dart';
 import 'package:loomia/features/contacts/domain/people_failure.dart';
 import 'package:loomia/features/contacts/domain/person.dart';
@@ -59,6 +61,8 @@ class _HistorySectionState extends ConsumerState<HistorySection> {
     final entries = history.value;
     final shown = _expanded ? entries : entries?.take(_preview).toList();
     final today = DateTime.now();
+    final model =
+        ref.watch(accountProvider)?.businessModel ?? BusinessModel.other;
 
     Widget muted(String text) => Text(
       text,
@@ -96,6 +100,7 @@ class _HistorySectionState extends ConsumerState<HistorySection> {
             _Entry(
               activity: activity,
               today: today,
+              model: model,
               last: index == shown.length - 1,
               onDelete: activity.kind == ActivityKind.stage
                   ? null
@@ -121,12 +126,14 @@ class _Entry extends StatelessWidget {
   const _Entry({
     required this.activity,
     required this.today,
+    required this.model,
     required this.last,
     required this.onDelete,
   });
 
   final Activity activity;
   final DateTime today;
+  final BusinessModel model;
   final bool last;
   final VoidCallback? onDelete;
 
@@ -134,7 +141,7 @@ class _Entry extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
     final item = ActivityItem(
-      title: activityTitle(l10n, activity),
+      title: activityTitle(l10n, activity, model),
       meta: activityMeta(l10n, activity, today),
       showRailLine: !last,
     );

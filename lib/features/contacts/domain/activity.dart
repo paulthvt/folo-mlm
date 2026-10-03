@@ -26,11 +26,19 @@ class Activity {
     required this.createdAt,
     this.text,
     this.stage,
+    this.amount,
   }) : assert(
          kind == ActivityKind.stage
-             ? stage != null && text == null
-             : stage == null && text != null && text.trim().isNotEmpty,
-         'A stage entry has a stage and no text; any other has non-blank text and no stage',
+             ? stage != null && text == null && amount == null
+             : stage == null &&
+                   (text == null
+                       ? kind == ActivityKind.order && amount != null
+                       : text.trim().isNotEmpty) &&
+                   (amount == null ||
+                       (kind == ActivityKind.order && amount > 0)),
+         'A stage entry has a stage only; any other has no stage and non-blank '
+         'text, except an order, which needs text or an amount; only an order '
+         'has an amount',
        );
 
   final String id;
@@ -40,8 +48,13 @@ class Activity {
   /// The calendar day it happened, as local midnight.
   final DateTime happenedOn;
 
-  /// What happened; null only on stage entries.
+  /// What happened; null on stage entries and on an order given by its
+  /// amount alone.
   final String? text;
+
+  /// What an order was worth, in the business model's unit (PV for dōTERRA).
+  /// Orders only.
+  final double? amount;
 
   /// The stage moved to; stage entries only.
   final Stage? stage;

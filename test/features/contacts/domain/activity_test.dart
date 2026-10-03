@@ -58,4 +58,46 @@ void main() {
       throwsA(isA<AssertionError>()),
     );
   });
+
+  test('an order may have an amount and no text', () {
+    final order = Activity(
+      id: 'a5',
+      personId: 'p1',
+      kind: ActivityKind.order,
+      happenedOn: DateTime(2026, 9, 28),
+      amount: 100,
+      createdAt: DateTime.utc(2026, 9, 28),
+    );
+
+    expect(order.text, isNull);
+    expect(order.amount, 100);
+  });
+
+  test('an order with neither text nor amount is a bug', () {
+    expect(
+      () => Activity(
+        id: 'a6',
+        personId: 'p1',
+        kind: ActivityKind.order,
+        happenedOn: DateTime(2026, 9, 28),
+        createdAt: DateTime.utc(2026, 9, 28),
+      ),
+      throwsA(isA<AssertionError>()),
+    );
+  });
+
+  test('an amount on anything but an order is a bug', () {
+    expect(
+      () => Activity(
+        id: 'a7',
+        personId: 'p1',
+        kind: ActivityKind.call,
+        happenedOn: DateTime(2026, 9, 28),
+        text: 'Called',
+        amount: 100,
+        createdAt: DateTime.utc(2026, 9, 28),
+      ),
+      throwsA(isA<AssertionError>()),
+    );
+  });
 }

@@ -850,6 +850,29 @@
   "@logWhatRequired": {
     "description": "Validation error under the text field of Log something when it is empty."
   },
+  "logAmount": "Amount",
+  "@logAmount": {
+    "description": "Label of the amount field in Log something, shown when the kind is Order. The amount is in the company's unit (PV for dōTERRA), never money."
+  },
+  "logNote": "Note",
+  "@logNote": {
+    "description": "Label of the text field in Log something when the kind is Order: optional once an amount is given. Other kinds keep logWhat."
+  },
+  "logAmountInvalid": "Use a number above 0, like 100 or 99.5.",
+  "@logAmountInvalid": {
+    "description": "Shown under the amount field when what was typed is not a positive number with at most two decimals."
+  },
+  "logOrderRequired": "Add an amount or a note.",
+  "@logOrderRequired": {
+    "description": "Shown under the note when an order has neither an amount nor a note."
+  },
+  "orderUnit": "{model, select, doterra{PV} other{}}",
+  "@orderUnit": {
+    "description": "Unit shown after the amount field. dōTERRA: PV (personal volume, not translated). Other: no unit, keep empty.",
+    "placeholders": {
+      "model": { "type": "String" }
+    }
+  },
   "historyTitle": "History",
   "@historyTitle": {
     "description": "Section title on a person's detail screen: what happened with them, latest first."
@@ -903,6 +926,22 @@
     "placeholders": {
       "day": { "type": "String" },
       "kind": { "type": "String" }
+    }
+  },
+  "historyOrder": "{model, select, doterra{Order · {amount} PV} other{Order · {amount}}}",
+  "@historyOrder": {
+    "description": "Title of an order with an amount in a person's history. PV is not translated. Other: the number alone.",
+    "placeholders": {
+      "model": { "type": "String" },
+      "amount": { "type": "num", "format": "decimalPattern" }
+    }
+  },
+  "historyOrderMeta": "{day} · {note}",
+  "@historyOrderMeta": {
+    "description": "Line under an order with an amount: the day, then the note the user wrote. Without a note, the day alone shows.",
+    "placeholders": {
+      "day": { "type": "String" },
+      "note": { "type": "String" }
     }
   },
   "historyDeleteTitle": "Delete this entry?",
