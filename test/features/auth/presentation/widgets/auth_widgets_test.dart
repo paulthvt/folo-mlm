@@ -112,6 +112,22 @@ void main() {
     );
   });
 
+  testWidgets('AuthScaffold: onBack shows a back button that calls it', (
+    tester,
+  ) async {
+    var backs = 0;
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: AuthScaffold(onBack: () => backs++, children: const [Text('x')]),
+      ),
+    );
+
+    await tester.tap(find.byType(BackButton));
+    expect(backs, 1);
+  });
+
   testWidgets('AuthScaffold shows a back button only when asked', (
     tester,
   ) async {

@@ -1284,7 +1284,7 @@
   },
   "firstRunEyebrow": "Welcome",
   "@firstRunEyebrow": {
-    "description": "Large word at the top of the first-run screen, shown once after sign-up."
+    "description": "Large word at the top of the first step of the first-run screen, shown once after sign-up."
   },
   "firstRunTitle": "Who do you already work with?",
   "@firstRunTitle": {
@@ -1313,6 +1313,18 @@
   "businessModelOther": "Other",
   "@businessModelOther": {
     "description": "Choice for anyone not working with a company Loomia knows; the app then uses neutral terms. Also shown in Settings beside Company."
+  },
+  "firstRunCompanyBody": "So Loomia speaks your language. You can change it in Settings.",
+  "@firstRunCompanyBody": {
+    "description": "Under the company question on the first step of the first-run screen."
+  },
+  "firstRunDoterraDetail": "dōTERRA terms, volumes and ranks",
+  "@firstRunDoterraDetail": {
+    "description": "Second line of the dōTERRA choice on the first-run screen: what picking it changes. Keep dōTERRA as written."
+  },
+  "firstRunOtherDetail": "Neutral terms",
+  "@firstRunOtherDetail": {
+    "description": "Second line of the Other choice on the first-run screen: the app keeps general words."
   },
   "importTitle": "Your contacts",
   "@importTitle": {
