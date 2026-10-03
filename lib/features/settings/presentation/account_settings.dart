@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:loomia/app/theme/app_spacing.dart';
+import 'package:loomia/core/business_model/business_model.dart';
+import 'package:loomia/core/business_model/business_model_copy.dart';
 import 'package:loomia/core/ui/form_error.dart';
 import 'package:loomia/core/ui/labeled_field.dart';
 import 'package:loomia/core/ui/loomia_dialog.dart';
@@ -8,10 +10,11 @@ import 'package:loomia/features/auth/presentation/auth_failure_copy.dart';
 import 'package:loomia/features/auth/presentation/auth_validation_copy.dart';
 import 'package:loomia/features/settings/presentation/settings_action.dart';
 import 'package:loomia/features/settings/presentation/widgets/settings_group.dart';
+import 'package:loomia/features/settings/presentation/widgets/settings_option.dart';
 import 'package:loomia/l10n/app_localizations.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// Name, email, delete account.
+/// Name, email, company, delete account.
 ///
 /// Deleting needs no navigation here: the session ends, and the router's
 /// redirect takes the user to /welcome.
@@ -31,6 +34,39 @@ class _AccountSettingsState extends ConsumerState<AccountSettings>
     );
     if (name != null && name != current) {
       await run((auth) => auth.updateFirstName(name));
+    }
+  }
+
+  Future<void> _editCompany(BusinessModel current) async {
+    final chosen = await LoomiaDialog.show<BusinessModel>(context, (context) {
+      final l10n = AppLocalizations.of(context);
+      return LoomiaDialog(
+        title: l10n.businessModelQuestion,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
+          ),
+        ],
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            for (final model in const [
+              BusinessModel.doterra,
+              BusinessModel.other,
+            ])
+              SettingsOption(
+                key: ValueKey('business-model-${model.name}'),
+                label: businessModelLabel(l10n, model),
+                selected: model == current,
+                onTap: () => Navigator.pop(context, model),
+              ),
+          ],
+        ),
+      );
+    });
+    if (chosen != null && chosen != current) {
+      await run((auth) => auth.updateBusinessModel(chosen));
     }
   }
 
@@ -84,6 +120,12 @@ class _AccountSettingsState extends ConsumerState<AccountSettings>
               ListTile(
                 title: Text(l10n.authEmailLabel),
                 subtitle: Text(account.email),
+              ),
+              ListTile(
+                title: Text(l10n.settingsCompany),
+                subtitle: Text(businessModelLabel(l10n, account.businessModel)),
+                trailing: const Icon(Icons.chevron_right_rounded),
+                onTap: busy ? null : () => _editCompany(account.businessModel),
               ),
             ],
           ),

@@ -289,6 +289,10 @@
   "@settingsSectionAccount": {
     "description": "Title of the Settings section with the user's name and email, and the delete-account button."
   },
+  "settingsCompany": "Company",
+  "@settingsCompany": {
+    "description": "Row in Settings → Account: the company the user works with (dōTERRA or Other), which sets the words Loomia uses for volumes and ranks."
+  },
   "settingsSectionPreferences": "Preferences",
   "@settingsSectionPreferences": {
     "description": "Group heading on the Settings screen above rows such as Language."

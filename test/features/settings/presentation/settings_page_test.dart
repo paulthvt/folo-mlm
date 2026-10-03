@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:loomia/app/app.dart';
 import 'package:loomia/app/shell/app_shell.dart';
+import 'package:loomia/core/business_model/business_model.dart';
 import 'package:loomia/core/layout/breakpoints.dart';
 import 'package:loomia/features/auth/data/auth_repository.dart';
 import 'package:loomia/features/auth/domain/account.dart';
@@ -180,6 +181,35 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Enter your first name.'), findsOneWidget);
+    expect(fake.calls, isEmpty);
+  });
+
+  testWidgets('the account shows the company; choosing one saves it', (
+    tester,
+  ) async {
+    final fake = await _openSection(tester, 'Pauline');
+    expect(find.text('Company'), findsOneWidget);
+    expect(find.text('Other'), findsOneWidget);
+
+    await tester.tap(find.text('Company'));
+    await tester.pumpAndSettle();
+    expect(find.text('Which company do you work with?'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('business-model-doterra')));
+    await tester.pumpAndSettle();
+
+    expect(fake.calls, ['updateBusinessModel(doterra)']);
+    expect(fake.account!.businessModel, BusinessModel.doterra);
+    expect(find.text('dōTERRA'), findsOneWidget);
+  });
+
+  testWidgets('picking the company already set saves nothing', (tester) async {
+    final fake = await _openSection(tester, 'Pauline');
+
+    await tester.tap(find.text('Company'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('business-model-other')));
+    await tester.pumpAndSettle();
+
     expect(fake.calls, isEmpty);
   });
 
