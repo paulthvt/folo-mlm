@@ -1,3 +1,4 @@
+import 'package:loomia/core/business_model/business_model.dart';
 import 'package:loomia/features/contacts/domain/activity.dart';
 import 'package:loomia/features/contacts/domain/people_failure.dart';
 import 'package:loomia/features/contacts/domain/person.dart';
@@ -75,15 +76,23 @@ String? kindLabel(AppLocalizations l10n, ActivityKind kind) => switch (kind) {
   ActivityKind.step => l10n.activityKindStep,
 };
 
-/// What the user wrote; for a stage entry, what changed. A person is never
-/// created with a stage entry, so one to prospects is always a way back.
-String activityTitle(AppLocalizations l10n, Activity activity) =>
-    switch (activity.stage) {
-      null => activity.text!,
-      Stage.prospect => l10n.historyBackToProspects,
-      Stage.customer => l10n.historyBecameCustomer,
-      Stage.team => l10n.historyJoinedTeam,
-    };
+/// What the user wrote; for a stage entry, what changed; for an order with an
+/// amount, "Order · 100 PV". A person is never created with a stage entry, so
+/// one to prospects is always a way back.
+String activityTitle(
+  AppLocalizations l10n,
+  Activity activity,
+  BusinessModel model,
+) {
+  final amount = activity.amount;
+  if (amount != null) return l10n.historyOrder(model.name, amount);
+  return switch (activity.stage) {
+    null => activity.text!,
+    Stage.prospect => l10n.historyBackToProspects,
+    Stage.customer => l10n.historyBecameCustomer,
+    Stage.team => l10n.historyJoinedTeam,
+  };
+}
 
 /// "13 October" this year, "13 October 2024" before.
 String dayLabel(AppLocalizations l10n, DateTime day, DateTime today) =>
@@ -91,9 +100,14 @@ String dayLabel(AppLocalizations l10n, DateTime day, DateTime today) =>
     ? l10n.historyDay(day)
     : l10n.historyDayWithYear(day);
 
-/// "13 October · Call"; a stage entry has the day alone.
+/// "13 October · Call"; a stage entry has the day alone. An order with an
+/// amount already says Order in its title: the day, then its note if any.
 String activityMeta(AppLocalizations l10n, Activity activity, DateTime today) {
   final day = dayLabel(l10n, activity.day, today);
+  if (activity.amount != null) {
+    final note = activity.text;
+    return note == null ? day : l10n.historyOrderMeta(day, note);
+  }
   final kind = kindLabel(l10n, activity.kind);
   return kind == null ? day : l10n.historyMeta(day, kind);
 }

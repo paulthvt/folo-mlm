@@ -5,8 +5,10 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:loomia/app/router/app_router.dart';
 import 'package:loomia/app/router/routes.dart';
+import 'package:loomia/core/business_model/business_model.dart';
 import 'package:loomia/core/ui/labeled_field.dart';
 import 'package:loomia/core/ui/pick_day.dart';
+import 'package:loomia/features/auth/domain/account.dart';
 import 'package:loomia/features/contacts/domain/activity.dart';
 import 'package:loomia/features/contacts/domain/people_failure.dart';
 import 'package:loomia/features/contacts/domain/person.dart';
@@ -18,6 +20,7 @@ import 'package:loomia/features/contacts/presentation/next_step_section.dart';
 import 'package:material_ui/material_ui.dart';
 
 import '../../../app/app_harness.dart';
+import '../../auth/fake_auth_repository.dart';
 import '../../workflows/fake_workflow_repository.dart';
 import '../fake_activity_repository.dart';
 import '../fake_people_repository.dart';
@@ -73,10 +76,12 @@ void main() {
     WidgetTester tester, {
     Size size = _phone,
     FakeWorkflowRepository? workflows,
+    FakeAuthRepository? auth,
   }) async {
     final container = await pumpLoomia(
       tester,
       size: size,
+      auth: auth,
       people: people,
       activities: activities,
       workflows: workflows,
@@ -88,8 +93,9 @@ void main() {
   Future<void> openMarie(
     WidgetTester tester, {
     FakeWorkflowRepository? workflows,
+    FakeAuthRepository? auth,
   }) async {
-    await openContacts(tester, workflows: workflows);
+    await openContacts(tester, workflows: workflows, auth: auth);
     await tester.tap(find.text('Marie Dupont'));
     await tester.pumpAndSettle();
   }
@@ -456,6 +462,36 @@ void main() {
 
     await reveal(tester, find.text('Met at the market'));
     expect(find.text('Met at the market'), findsOneWidget);
+  });
+
+  testWidgets('Log an order from ⋯ reads Order · 100 PV', (tester) async {
+    final auth = FakeAuthRepository()
+      ..session = true
+      ..account = const Account(
+        firstName: 'Pauline',
+        email: 'p@example.com',
+        businessModel: BusinessModel.doterra,
+      );
+    await openMarie(tester, auth: auth);
+
+    await tester.tap(find.byTooltip('More'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Log something'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.widgetWithText(ChoiceChip, 'Order'));
+    await tester.pumpAndSettle();
+    await tester.enterText(
+      find.descendant(
+        of: find.widgetWithText(LabeledField, 'Amount'),
+        matching: find.byType(TextFormField),
+      ),
+      '100',
+    );
+    await tester.tap(find.widgetWithText(FilledButton, 'Save'));
+    await tester.pumpAndSettle();
+
+    await reveal(tester, find.text('Order · 100 PV'));
+    expect(find.text('Order · 100 PV'), findsOneWidget);
   });
 
   testWidgets('Add in HISTORY opens Log something', (tester) async {

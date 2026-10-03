@@ -611,6 +611,7 @@ void main() {
         kind: ActivityKind.call,
         happenedOn: DateTime(2026, 9, 29),
         text: 'Hi',
+        amount: null,
       ));
       final reloaded = await world.container.read(book.future);
 
@@ -629,6 +630,7 @@ void main() {
         kind: ActivityKind.call,
         happenedOn: DateTime(2026, 9, 29),
         text: 'Hi',
+        amount: null,
       ));
       await world.container.read(book.future);
 
@@ -653,6 +655,7 @@ void main() {
         kind: ActivityKind.call,
         happenedOn: DateTime(2026, 9, 29),
         text: 'Hi',
+        amount: null,
       ));
       sheet.close();
       await Future<void>.delayed(Duration.zero);

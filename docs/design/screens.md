@@ -249,7 +249,9 @@ user's own idea, from ⋯.
 **⋯ holds every other action**: Log something, Move to customers, Move to team,
 Change workflow, Pause — not now, Edit details, Delete. Delete is the only red
 item. `HISTORY → Add` opens the same Log something sheet (note / call / message /
-order / meeting, date, text). Ticking a step writes its own history entry.
+order / meeting, date, text). Order adds an amount in the business model's unit
+(PV for dōTERRA, none for Other); the note is then optional, and the history
+reads "Order · 100 PV". Ticking a step writes its own history entry.
 
 **Workflows have one version.** Everyone on a workflow follows its current
 steps. Done steps are history, with the label copied at tick time. Changing a

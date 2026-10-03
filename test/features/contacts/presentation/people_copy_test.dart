@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:loomia/core/business_model/business_model.dart';
 import 'package:loomia/features/contacts/domain/activity.dart';
 import 'package:loomia/features/contacts/domain/person.dart';
 import 'package:loomia/features/contacts/presentation/people_copy.dart';
@@ -50,22 +51,33 @@ void main() {
   });
 
   test('an entry reads its text, then day · kind', () {
-    expect(activityTitle(l10n, entry()), 'Asked about the cream');
+    expect(
+      activityTitle(l10n, entry(), BusinessModel.other),
+      'Asked about the cream',
+    );
     expect(activityMeta(l10n, entry(), today), 'October 13 · Call');
   });
 
   test('a stage entry says what changed, with the day alone', () {
     final moved = entry(kind: ActivityKind.stage, stage: Stage.customer);
-    expect(activityTitle(l10n, moved), 'Became a customer');
+    expect(
+      activityTitle(l10n, moved, BusinessModel.other),
+      'Became a customer',
+    );
     expect(activityMeta(l10n, moved, today), 'October 13');
     expect(
-      activityTitle(l10n, entry(kind: ActivityKind.stage, stage: Stage.team)),
+      activityTitle(
+        l10n,
+        entry(kind: ActivityKind.stage, stage: Stage.team),
+        BusinessModel.other,
+      ),
       'Joined your team',
     );
     expect(
       activityTitle(
         l10n,
         entry(kind: ActivityKind.stage, stage: Stage.prospect),
+        BusinessModel.other,
       ),
       'Back to prospects',
     );
@@ -153,7 +165,58 @@ void main() {
       text: 'Send the samples',
       createdAt: DateTime(2026, 10, 13, 12),
     );
-    expect(activityTitle(l10n, step), 'Send the samples');
+    expect(activityTitle(l10n, step, BusinessModel.other), 'Send the samples');
     expect(activityMeta(l10n, step, today), 'October 13 · Step');
+  });
+
+  group('an order with an amount', () {
+    Activity order({String? text}) => Activity(
+      id: 'a1',
+      personId: 'p1',
+      kind: ActivityKind.order,
+      happenedOn: DateTime(2026, 10, 13),
+      text: text,
+      amount: 1840,
+      createdAt: DateTime(2026, 10, 13, 12),
+    );
+
+    test('dōTERRA reads the amount in PV, the note under it', () {
+      final entry = order(text: 'Wild Orange');
+      expect(
+        activityTitle(l10n, entry, BusinessModel.doterra),
+        'Order · 1,840 PV',
+      );
+      expect(activityMeta(l10n, entry, today), 'October 13 · Wild Orange');
+    });
+
+    test('Other reads the number alone', () {
+      expect(
+        activityTitle(l10n, order(), BusinessModel.other),
+        'Order · 1,840',
+      );
+    });
+
+    test('without a note, the day alone', () {
+      expect(activityMeta(l10n, order(), today), 'October 13');
+    });
+
+    test('French groups with a narrow no-break space', () {
+      final fr = lookupAppLocalizations(const Locale('fr'));
+      // Until the l10n sync PR, FR falls back to the English words, but the
+      // number is formatted for French.
+      expect(
+        activityTitle(fr, order(), BusinessModel.doterra),
+        contains('1\u202F840'),
+      );
+    });
+  });
+
+  test('an order without an amount reads as before', () {
+    final order = entry(kind: ActivityKind.order);
+    expect(
+      activityTitle(l10n, order, BusinessModel.doterra),
+      'Asked about the cream',
+    );
+    expect(activityMeta(l10n, order, today), 'October 13 · Order');
   });
 }

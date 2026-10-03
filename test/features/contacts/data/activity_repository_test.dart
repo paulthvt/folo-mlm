@@ -12,6 +12,7 @@ Map<String, dynamic> _row([Map<String, dynamic> changes = const {}]) => {
   'happened_on': '2026-09-20',
   'text': 'Asked about the cream',
   'stage': null,
+  'amount': null,
   'created_at': '2026-09-28T12:00:00+00:00',
   ...changes,
 };
@@ -39,6 +40,18 @@ void main() {
       expect(activity.stage, Stage.team);
     });
 
+    test('reads an order amount, whole or not', () {
+      expect(
+        activityFromRow(_row({'kind': 'order', 'amount': 100})).amount,
+        100,
+      );
+      expect(
+        activityFromRow(_row({'kind': 'order', 'text': null, 'amount': 99.5}))
+            .amount,
+        99.5,
+      );
+    });
+
     test('an unknown kind is a failure, never a default', () {
       expect(
         () => activityFromRow(_row({'kind': 'visit'})),
@@ -62,12 +75,32 @@ void main() {
         kind: ActivityKind.order,
         happenedOn: DateTime(2026, 3, 4),
         text: '  Two creams ',
+        amount: null,
       )),
       {
         'person_id': 'p1',
         'kind': 'order',
         'happened_on': '2026-03-04',
         'text': 'Two creams',
+        'amount': null,
+      },
+    );
+  });
+
+  test('activityDraftToRow: an amount alone writes no text', () {
+    expect(
+      activityDraftToRow('p1', (
+        kind: ActivityKind.order,
+        happenedOn: DateTime(2026, 3, 4),
+        text: '   ',
+        amount: 100,
+      )),
+      {
+        'person_id': 'p1',
+        'kind': 'order',
+        'happened_on': '2026-03-04',
+        'text': null,
+        'amount': 100,
       },
     );
   });

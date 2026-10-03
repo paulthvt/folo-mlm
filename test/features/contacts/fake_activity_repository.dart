@@ -41,12 +41,14 @@ class FakeActivityRepository implements ActivityRepository {
   @override
   Future<Activity> add(String personId, ActivityDraft draft) async {
     await _record('add($personId)');
+    final text = draft.text.trim();
     final activity = Activity(
       id: 'a-${_next++}',
       personId: personId,
       kind: draft.kind,
       happenedOn: draft.happenedOn,
-      text: draft.text.trim(),
+      text: text.isEmpty ? null : text,
+      amount: draft.amount,
       createdAt: DateTime.utc(2026, 9, 28, 12),
     );
     store.add(activity);

@@ -23,12 +23,13 @@ Future<void> pumpFormHarness(
   required FakePeopleRepository people,
   FakeActivityRepository? activities,
   FakeWorkflowRepository? workflows,
+  Account account = const Account(firstName: 'Pauline', email: 'p@example.com'),
   required Future<Object?> Function(BuildContext context) open,
   required void Function(Object? value) result,
 }) async {
   final auth = FakeAuthRepository()
     ..session = true
-    ..account = const Account(firstName: 'Pauline', email: 'p@example.com');
+    ..account = account;
   addTearDown(auth.dispose);
   await tester.pumpWidget(
     ProviderScope(
