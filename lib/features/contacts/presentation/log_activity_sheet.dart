@@ -56,6 +56,7 @@ class _LogActivityFormState extends ConsumerState<_LogActivityForm> {
         kind: _kind,
         happenedOn: _day,
         text: _text.text.trim(),
+        amount: null,
       ));
       if (mounted) Navigator.pop(context);
     } on PeopleFailure catch (failure) {

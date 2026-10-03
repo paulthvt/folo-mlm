@@ -55,6 +55,7 @@ Activity activityFromRow(Map<String, dynamic> row) {
     // A bare date parses as local midnight, which is what a day is here.
     happenedOn: DateTime.parse(row['happened_on'] as String),
     text: row['text'] as String?,
+    amount: (row['amount'] as num?)?.toDouble(),
     stage: stage == null
         ? null
         : Stage.values.asNameMap()[stage] ?? (throw PeopleFailure.unknown),
@@ -67,10 +68,16 @@ Map<String, dynamic> activityDraftToRow(String personId, ActivityDraft draft) {
     draft.kind.byUser,
     'Only the database writes stage entries; step entries come from complete_step',
   );
+  assert(
+    draft.amount == null || draft.kind == ActivityKind.order,
+    'Only an order has an amount',
+  );
+  final text = draft.text.trim();
   return {
     'person_id': personId,
     'kind': draft.kind.name,
     'happened_on': dayColumn(draft.happenedOn),
-    'text': draft.text.trim(),
+    'text': text.isEmpty ? null : text,
+    'amount': draft.amount,
   };
 }

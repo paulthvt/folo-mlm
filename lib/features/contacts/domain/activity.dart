@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:loomia/features/contacts/domain/person.dart';
 
 /// What an entry records. [stage] entries are written by the database when a
@@ -70,5 +71,39 @@ class Activity {
   }
 }
 
-/// What Log something collects. Never a stage entry.
-typedef ActivityDraft = ({ActivityKind kind, DateTime happenedOn, String text});
+/// What Log something collects. Never a stage entry. [text] may be blank only
+/// on an order with an [amount]; [amount] is set only on an order.
+typedef ActivityDraft = ({
+  ActivityKind kind,
+  DateTime happenedOn,
+  String text,
+  double? amount,
+});
+
+/// An order's amount as typed, read the way [locale] writes numbers: at most
+/// two decimals (the column is numeric(12,2)), spaces ignored. Null for
+/// anything else, zero included; an ambiguous value is refused, never
+/// guessed.
+///
+/// Where the decimal point is `.` (English), `,` only groups thousands:
+/// "6,000" is 6000, "6,00" is refused. Elsewhere (French) `,` is the decimal
+/// point and so is `.`, which some number pads offer alone; "6.000" has three
+/// decimals and is refused.
+// ponytail: the app language stands for the region (English reads US-style);
+// use the device locale if someone writes English with decimal commas.
+double? parseAmount(String input, String locale) {
+  var typed = input.replaceAll(RegExp(r'\s'), '');
+  if (NumberFormat.decimalPattern(locale).symbols.DECIMAL_SEP == '.') {
+    if (typed.contains(',') &&
+        !RegExp(r'^\d{1,3}(,\d{3})+(\.\d*)?$').hasMatch(typed)) {
+      return null;
+    }
+    typed = typed.replaceAll(',', '');
+  } else {
+    typed = typed.replaceAll(',', '.');
+  }
+  final match = RegExp(r'^(\d{1,10})(?:\.(\d{1,2}))?$').firstMatch(typed);
+  if (match == null) return null;
+  final value = double.parse('${match[1]}.${match[2] ?? '0'}');
+  return value > 0 ? value : null;
+}

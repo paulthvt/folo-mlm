@@ -100,4 +100,67 @@ void main() {
       throwsA(isA<AssertionError>()),
     );
   });
+
+  group('parseAmount in English', () {
+    double? en(String typed) => parseAmount(typed, 'en');
+
+    test('a whole number, or up to two decimals', () {
+      expect(en('100'), 100);
+      expect(en('99.5'), 99.5);
+      expect(en('99.50'), 99.5);
+    });
+
+    test('a comma groups thousands', () {
+      expect(en('6,000'), 6000);
+      expect(en('1,840.5'), 1840.5);
+      expect(en('1,234,567'), 1234567);
+    });
+
+    test('a comma that does not group thousands is refused, not guessed', () {
+      expect(en('1,5'), isNull);
+      expect(en('6,00'), isNull);
+      expect(en('12,34,567'), isNull);
+    });
+
+    test('spaces are ignored', () {
+      expect(en(' 1 840 '), 1840);
+    });
+
+    test('zero, negative, text, empty, too precise or too big: refused', () {
+      expect(en('0'), isNull);
+      expect(en('0.00'), isNull);
+      expect(en('-5'), isNull);
+      expect(en('abc'), isNull);
+      expect(en(''), isNull);
+      expect(en('1.005'), isNull);
+      expect(en('12345678901'), isNull);
+    });
+
+    test('the largest the column holds is accepted', () {
+      expect(en('9,999,999,999.99'), 9999999999.99);
+    });
+  });
+
+  group('parseAmount in French', () {
+    double? fr(String typed) => parseAmount(typed, 'fr');
+
+    test('a comma is the decimal point', () {
+      expect(fr('12,5'), 12.5);
+      expect(fr('1,84'), 1.84);
+    });
+
+    test('a point is one too: some number pads only offer it', () {
+      expect(fr('12.5'), 12.5);
+    });
+
+    test('spaces group thousands, the narrow no-break one too', () {
+      expect(fr('1 840'), 1840);
+      expect(fr('1\u202F840,5'), 1840.5);
+    });
+
+    test('three decimals are refused, never read as thousands', () {
+      expect(fr('6.000'), isNull);
+      expect(fr('6,000'), isNull);
+    });
+  });
 }

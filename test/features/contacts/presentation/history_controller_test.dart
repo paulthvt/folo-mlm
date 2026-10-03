@@ -76,6 +76,7 @@ void main() {
       kind: ActivityKind.call,
       happenedOn: DateTime(2026, 9, 10),
       text: 'Asked about the cream',
+      amount: null,
     ));
 
     expect(_ids(world.container), ['new', 'a-0', 'old']);
@@ -92,6 +93,7 @@ void main() {
         kind: ActivityKind.note,
         happenedOn: DateTime(2026, 9, 10),
         text: 'Lost',
+        amount: null,
       )),
       throwsA(PeopleFailure.network),
     );
@@ -136,6 +138,7 @@ void main() {
       kind: ActivityKind.note,
       happenedOn: DateTime(2026, 9, 28),
       text: 'Saved after the page closed',
+      amount: null,
     ));
     subscription.close();
     await Future<void>.delayed(Duration.zero);
